@@ -117,7 +117,6 @@ export const DefineAction = <S>(actionName: string) => {
 
     const epic = (actions$: ActionsObservable<ReduxAction<any>>) => {
       action$ = actions$.ofType(actionWithNamespace)
-      console.info(action$)
       return Observable.never()
     }
 
