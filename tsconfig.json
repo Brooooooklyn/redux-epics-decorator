@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
+    "declaration": true,
+    "target": "ES5",
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.promise",
+      "es2015.symbol",
+      "es2015.collection",
+      "es2015.core"
+    ],
+    "outDir": "./lib"
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}
