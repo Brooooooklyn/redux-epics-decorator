@@ -4,7 +4,7 @@ import { ActionsObservable } from 'redux-observable'
 import { Observable } from 'rxjs/Observable'
 
 import { EffectModule } from '../Module'
-import { symbolNamespace, symbolEpics, symbolDispatch } from '../symbol'
+import { symbolNamespace, symbolEpics, symbolDispatch, withNamespace } from '../symbol'
 import { currentSetEffectQueue } from '../shared'
 
 export const DefineAction = <S>(actionName: string) => {
@@ -22,12 +22,8 @@ export const DefineAction = <S>(actionName: string) => {
     function setup() {
       const name = Reflect.getMetadata(symbolNamespace, constructor)
       const epics = Reflect.getMetadata(symbolEpics, constructor)
-      if (!name) {
-        const moduleName = constructor.name
-        throw new TypeError(`Fail to decorate ${ moduleName }.${ propertyName }, Class ${ moduleName } must have namespace metadata`)
-      }
       const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
-      actionWithNamespace = `${ name }/${ actionName }`
+      actionWithNamespace = withNamespace(name, actionName)
       const startAction = createAction(actionWithNamespace)
       dispatchs[propertyName] = startAction
       Object.defineProperty(target, propertyName, {

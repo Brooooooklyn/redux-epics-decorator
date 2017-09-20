@@ -2,7 +2,7 @@ import { createAction } from 'redux-actions'
 
 import { EffectModule } from '../Module'
 import { currentReducers, currentSetEffectQueue } from '../shared'
-import { symbolNamespace, symbolDispatch } from '../symbol'
+import { symbolNamespace, symbolDispatch, symbolAction, withNamespace } from '../symbol'
 
 export const Reducer = <S>(actionName: string) => {
   return (target: EffectModule<S>, method: string, descriptor: PropertyDescriptor) => {
@@ -12,15 +12,17 @@ export const Reducer = <S>(actionName: string) => {
 
     function setup() {
       const name = Reflect.getMetadata(symbolNamespace, constructor)
-      if (!name) {
-        const moduleName = constructor.name
-        throw new TypeError(`Fail to decorate ${ moduleName }.${ method }, Class ${ moduleName } must have namespace metadata`)
-      }
       const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
-      const actionWithNamespace = `${ name }/${ actionName }`
+      const actionWithNamespace = withNamespace(name, actionName)
       const startAction = createAction(actionWithNamespace)
       currentReducers.set(actionWithNamespace, reducer)
       dispatchs[method] = startAction
+
+      Object.defineProperty(reducer, symbolAction, {
+        enumerable: false,
+        configurable: false,
+        value: startAction
+      })
     }
 
     currentSetEffectQueue.push(setup)

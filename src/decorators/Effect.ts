@@ -4,7 +4,15 @@ import { Store } from 'redux'
 import { Action as ReduxAction, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
 import { ActionsObservable } from 'redux-observable'
 
-import { symbolNamespace, symbolDispatch, symbolEpics, symbolAction, symbolNotTrasfer } from '../symbol'
+import {
+  symbolNamespace,
+  symbolDispatch,
+  symbolEpics,
+  symbolAction,
+  symbolNotTrasfer,
+  withNamespace,
+  withReducer
+} from '../symbol'
 import { EffectModule } from '../Module'
 import { currentReducers, currentSetEffectQueue } from '../shared'
 
@@ -13,7 +21,7 @@ export interface EffectHandler<S, T> {
 }
 
 export const Effect = <S, T, R extends EffectHandler<S, T>>(action: string) => {
-  return (handler: R) =>
+  return (handler?: R) =>
     (target: EffectModule<S>, method: string, descriptor: PropertyDescriptor) => {
       let startAction: ActionFunction0<ReduxAction<void>>
       let name: string
@@ -28,7 +36,7 @@ export const Effect = <S, T, R extends EffectHandler<S, T>>(action: string) => {
             const { type } = actionResult
             return {
               ...actionResult,
-              type:  actionResult[symbolNotTrasfer] ? type : `${ name }/${ action }_${ type }`
+              type:  actionResult[symbolNotTrasfer] ? type : withReducer(name, action, type)
             }
           })
       }
@@ -37,15 +45,15 @@ export const Effect = <S, T, R extends EffectHandler<S, T>>(action: string) => {
         name = Reflect.getMetadata(symbolNamespace, constructor)
         const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
         const epics = Reflect.getMetadata(symbolEpics, constructor)
-        if (!name || !dispatchs) {
-          const moduleName = constructor.name
-          throw new TypeError(`Fail to decorate ${ moduleName }.${ method }, Class ${ moduleName } must have namespace metadata`)
-        }
-        const actionWithNamespace = `${ name }/${ action }`
+        const actionWithNamespace = withNamespace(name, action)
         startAction = createAction(actionWithNamespace)
-        Object.keys(handler).forEach(key => {
-          currentReducers.set(`${ actionWithNamespace }_${ key }`, handler[key])
-        })
+
+        if (handler) {
+          Object.keys(handler).forEach(key => {
+            currentReducers.set(withReducer(name, action, key), handler[key])
+          })
+        }
+
         dispatchs[method] = startAction
         epics.push(epic)
 
