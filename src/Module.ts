@@ -4,7 +4,7 @@ import { Action } from 'redux'
 import { combineEpics, Epic } from 'redux-observable'
 import { ActionFunctionAny, Reducer, handleActions, createAction } from 'redux-actions'
 
-import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNotTrasfer } from './Effect'
+import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNotTrasfer } from './symbol'
 
 export abstract class EffectModule<StateProps> {
 
