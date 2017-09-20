@@ -1,10 +1,12 @@
 import 'reflect-metadata'
+import 'rxjs/add/observable/never'
 import 'rxjs/add/operator/finally'
 import 'rxjs/add/operator/merge'
 import 'rxjs/add/operator/take'
 import 'rxjs/add/operator/map'
 import { Store } from 'redux'
-import { Action, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
+import { Observable } from 'rxjs/Observable'
+import { Action as ReduxAction, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
 import { ActionsObservable } from 'redux-observable'
 
 import { EffectModule } from './Module'
@@ -35,16 +37,16 @@ export const namespace = (name: string) =>
 export const Effect = <S, T, R extends EffectHandler<S, T>>(action: string) => {
   return (handler: R) =>
     (target: EffectModule<S>, method: string, descriptor: PropertyDescriptor) => {
-      let startAction: ActionFunction0<Action<void>>
+      let startAction: ActionFunction0<ReduxAction<void>>
       let name: string
       const constructor = target.constructor
 
-      function epic(this: EffectModule<S>, action$: ActionsObservable<Action<any>>, store?: Store<any>) {
+      function epic(this: EffectModule<S>, action$: ActionsObservable<ReduxAction<any>>, store?: Store<any>) {
         const matchedAction$ = action$
           .ofType(startAction.toString())
           .map(({ payload }) => payload)
         return descriptor.value.call(this, matchedAction$, store)
-          .map((actionResult: Action<any>) => {
+          .map((actionResult: ReduxAction<any>) => {
             return {
               ...actionResult,
               type: `${ name }/${ action }_${ actionResult.type }`
@@ -103,5 +105,42 @@ export const Reducer = <S>(actionName: string) => {
       ...descriptor,
       value: reducer
     }
+  }
+}
+
+export const DefineAction = <S>(actionName: string) => {
+  return (target: EffectModule<S>, propertyName: string) => {
+    const constructor = target.constructor
+
+    let action$: ActionsObservable<ReduxAction<any>>
+    let actionWithNamespace: string
+
+    const epic = (actions$: ActionsObservable<ReduxAction<any>>) => {
+      action$ = actions$.ofType(actionWithNamespace)
+      console.info(action$)
+      return Observable.never()
+    }
+
+    function setup() {
+      const name = Reflect.getMetadata(symbolNamespace, constructor)
+      const epics = Reflect.getMetadata(symbolEpics, constructor)
+      if (!name) {
+        const moduleName = constructor.name
+        throw new TypeError(`Fail to decorate ${ moduleName }.${ propertyName }, Class ${ moduleName } must have namespace metadata`)
+      }
+      const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
+      actionWithNamespace = `${ name }/${ actionName }`
+      const startAction = createAction(actionWithNamespace)
+      dispatchs[propertyName] = startAction
+      Object.defineProperty(target, propertyName, {
+        get() {
+          return action$
+        }
+      })
+
+      epics.push(epic)
+    }
+
+    currentSetEffectQueue.push(setup)
   }
 }
