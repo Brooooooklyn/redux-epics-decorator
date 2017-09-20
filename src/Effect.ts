@@ -4,13 +4,13 @@ import 'rxjs/add/operator/merge'
 import 'rxjs/add/operator/take'
 import 'rxjs/add/operator/map'
 import { Store } from 'redux'
-import { Action, createAction, ActionFunction0, Reducer } from 'redux-actions'
+import { Action, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
 import { ActionsObservable } from 'redux-observable'
 
 import { EffectModule } from './Module'
 
 export interface EffectHandler<S, T> {
-  [actionName: string]: Reducer<S, T>
+  [actionName: string]: ReduxReducer<S, T>
 }
 
 export const symbolNamespace = Symbol('namespace')
@@ -39,7 +39,7 @@ export const Effect = <S, T, R extends EffectHandler<S, T>>(action: string) => {
       let name: string
       const constructor = target.constructor
 
-      const epic = function(this: EffectModule<S>, action$: ActionsObservable<Action<any>>, store?: Store<any>) {
+      function epic(this: EffectModule<S>, action$: ActionsObservable<Action<any>>, store?: Store<any>) {
         const matchedAction$ = action$
           .ofType(startAction.toString())
           .map(({ payload }) => payload)
@@ -75,5 +75,33 @@ export const Effect = <S, T, R extends EffectHandler<S, T>>(action: string) => {
         ...descriptor,
         value: epic
       }
+  }
+}
+
+export const Reducer = <S>(actionName: string) => {
+  return (target: EffectModule<S>, method: string, descriptor: PropertyDescriptor) => {
+
+    const reducer = descriptor.value
+    const constructor = target.constructor
+
+    function setup() {
+      const name = Reflect.getMetadata(symbolNamespace, constructor)
+      if (!name) {
+        const moduleName = constructor.name
+        throw new TypeError(`Fail to decorate ${ moduleName }.${ method }, Class ${ moduleName } must have namespace metadata`)
+      }
+      const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
+      const actionWithNamespace = `${ name }/${ actionName }`
+      const startAction = createAction(actionWithNamespace)
+      currentReducers[actionWithNamespace] = reducer
+      dispatchs[method] = startAction
+    }
+
+    currentSetEffectQueue.push(setup)
+
+    return {
+      ...descriptor,
+      value: reducer
+    }
   }
 }

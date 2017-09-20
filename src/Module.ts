@@ -23,6 +23,10 @@ export abstract class EffectModule<StateProps> {
 
   get reducer(): Reducer<StateProps, any> {
     const reducersMap = Reflect.getMetadata(symbolReducerMap, this.ctor)
+    Object.keys(reducersMap).forEach(key => {
+      const reducer = reducersMap[key]
+      reducersMap[key] = reducer.bind(this)
+    })
     return handleActions(reducersMap, this.defaltState)
   }
 }
