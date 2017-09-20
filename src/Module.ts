@@ -1,9 +1,10 @@
 import 'reflect-metadata'
 import 'rxjs/add/operator/mergeMap'
-import { combineEpics } from 'redux-observable'
+import { Action } from 'redux'
+import { combineEpics, Epic } from 'redux-observable'
 import { ActionFunctionAny, Reducer, handleActions, createAction } from 'redux-actions'
 
-import { symbolDispatch, symbolReducerMap, symbolEpics } from './Effect'
+import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNotTrasfer } from './Effect'
 
 export abstract class EffectModule<StateProps> {
 
@@ -13,7 +14,8 @@ export abstract class EffectModule<StateProps> {
 
   protected readonly createAction = createAction
 
-  get dispatch(): { [key: string]: ActionFunctionAny<StateProps> } {
+  // @internal
+  get allDispatch(): { [key: string]: ActionFunctionAny<StateProps> } {
     return Reflect.getMetadata(symbolDispatch, this.ctor)
   }
 
@@ -28,5 +30,14 @@ export abstract class EffectModule<StateProps> {
       reducersMap[key] = reducer.bind(this)
     })
     return handleActions(reducersMap, this.defaltState)
+  }
+
+  protected createActionFrom<T extends Action, S, D = any>(epic: Epic<T, S, D>) {
+    const action = epic[symbolAction]
+    return function() {
+      const result = action.apply(null, arguments)
+      result[symbolNotTrasfer] = true
+      return result
+    }
   }
 }

@@ -12,6 +12,7 @@
     "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "stripInternal": true,
     "sourceMap": true,
     "declaration": true,
     "target": "ES5",

@@ -18,7 +18,9 @@ export interface EffectHandler<S, T> {
 export const symbolNamespace = Symbol('namespace')
 export const symbolDispatch = Symbol('dispatch')
 export const symbolReducerMap = Symbol('reducerMap')
-export const symbolEpics = Symbol('symbolActionQueue')
+export const symbolEpics = Symbol('actionQueue')
+export const symbolAction = Symbol('action')
+export const symbolNotTrasfer = Symbol('notTrasnfer')
 
 let currentReducers = { }
 const currentSetEffectQueue: ((...args: any[]) => any)[] = []
@@ -47,9 +49,10 @@ export const Effect = <S, T, R extends EffectHandler<S, T>>(action: string) => {
           .map(({ payload }) => payload)
         return descriptor.value.call(this, matchedAction$, store)
           .map((actionResult: ReduxAction<any>) => {
+            const { type } = actionResult
             return {
               ...actionResult,
-              type: `${ name }/${ action }_${ actionResult.type }`
+              type:  actionResult[symbolNotTrasfer] ? type : `${ name }/${ action }_${ type }`
             }
           })
       }
@@ -69,6 +72,13 @@ export const Effect = <S, T, R extends EffectHandler<S, T>>(action: string) => {
         })
         dispatchs[method] = startAction
         epics.push(epic)
+
+        Object.defineProperty(epic, symbolAction, {
+          enumerable: false,
+          configurable: false,
+          value: startAction
+        })
+
       }
 
       currentSetEffectQueue.push(setup)
