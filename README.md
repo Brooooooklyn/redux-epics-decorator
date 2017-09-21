@@ -107,3 +107,150 @@ export default store = createStore<GlobalState>(rootReducer, compose<any>(
 ))
 
 ```
+
+## API
+
+- EffectModule\<T>
+
+    All Your Module must extends EffectModule
+
+
+    The Generic \<T> is represent for `defaultState`
+
+
+    - EffectModule#createAction
+
+      shortcut for createAction in `redux-actions`, use it in @Effect decorated method.
+
+    - EffectModule#createActionFrom
+
+      you can `createActionFrom` a @Effect or @Reducer to trigger it.
+
+      like this one: [create action from a @Effect](https://github.com/Brooooooklyn/redux-epics-decorator/blob/dfd15c9ef0dfc7777aa52f63f138546607e69bfe/test/fixtures/module2/module.ts#L52), and this one: [create action from a @Reducer](https://github.com/Brooooooklyn/redux-epics-decorator/blob/dfd15c9ef0dfc7777aa52f63f138546607e69bfe/test/fixtures/module2/module.ts#L65)
+
+    - EffectModule#epic
+
+      Your epic from this module that wish to be combine to rootEpic.
+
+    - EffectModule#reducer
+
+      Your epic from this module that wish to be combine to rootReducer.
+
+- Decorators
+    - namespace(name: string)
+
+      use this decorator before another decorators
+
+      ```ts
+
+      interface StateProps {
+        foo: number
+      }
+
+      @namespace('YourModule')
+      class YourModule extends EffectModule<StateProps> {
+        defaultState = {
+          foo: 1
+        }
+      }
+      ```
+
+      all your actions and reducers would have prefix: `YourModule/`
+
+    - DefineAction
+
+      use this decorator to define a property as Observable, which emmit `Action` when the Action was dispatched.
+
+        ```ts
+        interface StateProps {
+          foo: number
+        }
+
+        @namespace('YourModule')
+        class YourModule extends EffectModule<StateProps> {
+          defaultState = {
+            foo: 1
+          }
+
+          // this is same to
+          // dispose = action$.ofType('YourModule/dispose')
+          @DefineAction('dispose'): dispose: Observable<Action<any>>
+        }
+        ```
+    - Effects(action: string) => (reducerMap?: ReducerMap) => methodDecorator
+
+      accept a action that would fire the epic, return a function that accept a reducerMap.
+
+        ```ts
+        interface StateProps {
+          foo: number
+        }
+
+        @namespace('YourModule')
+        class YourModule extends EffectModule<StateProps> {
+          defaultState = {
+            foo: 1
+          }
+
+          @Effects('start')({
+            // reducers here
+            success: (state: StateProps, { payload }: Action<number>) => {
+              return { ...state, foo: payload! }
+            },
+            error: (state: StateProps, { payload }: Action<any>) => {
+              // ...
+            }
+          })
+          start(action$: Observable<Action<any>>, store: Store<GlobalState>) {
+            // same as actionObservable.ofType('start')
+            return action$
+              .switchMap(({ payload }) => {
+                // your logic here
+              })
+              // or
+              // .map(this.createAction('success'))
+              // this would fire success defined up this method
+              .map(response => this.createAction('success')(response))
+              .catch(this.createAction('error'))
+          }
+        }
+        ```
+
+      you can also createActionFrom another `@Effect` or `@Reducer`
+
+
+      [create action from a @Effect](https://github.com/Brooooooklyn/redux-epics-decorator/blob/dfd15c9ef0dfc7777aa52f63f138546607e69bfe/test/fixtures/module2/module.ts#L52), [create action from a @Reducer](https://github.com/Brooooooklyn/redux-epics-decorator/blob/dfd15c9ef0dfc7777aa52f63f138546607e69bfe/test/fixtures/module2/module.ts#L65)
+
+    - Reducer(action: string)
+
+      define a reducer
+
+        ```ts
+        interface StateProps {
+          foo: number
+        }
+
+        @namespace('YourModule')
+        class YourModule extends EffectModule<StateProps> {
+          defaultState = {
+            foo: 1
+          }
+
+          @Reducer('add')
+          add(state: StateProps) {
+            const { foo } = state
+            return { ...state, foo: foo + 1 }
+          }
+        }
+        ```
+
+    - connect(mapStateToProps: MapStateToProps, module: EffectModule): ConnectedComponent
+
+      - param mapStateToProps is same to which in `react-redux`
+      - param module is a module instance
+
+      use it like `connect` in `react-redux`.
+
+      all your methods in `module` that decorated by `@DefineAction` `@Effects` `@Reducer` would be transfer to `Dispatch` and pass to connected Component as a Props.
+
+      Your can use `this.props.start()` to dispatch `yourmodule/start` action.
