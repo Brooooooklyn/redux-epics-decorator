@@ -1,3 +1,4 @@
-export { namespace, Effect, Reducer, DefineAction } from './Effect'
+export { namespace, Effect, Reducer, DefineAction } from './decorators'
 export { EffectModule } from './Module'
-export { connect, ModuleActionProps } from './connect'
+export { connect } from './connect'
+export { ModuleActionProps } from './interface'
