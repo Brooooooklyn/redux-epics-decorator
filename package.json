@@ -8,7 +8,6 @@
     "check_circular_dependencies": "madge lib/index.js",
     "compile": "rm -rf lib && tsc -p tsconfig.json --diagnostics --pretty",
     "lint": "tslint -c tslint.json -p tsconfig.json && tslint -c tslint.json -p test/tsconfig.json",
-    "postinstall": "cd ./node_modules/.bin && ln -sf ../typescript/bin/tsc ./tsc",
     "start": "webpack-dev-server --config ./webpack.config.js --progress --color",
     "test": "rm -rf coverage && NODE_ENV=test karma start",
     "watch": "karma start"
@@ -79,7 +78,6 @@
     "redux-observable": "^0.16.0",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.4.3",
-    "shx": "^0.2.2",
     "sinon": "^3.3.0",
     "sinon-chai": "^2.13.0",
     "symbol-observable": "^1.0.4",
@@ -91,6 +89,8 @@
     "webpack-dev-server": "^2.8.2"
   },
   "files": [
-    "lib"
+    "assets/**",
+    "lib/**",
+    "README.md"
   ]
 }
