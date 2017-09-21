@@ -1,6 +1,8 @@
 const path = require('path')
 const webpackTestConfig = require('./webpack.config')
 
+webpackTestConfig.entry = './test/spec.entry.ts'
+
 module.exports = function (config) {
   config.set({
     basePath: process.cwd(),
@@ -17,10 +19,7 @@ module.exports = function (config) {
       ]
     },
 
-    webpack: {
-      ...webpackTestConfig,
-      entry: './test/spec.entry.ts'
-    },
+    webpack: webpackTestConfig,
 
     webpackMiddleware: {
       noInfo: true,

@@ -1,0 +1,72 @@
+defaults: &defaults
+  working_directory: ~/redux-epic-decorator
+  docker:
+    - image: circleci/node:6-browsers
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: echo 'export PATH=${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin' >> $BASH_ENV
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: yarn-with-greenkeeper
+          command: |
+            sudo yarn global add greenkeeper-lockfile@1
+            yarn
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ~/.cache/yarn
+      - run: greenkeeper-lockfile-update
+      - run: yarn compile
+      - run: greenkeeper-lockfile-upload
+      - persist_to_workspace:
+          root: ~/redux-epic-decorator
+          paths:
+            - ./*
+  test:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/redux-epic-decorator
+      - run: yarn lint
+      - run: yarn check_circular_dependencies
+      - run: yarn test
+      - run:
+          name: test-coverage
+          command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/redux-epic-decorator
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run: |
+          if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
+          then
+            npm publish
+          else
+            echo "Not a release, skipping publish"
+          fi
+
+workflows:
+  version: 2
+  build_test_and_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: master

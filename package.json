@@ -5,8 +5,10 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
+    "check_circular_dependencies": "madge lib/index.js",
     "compile": "rm -rf lib && tsc -p tsconfig.json --diagnostics --pretty",
-    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "lint": "tslint -c tslint.json -p tsconfig.json && tslint -c tslint.json -p test/tsconfig.json",
+    "postinstall": "cd ./node_modules/.bin && ln -sf ../typescript/bin/tsc ./tsc",
     "start": "webpack-dev-server --config ./webpack.config.js --progress --color",
     "test": "rm -rf coverage && NODE_ENV=test karma start",
     "watch": "karma start"
@@ -52,6 +54,7 @@
     "@types/sinon": "^2.3.5",
     "@types/sinon-chai": "^2.7.29",
     "chai": "^4.1.2",
+    "coveralls": "^2.13.1",
     "enzyme": "^2.9.1",
     "html-webpack-plugin": "^2.30.1",
     "istanbul-instrumenter-loader": "^3.0.0",
@@ -64,6 +67,7 @@
     "karma-sinon": "^1.0.5",
     "karma-webpack-with-fast-source-maps": "^1.10.2",
     "lodash": "^4.17.4",
+    "madge": "^2.2.0",
     "mocha": "^3.5.3",
     "react": "^15.6.1",
     "react-addons-test-utils": "^15.6.0",
@@ -75,6 +79,7 @@
     "redux-observable": "^0.16.0",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.4.3",
+    "shx": "^0.2.2",
     "sinon": "^3.3.0",
     "sinon-chai": "^2.13.0",
     "symbol-observable": "^1.0.4",
@@ -84,5 +89,8 @@
     "typescript": "^2.5.2",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.8.2"
-  }
+  },
+  "files": [
+    "lib"
+  ]
 }
