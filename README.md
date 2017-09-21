@@ -1,6 +1,8 @@
 [![CircleCI](https://circleci.com/gh/Brooooooklyn/redux-epics-decorator.svg?style=svg)](https://circleci.com/gh/Brooooooklyn/redux-epics-decorator)
 [![Coverage Status](https://coveralls.io/repos/github/Brooooooklyn/redux-epics-decorator/badge.svg?branch=master)](https://coveralls.io/github/Brooooooklyn/redux-epics-decorator?branch=master)
+[![Greenkeeper badge](https://badges.greenkeeper.io/Brooooooklyn/redux-epics-decorator.svg)](https://greenkeeper.io/)
 # redux-epics-decorator
+
 A Dumb wrapper for [redux](https://github.com/reactjs/redux) 💚 [redux-observable](https://github.com/redux-observable/redux-observable) 💚 [react-redux](https://github.com/reactjs/react-redux) 💚 [redux-actions](https://github.com/reduxactions/redux-actions)
 
 ## Why
