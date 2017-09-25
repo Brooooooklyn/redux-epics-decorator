@@ -1,9 +1,13 @@
 import 'reflect-metadata'
 import 'rxjs/add/operator/mergeMap'
-import { combineEpics, Epic } from 'redux-observable'
+import { Observable } from 'rxjs/Observable'
+import { combineEpics } from 'redux-observable'
+import { MiddlewareAPI } from 'redux'
 import { ActionFunctionAny, Reducer, handleActions, createAction, Action } from 'redux-actions'
 
 import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer } from './symbol'
+
+export type EpicLike<T, U, S, D = any> = (action$: Observable<Action<T>>, store: MiddlewareAPI<S>, dependencies: D) => Observable<Action<U>>
 
 export abstract class EffectModule<StateProps> {
 
@@ -11,7 +15,7 @@ export abstract class EffectModule<StateProps> {
 
   private readonly ctor = this.constructor.prototype.constructor
 
-  protected readonly createAction = createAction
+  protected readonly createAction: <T>(actionType: string) => (...args: any[]) => Action<T> = createAction
 
   constructor() {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
@@ -38,8 +42,12 @@ export abstract class EffectModule<StateProps> {
     return handleActions(reducers, this.defaltState)
   }
 
-  protected createActionFrom<T, A extends Action<T>, S, D = any>(epic: Epic<A, S, D> | Reducer<S, T>) {
-    const action = epic[symbolAction]
+  protected createActionFrom<T, U, S, D = any>(epic: EpicLike<T, U, S, D>): (...args: any[]) => Observable<Action<U>>
+
+  protected createActionFrom<S, T>(reducer: Reducer<S, T>): (...args: any[]) => Action<T>
+
+  protected createActionFrom<T, U, S, D = any>(epicOrReducer: EpicLike<T, U, S, D> | Reducer<S, T>) {
+    const action = epicOrReducer[symbolAction]
     return function(...args: any[]) {
       const result = action.apply(null, args)
       result[symbolNotTrasfer] = true

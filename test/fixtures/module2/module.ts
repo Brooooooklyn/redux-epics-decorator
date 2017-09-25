@@ -32,11 +32,11 @@ class Module2 extends EffectModule<Module2StateProps> {
       return { ...state, allMsgs: allMsgs.concat([payload!]) }
     }
   })
-  getMsg(action$: ActionsObservable<Action<void>>) {
+  getMsg(action$: Observable<Action<void>>) {
     return action$
       .mergeMap(() => generateMsg()
         .takeUntil(this.dispose)
-        .map(this.createAction('success'))
+        .map(this.createAction<Msg>('success'))
       )
   }
 
