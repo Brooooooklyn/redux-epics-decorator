@@ -39,20 +39,25 @@ export abstract class EffectModule<StateProps> {
     return handleActions(reducers, this.defaultState)
   }
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>(this: C, epic: EpicLike<void, U, S, D>): () => EpicAction<ActionTypes, T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
+    (this: C, epic: EpicLike<void, U, S, D>): () => EpicAction<ActionTypes, T>
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>(this: C, epic: EpicLike<T, U, S, D>): (payload: T) => EpicAction<ActionTypes, T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
+    (this: C, epic: EpicLike<T, U, S, D>): (payload: T) => EpicAction<ActionTypes, T>
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>(this: C, reducer: Reducer<S, void>): () => EpicAction<ActionTypes, T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>
+    (this: C, reducer: Reducer<S, void>): () => EpicAction<ActionTypes, T>
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>(this: C, reducer: Reducer<S, T>): (payload: T) => EpicAction<ActionTypes, T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>
+    (this: C, reducer: Reducer<S, T>): (payload: T) => EpicAction<ActionTypes, T>
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>(this: C, epicOrReducer: EpicLike<T, U, S, D> | Reducer<S, T>) {
-    const action = epicOrReducer[symbolAction]
-    return function(...args: any[]) {
-      const result = action.apply(null, args)
-      result[symbolNotTrasfer] = true
-      return result as EpicAction<ActionTypes, T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
+    (this: C, epicOrReducer: EpicLike<T, U, S, D> | Reducer<S, T>) {
+      const action = epicOrReducer[symbolAction]
+      return function(...args: any[]) {
+        const result = action.apply(null, args)
+        result[symbolNotTrasfer] = true
+        return result as EpicAction<ActionTypes, T>
+      }
     }
-  }
 }
