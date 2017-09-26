@@ -6,13 +6,19 @@ import { ActionFunctionAny, Reducer, handleActions, createAction } from 'redux-a
 import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer } from './symbol'
 import { EpicAction, EpicLike } from './interface'
 
+export interface CreateAction<ActionType extends string> {
+  <T>(payload: T): EpicAction<ActionType, T>
+  (): EpicAction<ActionType, void>
+}
+
 export abstract class EffectModule<StateProps> {
 
   abstract defaultState: StateProps
 
   private readonly ctor = this.constructor.prototype.constructor
 
-  protected readonly createAction: <ActionType extends string>(actionType: ActionType) => <T>(payload: T) => EpicAction<ActionType, T> = createAction
+  protected readonly createAction: <ActionType extends string>(actionType: ActionType) =>
+  CreateAction<ActionType> = createAction
 
   constructor() {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
@@ -39,20 +45,20 @@ export abstract class EffectModule<StateProps> {
     return handleActions(reducers, this.defaultState)
   }
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
-    (this: C, epic: EpicLike<void, U, S, D>): () => EpicAction<ActionTypes, T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, Input, S>
+    (this: C, epic: EpicLike<void, any, S, any>): () => EpicAction<ActionTypes, Input>
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
-    (this: C, epic: EpicLike<T, U, S, D>): (payload: T) => EpicAction<ActionTypes, T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, S>
+    (this: C, epic: EpicLike<T, any, S, any>): (payload: T) => EpicAction<ActionTypes, T>
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, S>
     (this: C, reducer: Reducer<S, void>): () => EpicAction<ActionTypes, T>
 
   protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>
     (this: C, reducer: Reducer<S, T>): (payload: T) => EpicAction<ActionTypes, T>
 
-  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
-    (this: C, epicOrReducer: EpicLike<T, U, S, D> | Reducer<S, T>) {
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>
+    (this: C, epicOrReducer: EpicLike<T, any, S, any> | Reducer<S, T>) {
       const action = epicOrReducer[symbolAction]
       return function(...args: any[]) {
         const result = action.apply(null, args)

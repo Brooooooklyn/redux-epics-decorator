@@ -72,7 +72,7 @@ export const Effect = (action: string) => {
 
       return {
         ...descriptor,
-        value: epic
+        value: epic as any
       }
   }
 }

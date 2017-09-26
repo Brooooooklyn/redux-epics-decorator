@@ -14,13 +14,15 @@ import { EffectModule, namespace, Effect, Reducer, ModuleActionProps, DefineActi
 export interface Module2StateProps {
   currentMsgId: string | null
   allMsgs: Msg[]
+  loading: boolean
 }
 
 @namespace('two')
 class Module2 extends EffectModule<Module2StateProps> {
   defaultState: Module2StateProps = {
     currentMsgId: null,
-    allMsgs: []
+    allMsgs: [],
+    loading: false
   }
 
   @DefineAction('dispose') dispose: Observable<Action<void>>
@@ -28,14 +30,14 @@ class Module2 extends EffectModule<Module2StateProps> {
   @Effect('get_msg')({
     success: (state: Module2StateProps, { payload }: Action<Msg>) => {
       const { allMsgs } = state
-      return { ...state, allMsgs: allMsgs.concat([payload!]) }
+      return { ...state, allMsgs: allMsgs.concat([payload!]), loading: false }
     }
   })
   getMsg(action$: Observable<void>) {
     return action$
       .mergeMap(() => generateMsg()
         .takeUntil(this.dispose)
-        .map(this.createAction('success'))
+        .map(msg => this.createAction('success')(msg))
       )
   }
 
@@ -52,16 +54,23 @@ class Module2 extends EffectModule<Module2StateProps> {
       )
   }
 
-  @Effect('get_5_msg')()
+  @Effect('get_5_msg')({
+    loading: (state: Module2StateProps) => {
+      return { ...state, loading: true }
+    }
+  })
   loadFiveMsgs(action$: Observable<void>) {
     return action$
-      .exhaustMap(() => Observable.range(0, 5)
-        .mergeMap(() => generateMsg()
-          .takeUntil(this.dispose)
-        )
-        .toArray()
-      )
-      .map(msgs => this.createActionFrom(this.setMsgs)(msgs))
+      .exhaustMap(() => {
+        const request$ = Observable.range(0, 5)
+          .mergeMap(() => generateMsg()
+            .takeUntil(this.dispose)
+          )
+          .toArray()
+          .map(msgs => this.createActionFrom(this.setMsgs)(msgs))
+        return Observable.of(this.createAction('loading')())
+          .concat(request$)
+      })
   }
 
   @Reducer('set_msgs')
