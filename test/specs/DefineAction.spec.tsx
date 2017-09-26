@@ -86,7 +86,7 @@ describe('DefineAction specs', () => {
     function defineModule() {
       class TestModule extends EffectModule<any> {
         @DefineAction('foo') foo: any
-        defaltState = { foo: 1 }
+        defaultState = { foo: 1 }
       }
 
       return new TestModule

@@ -113,7 +113,7 @@ describe('Effect specs', () => {
   it('should throw when module without namespace', () => {
     function defineModule() {
       class TestModule extends EffectModule<any> {
-        defaltState = { foo: 1 }
+        defaultState = { foo: 1 }
 
         @Effect('foo')()
         foo(action$: any) {

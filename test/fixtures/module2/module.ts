@@ -18,7 +18,7 @@ export interface Module2StateProps {
 
 @namespace('two')
 class Module2 extends EffectModule<Module2StateProps> {
-  defaltState: Module2StateProps = {
+  defaultState: Module2StateProps = {
     currentMsgId: null,
     allMsgs: []
   }

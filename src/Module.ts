@@ -8,7 +8,7 @@ import { EpicAction, EpicLike } from './interface'
 
 export abstract class EffectModule<StateProps> {
 
-  abstract defaltState: StateProps
+  abstract defaultState: StateProps
 
   private readonly ctor = this.constructor.prototype.constructor
 
@@ -36,7 +36,7 @@ export abstract class EffectModule<StateProps> {
     reducersMap.forEach((reducer, key) => {
       reducers[key] = reducer.bind(this)
     })
-    return handleActions(reducers, this.defaltState)
+    return handleActions(reducers, this.defaultState)
   }
 
   protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>(this: C, epic: EpicLike<void, U, S, D>): () => EpicAction<ActionTypes, T>
