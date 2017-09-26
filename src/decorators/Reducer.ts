@@ -1,11 +1,10 @@
 import { createAction } from 'redux-actions'
 
-import { EffectModule } from '../Module'
 import { currentReducers, currentSetEffectQueue } from '../shared'
 import { symbolNamespace, symbolDispatch, symbolAction, withNamespace } from '../symbol'
 
-export const Reducer = <S>(actionName: string) => {
-  return (target: EffectModule<S>, method: string, descriptor: PropertyDescriptor) => {
+export const Reducer = (actionName: string) => {
+  return (target: any, method: string, descriptor: PropertyDescriptor) => {
 
     const reducer = descriptor.value
     const constructor = target.constructor

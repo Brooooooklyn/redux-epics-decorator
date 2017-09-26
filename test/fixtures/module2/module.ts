@@ -6,7 +6,6 @@ import 'rxjs/add/operator/mergeMap'
 import 'rxjs/add/operator/takeUntil'
 
 import { Action } from 'redux-actions'
-import { ActionsObservable } from 'redux-observable'
 import { Observable } from 'rxjs/Observable'
 
 import { generateMsg, Msg } from '../service'
@@ -32,11 +31,11 @@ class Module2 extends EffectModule<Module2StateProps> {
       return { ...state, allMsgs: allMsgs.concat([payload!]) }
     }
   })
-  getMsg(action$: Observable<Action<void>>) {
+  getMsg(action$: Observable<void>) {
     return action$
       .mergeMap(() => generateMsg()
         .takeUntil(this.dispose)
-        .map(this.createAction<Msg>('success'))
+        .map(this.createAction('success'))
       )
   }
 
@@ -46,7 +45,7 @@ class Module2 extends EffectModule<Module2StateProps> {
   }
 
   @Effect('get_10_msg')()
-  loadMsgs(action$: ActionsObservable<Action<void>>) {
+  loadMsgs(action$: Observable<void>) {
     return action$
       .exhaustMap(() => Observable.range(0, 10)
         .map(() => this.createActionFrom(this.getMsg)())
@@ -54,7 +53,7 @@ class Module2 extends EffectModule<Module2StateProps> {
   }
 
   @Effect('get_5_msg')()
-  loadFiveMsgs(action$: ActionsObservable<Action<void>>) {
+  loadFiveMsgs(action$: Observable<void>) {
     return action$
       .exhaustMap(() => Observable.range(0, 5)
         .mergeMap(() => generateMsg()

@@ -1,7 +1,6 @@
 import 'rxjs/add/operator/exhaustMap'
 import 'rxjs/add/operator/takeUntil'
 import { Action } from 'redux-actions'
-import { ActionsObservable } from 'redux-observable'
 import { Observable } from 'rxjs/Observable'
 
 import { generateMsg, Msg } from '../service'
@@ -27,7 +26,7 @@ class Module1 extends EffectModule<Module1StateProps> {
       return { ...state, allMsgs: allMsgs.concat([payload!]) }
     }
   })
-  getMsg(action$: ActionsObservable<Action<void>>) {
+  getMsg(action$: Observable<void>) {
     return action$
       .exhaustMap(() => generateMsg()
         .takeUntil(this.dispose)
