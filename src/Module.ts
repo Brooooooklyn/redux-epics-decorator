@@ -1,21 +1,18 @@
 import 'reflect-metadata'
 import 'rxjs/add/operator/mergeMap'
-import { Observable } from 'rxjs/Observable'
 import { combineEpics } from 'redux-observable'
-import { MiddlewareAPI } from 'redux'
-import { ActionFunctionAny, Reducer, handleActions, createAction, Action } from 'redux-actions'
+import { ActionFunctionAny, Reducer, handleActions, createAction } from 'redux-actions'
 
 import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer } from './symbol'
-
-export type EpicLike<T, U, S, D = any> = (action$: Observable<Action<T>>, store: MiddlewareAPI<S>, dependencies: D) => Observable<Action<U>>
+import { EpicAction, EpicLike } from './interface'
 
 export abstract class EffectModule<StateProps> {
 
-  abstract defaltState: StateProps
+  abstract defaultState: StateProps
 
   private readonly ctor = this.constructor.prototype.constructor
 
-  protected readonly createAction: <T>(actionType: string) => (...args: any[]) => Action<T> = createAction
+  protected readonly createAction: <ActionType extends string>(actionType: ActionType) => <T>(payload: T) => EpicAction<ActionType, T> = createAction
 
   constructor() {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
@@ -39,19 +36,28 @@ export abstract class EffectModule<StateProps> {
     reducersMap.forEach((reducer, key) => {
       reducers[key] = reducer.bind(this)
     })
-    return handleActions(reducers, this.defaltState)
+    return handleActions(reducers, this.defaultState)
   }
 
-  protected createActionFrom<T, U, S, D = any>(epic: EpicLike<T, U, S, D>): (...args: any[]) => Observable<Action<U>>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
+    (this: C, epic: EpicLike<void, U, S, D>): () => EpicAction<ActionTypes, T>
 
-  protected createActionFrom<S, T>(reducer: Reducer<S, T>): (...args: any[]) => Action<T>
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
+    (this: C, epic: EpicLike<T, U, S, D>): (payload: T) => EpicAction<ActionTypes, T>
 
-  protected createActionFrom<T, U, S, D = any>(epicOrReducer: EpicLike<T, U, S, D> | Reducer<S, T>) {
-    const action = epicOrReducer[symbolAction]
-    return function(...args: any[]) {
-      const result = action.apply(null, args)
-      result[symbolNotTrasfer] = true
-      return result
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>
+    (this: C, reducer: Reducer<S, void>): () => EpicAction<ActionTypes, T>
+
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, S, T>
+    (this: C, reducer: Reducer<S, T>): (payload: T) => EpicAction<ActionTypes, T>
+
+  protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, T, U, S, D = any>
+    (this: C, epicOrReducer: EpicLike<T, U, S, D> | Reducer<S, T>) {
+      const action = epicOrReducer[symbolAction]
+      return function(...args: any[]) {
+        const result = action.apply(null, args)
+        result[symbolNotTrasfer] = true
+        return result as EpicAction<ActionTypes, T>
+      }
     }
-  }
 }
