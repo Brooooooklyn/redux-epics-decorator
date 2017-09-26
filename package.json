@@ -78,7 +78,7 @@
     "redux-observable": "^0.16.0",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.4.3",
-    "sinon": "^3.3.0",
+    "sinon": "^4.0.0",
     "sinon-chai": "^2.13.0",
     "symbol-observable": "^1.0.4",
     "ts-loader": "^2.3.7",
