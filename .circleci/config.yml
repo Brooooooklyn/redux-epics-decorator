@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/redux-epic-decorator
   docker:
-    - image: circleci/node:6-browsers
+    - image: circleci/node:8-browsers
 
 version: 2
 jobs:
@@ -16,7 +16,7 @@ jobs:
           name: yarn-with-greenkeeper
           command: |
             sudo yarn global add greenkeeper-lockfile@1
-            yarn && cd ./node_modules/.bin && ln -sf ../typescript/bin/tsc ./tsc
+            yarn
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
