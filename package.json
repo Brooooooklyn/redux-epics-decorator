@@ -72,7 +72,7 @@
     "react-addons-test-utils": "^15.6.0",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.6",
-    "react-test-renderer": "^15.6.1",
+    "react-test-renderer": "^16.0.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-observable": "^0.16.0",
