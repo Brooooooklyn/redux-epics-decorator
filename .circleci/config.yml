@@ -16,7 +16,7 @@ jobs:
           name: yarn-with-greenkeeper
           command: |
             sudo yarn global add greenkeeper-lockfile@1
-            yarn && cd ./node_modules/.bin && ln -sf ../typescript/bin/tsc ./tsc
+            yarn
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
