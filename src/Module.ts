@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import 'rxjs/add/operator/mergeMap'
 import { combineEpics } from 'redux-observable'
 import { ActionFunctionAny, Reducer, handleActions, createAction } from 'redux-actions'
+import { Dispatch } from 'redux'
 
 import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer } from './symbol'
 import { EpicAction, EpicLike } from './interface'
@@ -13,12 +14,14 @@ export interface CreateAction<ActionType extends string> {
 
 export abstract class EffectModule<StateProps> {
 
-  abstract defaultState: StateProps
+  abstract readonly defaultState: StateProps
 
   private readonly ctor = this.constructor.prototype.constructor
 
   protected readonly createAction: <ActionType extends string>(actionType: ActionType) =>
   CreateAction<ActionType> = createAction
+
+  readonly dispatch: Dispatch<any>
 
   constructor() {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
