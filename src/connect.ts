@@ -5,7 +5,9 @@ import { EffectModule } from './Module'
 
 export const connect = <P, S>(mapStateToProps: MapStateToProps<P, S>, effectModules: EffectModule<P>) => {
   const { allDispatch } = effectModules
-  return (comp: any) => reactConnect(mapStateToProps, (dispatch: Dispatch<P>) => bindActionCreators(
-    allDispatch, dispatch
-  ))(comp) as any
+  return (comp: any) => reactConnect(mapStateToProps, (dispatch: Dispatch<P>) => {
+    return Object.assign(bindActionCreators(
+      allDispatch, dispatch
+    ), { dispatch })
+  })(comp) as any
 }
