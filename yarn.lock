@@ -25,14 +25,19 @@
   version "2.2.43"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.43.tgz#03c54589c43ad048cbcbfd63999b55d0424eec27"
 
+"@types/node@*":
+  version "8.0.32"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.32.tgz#869a716538b6eec65ab3893f183d557be3cda206"
+
 "@types/node@^6.0.46":
   version "6.0.88"
   resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-6.0.88.tgz#f618f11a944f6a18d92b5c472028728a3e3d4b66"
 
-"@types/react-dom@^15.5.5":
-  version "15.5.5"
-  resolved "http://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-15.5.5.tgz#6b117c7697b61fe74132bfe5c72bceb3319433b8"
+"@types/react-dom@16.0.0":
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.0.tgz#7fac396cbd1cf44e112b957c8ef9c7ef401a90b3"
   dependencies:
+    "@types/node" "*"
     "@types/react" "*"
 
 "@types/react-redux@^5.0.9":
@@ -3082,7 +3087,7 @@ mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.1, mkdirp@~0.5.0:
   dependencies:
     minimist "0.0.8"
 
-mocha@4.0.0:
+mocha@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/mocha/-/mocha-4.0.0.tgz#3da718ccd76e93b9d82afb065e17086bdbe352bf"
   dependencies:
