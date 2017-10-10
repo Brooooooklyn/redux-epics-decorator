@@ -6,7 +6,7 @@ import { GlobalState } from '../store'
 
 export type Module1Props = Module1StateProps & Module1DispatchProps
 
-const mapDispatchToProps = ({ module1 }: GlobalState) => module1
+const mapStateToProps = ({ module1 }: GlobalState) => module1
 
 class Module1 extends React.PureComponent<Module1Props> {
 
@@ -43,4 +43,4 @@ class Module1 extends React.PureComponent<Module1Props> {
   }
 }
 
-export const Module1Container = connect(mapDispatchToProps, effectModule1)(Module1)
+export const Module1Container = connect(mapStateToProps, effectModule1)(Module1)
