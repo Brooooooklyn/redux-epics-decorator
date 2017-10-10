@@ -38,6 +38,14 @@ class Module1 extends EffectModule<Module1StateProps> {
   selectMsg(state: Module1StateProps, { payload }: Action<string>) {
     return { ...state, currentMsgId: payload }
   }
+
+  @Effect('get_module3_msg')()
+  getModule3Msg(action$: Observable<void>) {
+    return action$
+      .mapTo(this.markAsGlobal({
+        type: 'three_get_msg'
+      }))
+  }
 }
 
 export type Module1DispatchProps = ModuleActionProps<Module1StateProps, Module1>
