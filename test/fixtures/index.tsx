@@ -5,6 +5,7 @@ import { GlobalState } from './store'
 
 import { Module1Container } from './module1'
 import { Module2Container } from './module2'
+import { Module3Container } from './module3'
 
 export const AppContainer = (store: Store<GlobalState>) => {
   return class App extends React.PureComponent {
@@ -25,6 +26,7 @@ export const AppContainer = (store: Store<GlobalState>) => {
           <div>
             { container }
             <button onClick={ this.replaceContainer }> replace module </button>
+            <Module3Container />
           </div>
         </Provider>
       )
