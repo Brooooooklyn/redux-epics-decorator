@@ -80,7 +80,7 @@
     "sinon": "^4.0.1",
     "sinon-chai": "^2.14.0",
     "symbol-observable": "^1.0.4",
-    "ts-loader": "^2.3.7",
+    "ts-loader": "^3.0.0",
     "tslint": "^5.7.0",
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "^2.5.3",
