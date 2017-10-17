@@ -1,4 +1,5 @@
 import 'rxjs/add/operator/exhaustMap'
+import 'rxjs/add/operator/mapTo'
 import 'rxjs/add/operator/takeUntil'
 import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
