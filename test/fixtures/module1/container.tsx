@@ -8,7 +8,7 @@ export type Module1Props = Module1StateProps & Module1DispatchProps
 
 const mapStateToProps = ({ module1 }: GlobalState) => module1
 
-class Module1 extends React.PureComponent<Module1Props> {
+export class Module1 extends React.PureComponent<Module1Props> {
 
   private loadMsg = () => {
     this.props.getMsg()
@@ -30,7 +30,7 @@ class Module1 extends React.PureComponent<Module1Props> {
     const currentMsg = allMsgs.find(msg => msg.id === this.props.currentMsgId)
     const msgNode = currentMsg ? <h2> current: { currentMsg.content } </h2> : null
     return (
-      <div>
+      <div id='module1'>
         { msgNode }
         { messages }
         <button onClick={ this.loadMsg }>load message</button>

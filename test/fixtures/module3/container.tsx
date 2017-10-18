@@ -13,7 +13,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => bindActionCreators({
   dispose,
 }, dispatch)
 
-class Module3 extends React.PureComponent<Module3Props> {
+export class Module3 extends React.PureComponent<Module3Props> {
 
   private loadMsg = () => {
     this.props.getMsg()
