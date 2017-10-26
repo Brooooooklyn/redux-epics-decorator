@@ -3,6 +3,7 @@ import 'rxjs/add/operator/mapTo'
 import 'rxjs/add/operator/takeUntil'
 import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
+import { push } from 'react-router-redux'
 
 import { generateMsg, Msg } from '../service'
 import { EffectModule, namespace, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
@@ -43,9 +44,15 @@ class Module1 extends EffectModule<Module1StateProps> {
   @Effect('get_module3_msg')()
   getModule3Msg(action$: Observable<void>) {
     return action$
-      .mapTo(this.markAsGlobal({
+      .map(() => this.markAsGlobal({
         type: 'three_get_msg'
       }))
+  }
+
+  @Effect('change_router')()
+  changeRouter(action$: Observable<void>) {
+    return action$
+      .mergeMap(() => Observable.of(push('/hmmm')))
   }
 }
 

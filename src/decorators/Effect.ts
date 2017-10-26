@@ -11,9 +11,11 @@ import {
   symbolEpics,
   symbolAction,
   symbolNotTrasfer,
+  routerActionNamespace,
   withNamespace,
   withReducer
 } from '../symbol'
+import { startsWith } from '../startsWith'
 import { EpicAction } from '../interface'
 import { EffectModule } from '../Module'
 import { currentReducers, currentSetEffectQueue } from '../shared'
@@ -39,7 +41,9 @@ export const Effect = (action: string) => {
                 const { type } = actionResult
                 return {
                   ...actionResult,
-                  type:  actionResult[symbolNotTrasfer] ? type : withReducer(name, action, type)
+                  type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
+                    type :
+                    withReducer(name, action, type)
                 }
               })
           }

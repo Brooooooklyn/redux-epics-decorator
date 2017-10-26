@@ -71,6 +71,10 @@ export abstract class EffectModule<StateProps> {
     }
 
   protected markAsGlobal<T>(action: Action<T>) {
+    /* istanbul ignore else */
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('using markAsGlobal is a bad practice, consider about using this.createActionFrom(module#something) instead')
+    }
     action[symbolNotTrasfer] = true
     return action
   }

@@ -4,6 +4,7 @@ export const symbolReducerMap = Symbol('reducerMap')
 export const symbolEpics = Symbol('actionQueue')
 export const symbolAction = Symbol('action')
 export const symbolNotTrasfer = Symbol('notTrasnfer')
+export const routerActionNamespace = '@@router'
 
 const namespaceSplit = '/'
 const subReducerSplit = '_'
