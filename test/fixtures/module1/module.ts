@@ -1,6 +1,8 @@
-import 'rxjs/add/operator/exhaustMap'
-import 'rxjs/add/operator/mapTo'
-import 'rxjs/add/operator/takeUntil'
+import { exhaustMap } from 'rxjs/operators/exhaustMap'
+import { map } from 'rxjs/operators/map'
+import { mergeMap } from 'rxjs/operators/mergeMap'
+import { takeUntil } from 'rxjs/operators/takeUntil'
+import { of as just } from 'rxjs/observable/of'
 import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
@@ -30,9 +32,13 @@ class Module1 extends EffectModule<Module1StateProps> {
   })
   getMsg(action$: Observable<void>) {
     return action$
-      .exhaustMap(() => generateMsg()
-        .takeUntil(this.dispose)
-        .map(this.createAction('success'))
+      .pipe(
+        exhaustMap(() => generateMsg()
+          .pipe(
+            takeUntil(this.dispose),
+            map(this.createAction('success'))
+          )
+        )
       )
   }
 
@@ -44,15 +50,19 @@ class Module1 extends EffectModule<Module1StateProps> {
   @Effect('get_module3_msg')()
   getModule3Msg(action$: Observable<void>) {
     return action$
-      .map(() => this.markAsGlobal({
-        type: 'three_get_msg'
-      }))
+      .pipe(
+        map(() => this.markAsGlobal({
+          type: 'three_get_msg'
+        }))
+      )
   }
 
   @Effect('change_router')()
   changeRouter(action$: Observable<void>) {
     return action$
-      .mergeMap(() => Observable.of(push('/hmmm')))
+      .pipe(
+        mergeMap(() => just(push('/hmmm')))
+      )
   }
 }
 

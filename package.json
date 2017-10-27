@@ -38,7 +38,7 @@
     "redux-actions": "^2.2.1",
     "redux-observable": "^0.16.0",
     "reflect-metadata": "^0.1.10",
-    "rxjs": "^5.4.3"
+    "rxjs": "^5.5.2"
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
@@ -80,16 +80,16 @@
     "redux-actions": "^2.2.1",
     "redux-observable": "^0.16.0",
     "reflect-metadata": "^0.1.10",
-    "rxjs": "^5.4.3",
-    "sinon": "^4.0.1",
+    "rxjs": "^5.5.2",
+    "sinon": "^4.0.2",
     "sinon-chai": "^2.14.0",
     "symbol-observable": "^1.0.4",
-    "ts-loader": "^3.0.2",
-    "tslint": "^5.7.0",
+    "ts-loader": "^3.1.0",
+    "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "^2.5.3",
-    "webpack": "^3.6.0",
-    "webpack-dev-server": "^2.9.1"
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.3"
   },
   "files": [
     "assets/**",

@@ -1,7 +1,6 @@
-import 'rxjs/add/observable/never'
+import { never } from 'rxjs/observable/never'
 import { createAction, Action as ReduxAction } from 'redux-actions'
 import { ActionsObservable } from 'redux-observable'
-import { Observable } from 'rxjs/Observable'
 
 import { EffectModule } from '../Module'
 import { symbolNamespace, symbolEpics, symbolDispatch, withNamespace } from '../symbol'
@@ -16,7 +15,7 @@ export const DefineAction = <S>(actionName: string) => {
 
     const epic = (actions$: ActionsObservable<ReduxAction<any>>) => {
       action$ = actions$.ofType(actionWithNamespace)
-      return Observable.never()
+      return never()
     }
 
     function setup() {

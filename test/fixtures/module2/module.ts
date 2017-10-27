@@ -1,9 +1,11 @@
-import 'rxjs/add/observable/range'
-import 'rxjs/add/operator/do'
-import 'rxjs/add/operator/exhaustMap'
-import 'rxjs/add/operator/map'
-import 'rxjs/add/operator/mergeMap'
-import 'rxjs/add/operator/takeUntil'
+import { of as just } from 'rxjs/observable/of'
+import { range } from 'rxjs/observable/range'
+import { concat } from 'rxjs/operators/concat'
+import { exhaustMap } from 'rxjs/operators/exhaustMap'
+import { map } from 'rxjs/operators/map'
+import { mergeMap } from 'rxjs/operators/mergeMap'
+import { takeUntil } from 'rxjs/operators/takeUntil'
+import { toArray } from 'rxjs/operators/toArray'
 
 import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
@@ -35,9 +37,13 @@ class Module2 extends EffectModule<Module2StateProps> {
   })
   getMsg(action$: Observable<void>) {
     return action$
-      .mergeMap(() => generateMsg()
-        .takeUntil(this.dispose)
-        .map(msg => this.createAction('success')(msg))
+      .pipe(
+        mergeMap(() => generateMsg()
+          .pipe(
+            takeUntil(this.dispose),
+            map(msg => this.createAction('success')(msg))
+          )
+        )
       )
   }
 
@@ -49,8 +55,12 @@ class Module2 extends EffectModule<Module2StateProps> {
   @Effect('get_10_msg')()
   loadMsgs(action$: Observable<void>) {
     return action$
-      .exhaustMap(() => Observable.range(0, 10)
-        .map(() => this.createActionFrom(this.getMsg)())
+      .pipe(
+        exhaustMap(() => range(0, 10)
+          .pipe(
+            map(() => this.createActionFrom(this.getMsg)())
+          )
+        )
       )
   }
 
@@ -61,16 +71,22 @@ class Module2 extends EffectModule<Module2StateProps> {
   })
   loadFiveMsgs(action$: Observable<void>) {
     return action$
-      .exhaustMap(() => {
-        const request$ = Observable.range(0, 5)
-          .mergeMap(() => generateMsg()
-            .takeUntil(this.dispose)
-          )
-          .toArray()
-          .map(msgs => this.createActionFrom(this.setMsgs)(msgs))
-        return Observable.of(this.createAction('loading')())
-          .concat(request$)
-      })
+      .pipe(
+        exhaustMap(() => {
+          const request$ = range(0, 5)
+            .pipe(
+              mergeMap(() => generateMsg()
+                .pipe(
+                  takeUntil(this.dispose)
+                )
+              ),
+              toArray(),
+              map(this.createActionFrom(this.setMsgs))
+            )
+          return just(this.createAction('loading')())
+            .pipe(concat(request$))
+        })
+      )
   }
 
   @Reducer('set_msgs')

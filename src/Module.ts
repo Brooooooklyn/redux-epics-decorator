@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import 'rxjs/add/operator/mergeMap'
 import { combineEpics } from 'redux-observable'
 import { ActionFunctionAny, Reducer, handleActions, createAction, Action } from 'redux-actions'
 import { Dispatch } from 'redux'
