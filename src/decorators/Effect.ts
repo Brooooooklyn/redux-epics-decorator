@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import 'rxjs/add/operator/map'
+import { map } from 'rxjs/operators/map'
 import { Store } from 'redux'
 import { Action as ReduxAction, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
@@ -35,7 +35,9 @@ export const Effect = (action: string) => {
           function (this: EffectModule<S>, action$: ActionsObservable<any>, store?: Store<any>) {
             const matchedAction$ = action$
               .ofType(startAction.toString())
-              .map(({ payload }) => payload)
+              .pipe(
+                map(({ payload }) => payload)
+              )
             return descriptor.value.call(this, matchedAction$, store)
               .map((actionResult: ReduxAction<any>) => {
                 const { type } = actionResult
