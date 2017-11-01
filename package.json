@@ -78,7 +78,7 @@
     "react-test-renderer": "^16.0.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
-    "redux-observable": "^0.16.0",
+    "redux-observable": "^0.17.0",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.5.2",
     "sinon": "^4.0.2",
