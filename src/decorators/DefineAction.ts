@@ -1,6 +1,7 @@
 import { never } from 'rxjs/observable/never'
 import { createAction, Action as ReduxAction } from 'redux-actions'
-import { ActionsObservable } from 'redux-observable'
+import { Observable } from 'rxjs/Observable'
+import { ActionsObservable, ofType } from 'redux-observable'
 
 import { EffectModule } from '../Module'
 import { symbolNamespace, symbolEpics, symbolDispatch, withNamespace } from '../symbol'
@@ -10,11 +11,13 @@ export const DefineAction = <S>(actionName: string) => {
   return (target: EffectModule<S>, propertyName: string) => {
     const constructor = target.constructor
 
-    let action$: ActionsObservable<ReduxAction<any>>
+    let action$: Observable<ReduxAction<any>>
     let actionWithNamespace: string
 
     const epic = (actions$: ActionsObservable<ReduxAction<any>>) => {
-      action$ = actions$.ofType(actionWithNamespace)
+      action$ = actions$.pipe(
+        ofType(actionWithNamespace)
+      )
       return never()
     }
 

@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators/map'
 import { Store } from 'redux'
 import { Action as ReduxAction, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
-import { ActionsObservable } from 'redux-observable'
+import { ActionsObservable, ofType } from 'redux-observable'
 
 import {
   symbolNamespace,
@@ -34,8 +34,8 @@ export const Effect = (action: string) => {
         Observable<EpicAction<ActionType, Output>> =
           function (this: EffectModule<S>, action$: ActionsObservable<any>, store?: Store<any>) {
             const matchedAction$ = action$
-              .ofType(startAction.toString())
               .pipe(
+                ofType(startAction.toString()),
                 map(({ payload }) => payload)
               )
             return descriptor.value.call(this, matchedAction$, store)
