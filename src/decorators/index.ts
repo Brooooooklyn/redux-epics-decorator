@@ -1,4 +1,5 @@
 export { DefineAction } from './DefineAction'
 export { Effect } from './Effect'
-export { namespace } from './namespace'
+export { module, getEpic, getReducer } from './module'
 export { Reducer } from './Reducer'
+// export { Injectable, getEpic, getReducer } from './Injectable'

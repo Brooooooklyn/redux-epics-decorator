@@ -1,11 +1,13 @@
-import { MapStateToProps, connect as reactConnect } from 'react-redux'
-import { bindActionCreators, Dispatch } from 'redux'
+import { connect as reactConnect } from 'react-redux'
 
-import { EffectModule } from './Module'
+import { getInstance } from '../src/decorators/module'
 
-export const connect = <P, S>(mapStateToProps: MapStateToProps<P, S>, effectModules: EffectModule<P>) => {
-  const { allDispatch } = effectModules
-  return (comp: any) => reactConnect(mapStateToProps, (dispatch: Dispatch<P>) => bindActionCreators(
-    allDispatch, dispatch
-  ))(comp) as any
+export const connect = (effectModule: any) => {
+  return function(...args: any[]) {
+    const originalDispatch = args[1] || {}
+    const { allDispatch } = getInstance(effectModule)
+    Object.assign(originalDispatch, allDispatch)
+    args[1] = originalDispatch
+    return reactConnect.apply(null, args)
+  }
 }

@@ -6,12 +6,11 @@ import { map } from 'rxjs/operators/map'
 import { mergeMap } from 'rxjs/operators/mergeMap'
 import { takeUntil } from 'rxjs/operators/takeUntil'
 import { toArray } from 'rxjs/operators/toArray'
-
 import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, namespace, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
 
 export interface Module2StateProps {
   currentMsgId: string | null
@@ -19,7 +18,7 @@ export interface Module2StateProps {
   loading: boolean
 }
 
-@namespace('two')
+@module('two')
 class Module2 extends EffectModule<Module2StateProps> {
   defaultState: Module2StateProps = {
     currentMsgId: null,
@@ -98,7 +97,4 @@ class Module2 extends EffectModule<Module2StateProps> {
 
 export type Module2DispatchProps = ModuleActionProps<Module2StateProps, Module2>
 
-const moduleTwo = new Module2
-export default moduleTwo
-export const reducer = moduleTwo.reducer
-export const epic = moduleTwo.epic
+export default Module2

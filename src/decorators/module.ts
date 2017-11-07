@@ -1,4 +1,5 @@
 import { symbolNamespace, symbolDispatch, symbolReducerMap, symbolEpics } from '../symbol'
+import { ReflectiveInjector, Injectable, Injector  } from 'injection-js'
 import { currentReducers, currentSetEffectQueue } from '../shared'
 
 function copyMap(map: Map<any, any>) {
@@ -9,7 +10,9 @@ function copyMap(map: Map<any, any>) {
   return dist
 }
 
-export const namespace = (name: string) =>
+const allDeps = new Set()
+
+export const module = (name: string) =>
 (target: any) => {
   Reflect.defineMetadata(symbolNamespace, name, target)
   Reflect.defineMetadata(symbolDispatch, {}, target)
@@ -18,4 +21,25 @@ export const namespace = (name: string) =>
   Reflect.defineMetadata(symbolReducerMap, copyMap(currentReducers), target)
   currentSetEffectQueue.length = 0
   currentReducers.clear()
+
+  allDeps.add(target)
+  return Injectable()(target)
+}
+
+let lastDepsSize = 0, injector: Injector
+export const getInstance = (ins: any) => {
+  // 动态注入
+  if (lastDepsSize !== allDeps.size) {
+    injector = ReflectiveInjector.resolveAndCreate(Array.from((allDeps as any)))
+    lastDepsSize = allDeps.size
+  }
+  return injector.get(ins)
+}
+
+export const getReducer = (ins: any) => {
+  return getInstance(ins).reducer
+}
+
+export const getEpic = (ins: any) => {
+  return getInstance(ins).epic
 }

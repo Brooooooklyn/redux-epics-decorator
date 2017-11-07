@@ -14,9 +14,10 @@ chai.use(SinonChai)
 describe('Reducer specs', () => {
   let AppNode: enzyme.ShallowWrapper<Module1Props, any>
   const store = setupStore()
+  const propsSpy = {} as any
 
   beforeEach(() => {
-    AppNode = enzyme.shallow(<Module1Container store={ store } />)
+    AppNode = enzyme.shallow(<Module1Container store={ store } { ...propsSpy } />)
   })
 
   afterEach(() => {

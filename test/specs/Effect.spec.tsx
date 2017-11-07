@@ -18,11 +18,12 @@ describe('Effect specs', () => {
   let Module1Node: enzyme.ShallowWrapper<Module1Props, any>
   let Module2Node: enzyme.ShallowWrapper<Module2Props, any>
   let store: Store<GlobalState>
+  const propsSpy = {} as any
 
   beforeEach(() => {
     store = setupStore()
-    Module1Node = enzyme.shallow(<Module1Container store={ store } />)
-    Module2Node = enzyme.shallow(<Module2Container store={ store } />)
+    Module1Node = enzyme.shallow(<Module1Container store={ store } { ...propsSpy }/>)
+    Module2Node = enzyme.shallow(<Module2Container store={ store } { ...propsSpy }/>)
   })
 
   afterEach(() => {

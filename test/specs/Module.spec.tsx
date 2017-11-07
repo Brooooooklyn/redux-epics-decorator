@@ -9,7 +9,7 @@ import { Route } from 'react-router'
 import { ConnectedRouter } from 'react-router-redux'
 
 import { setupStore, GlobalState, history } from '../fixtures/store'
-import { Module1Container, Module1, Module1Props } from '../fixtures/module1'
+import { Module1Container, Module1Props, Module1 } from '../fixtures/module1'
 import { Module3Container } from '../fixtures/module3'
 import { msgDelay } from '../fixtures/service'
 

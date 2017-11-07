@@ -8,14 +8,14 @@ import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, namespace, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
 
 export interface Module1StateProps {
   currentMsgId: string | null
   allMsgs: Msg[]
 }
 
-@namespace('one')
+@module('one')
 class Module1 extends EffectModule<Module1StateProps> {
   defaultState: Module1StateProps = {
     currentMsgId: null,
@@ -68,7 +68,4 @@ class Module1 extends EffectModule<Module1StateProps> {
 
 export type Module1DispatchProps = ModuleActionProps<Module1StateProps, Module1>
 
-const moduleOne = new Module1
-export default moduleOne
-export const reducer = moduleOne.reducer
-export const epic = moduleOne.epic
+export default Module1
