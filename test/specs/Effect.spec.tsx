@@ -116,7 +116,7 @@ describe('Effect specs', () => {
       class TestModule extends EffectModule<any> {
         defaultState = { foo: 1 }
 
-        @Effect('foo')()
+        @Effect()
         foo(action$: any) {
           return action$
         }

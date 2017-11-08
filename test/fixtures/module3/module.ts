@@ -19,7 +19,7 @@ export interface Module3DispatchProps {
 export const reducer = handleActions({
   [`${ getMsgFinish }`](state: Module3StateProps, { payload }: Action<Msg>) {
     const { allMsgs } = state
-    return { ...state, allMsgs: [...allMsgs, payload] }
+    return { ...state, allMsgs: [...allMsgs, payload!] }
   }
 }, {
   allMsgs: [] as Msg[]

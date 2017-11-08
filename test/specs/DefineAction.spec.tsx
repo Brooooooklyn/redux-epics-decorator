@@ -12,7 +12,7 @@ import { setupStore } from '../fixtures/store'
 import { Module1Container, Module1Props } from '../fixtures/module1'
 import Module1 from '../fixtures/module1/module'
 import Module2 from '../fixtures/module2/module'
-import { getInstance } from '../../src/decorators/module'
+import { getInstance } from '../../src/decorators/Module'
 
 chai.use(SinonChai)
 
@@ -89,7 +89,7 @@ describe('DefineAction specs', () => {
   it('should throw when module without namespace', () => {
     function defineModule() {
       class TestModule extends EffectModule<any> {
-        @DefineAction('foo') foo: any
+        @DefineAction() foo: any
         defaultState = { foo: 1 }
       }
 

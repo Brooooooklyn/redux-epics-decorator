@@ -1,14 +1,14 @@
 import { map } from 'rxjs/operators/map'
 import { Observable } from 'rxjs/Observable'
 
-import { EffectModule, module, Effect, ModuleActionProps, Reducer } from '../../../src'
+import { EffectModule, Module, Effect, ModuleActionProps, Reducer } from '../../../src'
 import DepModule from './depModule'
 
 export interface Module4StateProps {
   count: number
 }
 
-@module('four')
+@Module('four')
 class Module4 extends EffectModule<Module4StateProps> {
   defaultState: Module4StateProps = {
     count: 0
@@ -22,12 +22,12 @@ class Module4 extends EffectModule<Module4StateProps> {
     return this.depModule.getData()
   }
 
-  @Reducer('set_data')
+  @Reducer()
   setData(state: Module4StateProps) {
     return { ...state, count: this.getData() }
   }
 
-  @Effect('add')<any, any>({
+  @Effect({
     success: (state: Module4StateProps) => {
       return { ...state, count: state.count + 1 }
     }

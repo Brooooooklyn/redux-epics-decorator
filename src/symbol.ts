@@ -9,6 +9,11 @@ export const routerActionNamespace = '@@router'
 const namespaceSplit = '/'
 const subReducerSplit = '_'
 
-export const withNamespace = (namespace: string, name: string) => `${ namespace }${ namespaceSplit }${ name }`
+// getMsg -> get_msg
+const formatName = (name: string) => {
+  return name.replace(/([A-Z])/g, '_$1').toLowerCase()
+}
+
+export const withNamespace = (namespace: string, name: string) => `${ namespace }${ namespaceSplit }${ formatName(name) }`
 export const withReducer = (namespace: string, name: string, reducerName: string) =>
-  `${ withNamespace(namespace, name) }${ subReducerSplit }${ reducerName }`
+  `${ withNamespace(namespace, name) }${ subReducerSplit }${ formatName(reducerName) }`

@@ -6,13 +6,13 @@ import * as enzyme from 'enzyme'
 
 import { setupStore, GlobalState } from '../fixtures/store'
 import { Module4Container, Module4Props } from '../fixtures/module4'
-import { module } from '../../src/decorators/module'
+import { Module } from '../../src/decorators/Module'
 
 chai.use(SinonChai)
 
 describe('Injectable Spec', () => {
 
-  @module('foo')
+  @Module('foo')
   class Foo {
     f() {
       return 1

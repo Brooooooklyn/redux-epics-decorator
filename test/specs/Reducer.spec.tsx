@@ -29,7 +29,7 @@ describe('Reducer specs', () => {
     const clock = Sinon.useFakeTimers()
     props.getMsg()
     clock.tick(msgDelay)
-    const [ msg ] = store.getState().module1.allMsgs
+    const [msg] = store.getState().module1.allMsgs
     props.selectMsg(msg.id)
     expect(store.getState().module1.currentMsgId).to.equal(msg.id)
   })
@@ -39,7 +39,7 @@ describe('Reducer specs', () => {
       class TestModule extends EffectModule<any> {
         defaultState = { foo: 1 }
 
-        @Reducer('foo')
+        @Reducer()
         foo(state: any) {
           return state
         }

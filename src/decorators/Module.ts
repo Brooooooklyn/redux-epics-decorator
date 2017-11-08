@@ -12,7 +12,7 @@ function copyMap(map: Map<any, any>) {
 
 const allDeps = new Set()
 
-export const module = (name: string) =>
+export const Module = (name: string) =>
 (target: any) => {
   Reflect.defineMetadata(symbolNamespace, name, target)
   Reflect.defineMetadata(symbolDispatch, {}, target)
@@ -26,7 +26,8 @@ export const module = (name: string) =>
   return Injectable()(target)
 }
 
-let lastDepsSize = 0, injector: Injector
+let lastDepsSize = 0
+let injector: Injector
 export const getInstance = (ins: any) => {
   // 动态注入
   if (lastDepsSize !== allDeps.size) {

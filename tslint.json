@@ -10,7 +10,7 @@
     "no-consecutive-blank-lines": [true],
     "no-trailing-whitespace": true,
     "no-duplicate-variable": true,
-    "no-console": [true, "log", "trace"],
+    "no-console": [true, "log", "time", "trace"],
     "no-construct": true,
     "no-debugger": true,
     "no-var-keyword": true,
@@ -38,6 +38,15 @@
       "property-declaration": "nospace",
       "variable-declaration": "nospace"
     }],
+    "array-bracket-spacing": [true, "never", {
+      "arraysInArrays": false,
+      "singleValue": false,
+      "objectsInArrays": false
+    }],
+    "triple-equals": [true, "allow-null-check", "allow-undefined-check"],
+    "no-unnecessary-initializer": true,
+    "one-variable-per-declaration": [true, "ignore-for-loop"],    
+    "import-spacing": true,    
     "use-isnan": true,
     "whitespace": [true,
       "check-branch",

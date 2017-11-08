@@ -1,5 +1,4 @@
 export { DefineAction } from './DefineAction'
 export { Effect } from './Effect'
-export { module, getEpic, getReducer } from './module'
+export { Module, getEpic, getReducer } from './Module'
 export { Reducer } from './Reducer'
-// export { Injectable, getEpic, getReducer } from './Injectable'

@@ -1,6 +1,6 @@
-import { EffectModule, module } from '../../../src'
+import { EffectModule, Module } from '../../../src'
 
-@module('dep_module4')
+@Module('dep_module4')
 class DepModule4 extends EffectModule<void> {
   defaultState: any
   getData() {

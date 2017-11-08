@@ -1,6 +1,6 @@
 import { connect as reactConnect } from 'react-redux'
 
-import { getInstance } from '../src/decorators/module'
+import { getInstance } from './decorators/Module'
 
 export const connect = (effectModule: any) => {
   return function(...args: any[]) {

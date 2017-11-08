@@ -3,7 +3,7 @@ import { createAction } from 'redux-actions'
 import { currentReducers, currentSetEffectQueue } from '../shared'
 import { symbolNamespace, symbolDispatch, symbolAction, withNamespace } from '../symbol'
 
-export const Reducer = (actionName: string) => {
+export const Reducer = () => {
   return (target: any, method: string, descriptor: PropertyDescriptor) => {
 
     const reducer = descriptor.value
@@ -12,7 +12,7 @@ export const Reducer = (actionName: string) => {
     function setup() {
       const name = Reflect.getMetadata(symbolNamespace, constructor)
       const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
-      const actionWithNamespace = withNamespace(name, actionName)
+      const actionWithNamespace = withNamespace(name, method)
       const startAction = createAction(actionWithNamespace)
       currentReducers.set(actionWithNamespace, reducer)
       dispatchs[method] = startAction

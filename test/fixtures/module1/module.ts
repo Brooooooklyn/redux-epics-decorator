@@ -8,23 +8,23 @@ import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
 
 export interface Module1StateProps {
   currentMsgId: string | null
   allMsgs: Msg[]
 }
 
-@module('one')
+@Module('one')
 class Module1 extends EffectModule<Module1StateProps> {
   defaultState: Module1StateProps = {
     currentMsgId: null,
     allMsgs: []
   }
 
-  @DefineAction('dispose') dispose: Observable<Action<void>>
+  @DefineAction() dispose: Observable<Action<void>>
 
-  @Effect('get_msg')({
+  @Effect({
     success: (state: Module1StateProps, { payload }: Action<Msg>) => {
       const { allMsgs } = state
       return { ...state, allMsgs: allMsgs.concat([payload!]) }
@@ -42,12 +42,12 @@ class Module1 extends EffectModule<Module1StateProps> {
       )
   }
 
-  @Reducer('select_msg')
+  @Reducer()
   selectMsg(state: Module1StateProps, { payload }: Action<string>) {
     return { ...state, currentMsgId: payload }
   }
 
-  @Effect('get_module3_msg')()
+  @Effect()
   getModule3Msg(action$: Observable<void>) {
     return action$
       .pipe(
@@ -57,7 +57,7 @@ class Module1 extends EffectModule<Module1StateProps> {
       )
   }
 
-  @Effect('change_router')()
+  @Effect()
   changeRouter(action$: Observable<void>) {
     return action$
       .pipe(

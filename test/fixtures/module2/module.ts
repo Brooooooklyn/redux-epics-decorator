@@ -10,7 +10,7 @@ import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
 
 export interface Module2StateProps {
   currentMsgId: string | null
@@ -18,7 +18,7 @@ export interface Module2StateProps {
   loading: boolean
 }
 
-@module('two')
+@Module('two')
 class Module2 extends EffectModule<Module2StateProps> {
   defaultState: Module2StateProps = {
     currentMsgId: null,
@@ -26,9 +26,9 @@ class Module2 extends EffectModule<Module2StateProps> {
     loading: false
   }
 
-  @DefineAction('dispose') dispose: Observable<Action<void>>
+  @DefineAction() dispose: Observable<Action<void>>
 
-  @Effect('get_msg')({
+  @Effect({
     success: (state: Module2StateProps, { payload }: Action<Msg>) => {
       const { allMsgs } = state
       return { ...state, allMsgs: allMsgs.concat([payload!]), loading: false }
@@ -46,12 +46,12 @@ class Module2 extends EffectModule<Module2StateProps> {
       )
   }
 
-  @Reducer('select_msg')
+  @Reducer()
   selectMsg(state: Module2StateProps, { payload }: Action<string>) {
     return { ...state, currentMsgId: payload }
   }
 
-  @Effect('get_10_msg')()
+  @Effect()
   loadMsgs(action$: Observable<void>) {
     return action$
       .pipe(
@@ -63,7 +63,7 @@ class Module2 extends EffectModule<Module2StateProps> {
       )
   }
 
-  @Effect('get_5_msg')({
+  @Effect({
     loading: (state: Module2StateProps) => {
       return { ...state, loading: true }
     }
@@ -88,7 +88,7 @@ class Module2 extends EffectModule<Module2StateProps> {
       )
   }
 
-  @Reducer('set_msgs')
+  @Reducer()
   private setMsgs(state: Module2StateProps, { payload }: Action<Msg[]>) {
     const { allMsgs } = state
     return { ...state, allMsgs: allMsgs.concat(payload!) }
