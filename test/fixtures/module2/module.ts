@@ -57,7 +57,7 @@ class Module2 extends EffectModule<Module2StateProps> {
       .pipe(
         exhaustMap(() => range(0, 10)
           .pipe(
-            map(() => this.createActionFrom(this.getMsg)())
+            map(this.createActionFrom(this.getMsg))
           )
         )
       )

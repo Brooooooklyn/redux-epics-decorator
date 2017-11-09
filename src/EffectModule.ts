@@ -1,10 +1,12 @@
 import 'reflect-metadata'
-import { combineEpics } from 'redux-observable'
+import { combineEpics, ofType } from 'redux-observable'
 import { ActionFunctionAny, Reducer, handleActions, createAction, Action } from 'redux-actions'
 import { Dispatch } from 'redux'
+import { empty } from 'rxjs/observable/empty'
 
-import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer } from './symbol'
+import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer, withNamespace } from './symbol'
 import { EpicAction, EpicLike } from './interface'
+import { Observable } from 'rxjs/Observable'
 
 export interface CreateAction<ActionType extends string> {
   <T>(payload: T): EpicAction<ActionType, T>
@@ -16,6 +18,7 @@ export abstract class EffectModule<StateProps> {
   abstract readonly defaultState: StateProps
 
   private readonly ctor = this.constructor.prototype.constructor
+  private moduleAction$: Observable<Action<any>>
 
   protected readonly createAction: <ActionType extends string>(actionType: ActionType) =>
   CreateAction<ActionType> = createAction
@@ -29,13 +32,18 @@ export abstract class EffectModule<StateProps> {
     }
   }
 
+  private moduleEpic = <T> (action$: Observable<Action<T>>) => {
+    this.moduleAction$ = action$
+    return empty()
+  }
+
   // @internal
   get allDispatch(): { [key: string]: ActionFunctionAny<StateProps> } {
     return Reflect.getMetadata(symbolDispatch, this.ctor)
   }
 
   get epic() {
-    return combineEpics(...Reflect.getMetadata(symbolEpics, this.ctor).map((epic: any) => epic.bind(this)))
+    return combineEpics(this.moduleEpic, ...Reflect.getMetadata(symbolEpics, this.ctor).map((epic: any) => epic.bind(this)))
   }
 
   get reducer(): Reducer<StateProps, any> {
@@ -45,6 +53,13 @@ export abstract class EffectModule<StateProps> {
       reducers[key] = reducer.bind(this)
     })
     return handleActions(reducers, this.defaultState)
+  }
+
+  protected fromDecorated<T> (method: Reducer<any, T> | EpicLike<T, any, any, any>) {
+    const action = method[symbolAction]
+    return this.moduleAction$.pipe(
+      ofType(action)
+    ) as Observable<Action<T>>
   }
 
   protected createActionFrom<C extends EffectModule<StateProps>, ActionTypes extends keyof C, Input, S>
@@ -77,4 +92,21 @@ export abstract class EffectModule<StateProps> {
     action[symbolNotTrasfer] = true
     return action
   }
+}
+
+export interface Constructorof<T> {
+  new (): T
+}
+
+type Diff<T extends string, U extends string> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T]
+type UseLessAction = 'dispatch' | 'epic' | 'reducer' | 'allDispatch'
+
+export const getAction = <T> (target: Constructorof<T>, actionName: Diff<keyof T, UseLessAction>) => {
+   /* istanbul ignore next*/
+  if (process.env.NODE_ENV === 'development') {
+    console.warn('This is a temporary method for normal style.')
+  }
+  const name = Reflect.getMetadata(symbolNamespace, target)
+  const actionWithNamespace = withNamespace(name, actionName)
+  return createAction<any>(actionWithNamespace)
 }

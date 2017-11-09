@@ -24,6 +24,11 @@ class Module1 extends EffectModule<Module1StateProps> {
 
   @DefineAction() dispose: Observable<Action<void>>
 
+  @Reducer()
+  dispose2(state: Module1StateProps) {
+    return state
+  }
+
   @Effect({
     success: (state: Module1StateProps, { payload }: Action<Msg>) => {
       const { allMsgs } = state
@@ -36,6 +41,7 @@ class Module1 extends EffectModule<Module1StateProps> {
         exhaustMap(() => generateMsg()
           .pipe(
             takeUntil(this.dispose),
+            takeUntil(this.fromDecorated(this.dispose2)),
             map(this.createAction('success'))
           )
         )
