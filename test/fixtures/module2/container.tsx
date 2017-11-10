@@ -10,6 +10,8 @@ const mapStateToProps = ({ module2 }: GlobalState) => module2
 
 class Module2 extends React.PureComponent<Module2Props> {
 
+  defaultState: any = {}
+
   private loadMsg = () => {
     this.props.getMsg()
   }
@@ -53,4 +55,4 @@ class Module2 extends React.PureComponent<Module2Props> {
   }
 }
 
-export const Module2Container = connect(mapStateToProps, effectModule2)(Module2)
+export const Module2Container = connect(effectModule2 as any)(mapStateToProps, {})(Module2)

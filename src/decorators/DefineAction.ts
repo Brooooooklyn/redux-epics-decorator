@@ -3,11 +3,11 @@ import { createAction, Action as ReduxAction } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { ActionsObservable, ofType } from 'redux-observable'
 
-import { EffectModule } from '../Module'
+import { EffectModule } from '../EffectModule'
 import { symbolNamespace, symbolEpics, symbolDispatch, withNamespace } from '../symbol'
 import { currentSetEffectQueue } from '../shared'
 
-export const DefineAction = <S>(actionName: string) => {
+export function DefineAction <S>(): any {
   return (target: EffectModule<S>, propertyName: string) => {
     const constructor = target.constructor
 
@@ -25,7 +25,7 @@ export const DefineAction = <S>(actionName: string) => {
       const name = Reflect.getMetadata(symbolNamespace, constructor)
       const epics = Reflect.getMetadata(symbolEpics, constructor)
       const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
-      actionWithNamespace = withNamespace(name, actionName)
+      actionWithNamespace = withNamespace(name, propertyName)
       const startAction = createAction(actionWithNamespace)
       dispatchs[propertyName] = startAction
       Object.defineProperty(target, propertyName, {

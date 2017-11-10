@@ -10,17 +10,19 @@ import * as SinonChai from 'sinon-chai'
 import { EffectModule, DefineAction } from '../../src'
 import { setupStore } from '../fixtures/store'
 import { Module1Container, Module1Props } from '../fixtures/module1'
-import module1 from '../fixtures/module1/module'
-import module2 from '../fixtures/module2/module'
+import Module1 from '../fixtures/module1/module'
+import Module2 from '../fixtures/module2/module'
+import { getInstance } from '../../src/decorators/Module'
 
 chai.use(SinonChai)
 
 describe('DefineAction specs', () => {
   let AppNode: enzyme.ShallowWrapper<Module1Props, any>
   let subscription: Subscription | undefined
+  const propsSpy = {} as any
 
   beforeEach(() => {
-    AppNode = enzyme.shallow(<Module1Container store={ setupStore() } />)
+    AppNode = enzyme.shallow(<Module1Container store={ setupStore() } { ...propsSpy }/>)
   })
 
   afterEach(() => {
@@ -31,6 +33,8 @@ describe('DefineAction specs', () => {
   })
 
   it('should define as Observable', () => {
+    const module1 = getInstance(Module1)
+    const module2 = getInstance(Module2)
     expect(module1.dispose).to.be.instanceof(Observable)
     expect(module1.dispose[observableSymbol]).to.not.be.null
     expect(module2.dispose).to.be.instanceof(Observable)
@@ -43,9 +47,9 @@ describe('DefineAction specs', () => {
     const action = {
       type: 'one/dispose'
     }
-
+    const module1 = getInstance(Module1)
     subscription = module1.dispose.take(1)
-      .subscribe(a => {
+      .subscribe((a: any) => {
         expect(a).to.deep.equal(action)
         done()
       })
@@ -63,7 +67,7 @@ describe('DefineAction specs', () => {
     }
 
     const callCount = 5
-
+    const module1 = getInstance(Module1)
     const signal$ = module1.dispose
       .share()
 
@@ -72,7 +76,7 @@ describe('DefineAction specs', () => {
     signal$.take(callCount)
       .observeOn(Scheduler.async)
       .take(callCount)
-      .subscribe((a) => {
+      .subscribe((a: any) => {
         expect(a).to.deep.equal(action)
       }, void 0, () => {
         expect(spy.callCount).to.equal(callCount)
@@ -85,7 +89,7 @@ describe('DefineAction specs', () => {
   it('should throw when module without namespace', () => {
     function defineModule() {
       class TestModule extends EffectModule<any> {
-        @DefineAction('foo') foo: any
+        @DefineAction() foo: any
         defaultState = { foo: 1 }
       }
 

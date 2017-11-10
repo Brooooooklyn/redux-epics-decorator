@@ -8,23 +8,28 @@ import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, namespace, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
 
 export interface Module1StateProps {
   currentMsgId: string | null
   allMsgs: Msg[]
 }
 
-@namespace('one')
+@Module('one')
 class Module1 extends EffectModule<Module1StateProps> {
   defaultState: Module1StateProps = {
     currentMsgId: null,
     allMsgs: []
   }
 
-  @DefineAction('dispose') dispose: Observable<Action<void>>
+  @DefineAction() dispose: Observable<Action<void>>
 
-  @Effect('get_msg')({
+  @Reducer()
+  dispose2(state: Module1StateProps) {
+    return state
+  }
+
+  @Effect({
     success: (state: Module1StateProps, { payload }: Action<Msg>) => {
       const { allMsgs } = state
       return { ...state, allMsgs: allMsgs.concat([payload!]) }
@@ -36,18 +41,19 @@ class Module1 extends EffectModule<Module1StateProps> {
         exhaustMap(() => generateMsg()
           .pipe(
             takeUntil(this.dispose),
+            takeUntil(this.fromDecorated(this.dispose2)),
             map(this.createAction('success'))
           )
         )
       )
   }
 
-  @Reducer('select_msg')
+  @Reducer()
   selectMsg(state: Module1StateProps, { payload }: Action<string>) {
     return { ...state, currentMsgId: payload }
   }
 
-  @Effect('get_module3_msg')()
+  @Effect()
   getModule3Msg(action$: Observable<void>) {
     return action$
       .pipe(
@@ -57,7 +63,7 @@ class Module1 extends EffectModule<Module1StateProps> {
       )
   }
 
-  @Effect('change_router')()
+  @Effect()
   changeRouter(action$: Observable<void>) {
     return action$
       .pipe(
@@ -68,7 +74,4 @@ class Module1 extends EffectModule<Module1StateProps> {
 
 export type Module1DispatchProps = ModuleActionProps<Module1StateProps, Module1>
 
-const moduleOne = new Module1
-export default moduleOne
-export const reducer = moduleOne.reducer
-export const epic = moduleOne.epic
+export default Module1

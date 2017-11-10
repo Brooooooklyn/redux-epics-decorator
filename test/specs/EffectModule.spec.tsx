@@ -9,9 +9,10 @@ import { Route } from 'react-router'
 import { ConnectedRouter } from 'react-router-redux'
 
 import { setupStore, GlobalState, history } from '../fixtures/store'
-import { Module1Container, Module1, Module1Props } from '../fixtures/module1'
+import EffectModule1, { Module1Container, Module1Props, Module1 } from '../fixtures/module1'
 import { Module3Container } from '../fixtures/module3'
 import { msgDelay } from '../fixtures/service'
+import { getAction } from '../../src'
 
 chai.use(SinonChai)
 
@@ -69,4 +70,9 @@ describe('Module specs', () => {
 
     expect(store.getState().router.location!.pathname).to.equal('/hmmm')
   })
+
+  it('should getAction from Module class with decorated method name', () => {
+    expect(`${getAction(EffectModule1, 'getMsg')}`).to.equal('one/get_msg')
+  })
+
 })

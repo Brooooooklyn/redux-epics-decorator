@@ -2,7 +2,7 @@ import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { MiddlewareAPI } from 'redux'
 
-import { EffectModule } from './Module'
+import { EffectModule } from './EffectModule'
 
 // https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766 would break defination lookup
 // just a workaround to avoid `props.reducer()`
