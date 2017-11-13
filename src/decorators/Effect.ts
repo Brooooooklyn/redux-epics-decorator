@@ -40,15 +40,17 @@ export function Effect <S, R extends EffectHandler<S>>(handler?: R) {
               map(({ payload }) => payload)
             )
           return descriptor.value.call(this, matchedAction$, store)
-            .map((actionResult: ReduxAction<any>) => {
-              const { type } = actionResult
-              return {
-                ...actionResult,
-                type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
-                  type :
-                  withReducer(name, method, type)
-              }
-            })
+            .pipe(
+              map((actionResult: ReduxAction<any>) => {
+                const { type } = actionResult
+                return {
+                  ...actionResult,
+                  type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
+                    type :
+                    withReducer(name, method, type)
+                }
+              })
+            )
         }
 
     const setup = () => {
