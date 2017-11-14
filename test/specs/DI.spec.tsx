@@ -6,11 +6,24 @@ import * as enzyme from 'enzyme'
 
 import { setupStore, GlobalState } from '../fixtures/store'
 import { Module4Container, Module4Props } from '../fixtures/module4'
-import { Module } from '../../src/decorators/Module'
+import { Module, getInstance } from '../../src/decorators/Module'
+import { Injectable } from '../../src'
 
 chai.use(SinonChai)
 
 describe('Injectable Spec', () => {
+
+  @Injectable()
+  class Api {
+    getData() {
+      return 1729
+    }
+  }
+
+  @Module('bar')
+  class Bar {
+    constructor(public api: Api) {}
+  }
 
   @Module('foo')
   class Foo {
@@ -31,18 +44,23 @@ describe('Injectable Spec', () => {
     AppNode.unmount()
   })
 
-  it('Injectable decorator should not change source class', () => {
+  it('Module decorator should not change source class', () => {
     expect(Foo.x).equal(123)
     const foo = new Foo
     expect(foo.f()).equal(1)
   })
 
-  it('Injectable decorator shoudle work (react container)', () => {
+  it('Module decorator should work (react container)', () => {
     AppNode.props().add()
     AppNode.props().add()
     expect(store.getState().module4.count).equal(2)
     AppNode.props().setData()
     expect(store.getState().module4.count).equal(1729)
+  })
+
+  it('Injectable decorator should work', () => {
+    const bar = getInstance(Bar)
+    expect(bar.api.getData()).equal(1729)
   })
 
 })
