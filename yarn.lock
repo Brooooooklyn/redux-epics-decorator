@@ -81,9 +81,13 @@
     "@types/chai" "*"
     "@types/sinon" "*"
 
-"@types/sinon@*", "@types/sinon@^2.3.5":
+"@types/sinon@*":
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-2.3.5.tgz#68f1e0ac15f2eb6cc682b7af87cd517acc77b589"
+
+"@types/sinon@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-4.0.0.tgz#9a93ffa4ee1329e85166278a5ed99f81dc4c8362"
 
 abbrev@1:
   version "1.1.1"
