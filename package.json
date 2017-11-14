@@ -10,7 +10,8 @@
     "lint": "tslint -c tslint.json -p tsconfig.json && tslint -c tslint.json -p test/tsconfig.json",
     "start": "webpack-dev-server --config ./webpack.config.js --progress --color",
     "test": "rm -rf coverage && NODE_ENV=test karma start",
-    "watch": "karma start"
+    "watch": "karma start",
+    "publish_all": "ts-node ./tools/publish.ts"
   },
   "repository": {
     "type": "git",
@@ -51,6 +52,7 @@
     "@types/react-router-redux": "^5.0.8",
     "@types/redux-actions": "^2.2.2",
     "@types/sinon": "^4.0.0",
+    "@types/shelljs": "^0.7.6",
     "@types/sinon-chai": "^2.7.29",
     "chai": "^4.1.2",
     "coveralls": "^3.0.0",
@@ -82,19 +84,16 @@
     "redux-observable": "^0.17.0",
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.5.2",
+    "shelljs": "^0.7.8",
     "sinon": "^4.0.2",
     "sinon-chai": "^2.14.0",
     "symbol-observable": "^1.0.4",
     "ts-loader": "^3.1.0",
+    "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "^2.6.1",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.3"
-  },
-  "files": [
-    "assets/**",
-    "lib/**",
-    "README.md"
-  ]
+  }
 }

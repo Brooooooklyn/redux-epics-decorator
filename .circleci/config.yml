@@ -49,7 +49,7 @@ jobs:
       - run: |
           if git log -1 --pretty=%B | grep "^[0-9]\+\.[0-9]\+\.[0-9]\+$";
           then
-            npm publish
+            yarn publish_all
           else
             echo "Not a release, skipping publish"
           fi
