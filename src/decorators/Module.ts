@@ -10,7 +10,7 @@ function copyMap(map: Map<any, any>) {
   return dist
 }
 
-const allDeps = new Set()
+export const allDeps = new Set()
 
 export const Module = (name: string) =>
 (target: any) => {
