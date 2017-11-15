@@ -11,7 +11,7 @@
     "start": "webpack-dev-server --config ./webpack.config.js --progress --color",
     "test": "rm -rf coverage && NODE_ENV=test karma start",
     "watch": "karma start",
-    "publish_all": "ts-node ./tools/publish.ts"
+    "publish_all": "ts-node ./tools/publish.ts && npm publish lib/"
   },
   "repository": {
     "type": "git",

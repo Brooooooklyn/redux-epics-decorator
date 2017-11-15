@@ -38,16 +38,9 @@ const write = (distPath: string, data: any) => {
 const cjsPkgData = JSON.stringify(cjsPkg, null, 2)
 
 Promise.all([
-    write('./lib/package.json', cjsPkgData),
-    write('./lib/README.md', README)
+  write('./lib/package.json', cjsPkgData),
+  write('./lib/README.md', README)
 ])
-  .then(() => {
-    const { stderr, stdout } = shelljs.exec('npm publish lib/')
-    if (stderr) {
-      throw stderr
-    }
-    console.info(stdout)
-  })
   .catch((e: Error) => {
     console.error(e)
     process.exit(1)
