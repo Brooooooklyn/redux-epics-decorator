@@ -1,5 +1,8 @@
-import { allDeps } from './decorators/Module'
+import { connect as reactConnect } from 'react-redux'
+import { combineReducers, createStore, Store, compose, applyMiddleware } from 'redux'
+import { createEpicMiddleware } from 'redux-observable'
 import { ReflectiveInjector, Injector  } from 'injection-js'
+import { allDeps } from './decorators/Module'
 
 export interface Provider {
   provide: Function
@@ -10,39 +13,53 @@ export interface TestBedConfig {
   providers: Provider[]
 }
 
-export class TestBed {
-  private newAllDeps: Set<any>
-  private injector: Injector
+export class TestBedFactory {
 
-  constructor() {
-    this.newAllDeps = new Set(allDeps as any)
-  }
-
-  configureTestingModule(config: TestBedConfig) {
-    this.newAllDeps = new Set(allDeps as any)
+  static configureTestingModule(config: TestBedConfig) {
+    const newAllDeps = new Set(allDeps as any)
     const providers = config.providers
-    providers.forEach(this.replaceDep)
-    this.configInjector()
+    providers.forEach(provider => this.replaceDep(provider, newAllDeps))
+    const testbed = new TestBed(this.configInjector(newAllDeps))
+    return testbed
   }
 
-  getInstance(ins: any) {
-    this.configInjector()
-    return this.injector.get(ins)
-  }
-
-  private replaceDep = (provider: Provider) => {
+  private static replaceDep = (provider: Provider, newAllDeps: Set<any>) => {
     const { provide } = provider
     /* istanbul ignore else*/
-    if (this.newAllDeps.has(provide)) {
-      this.newAllDeps.delete(provide)
-      this.newAllDeps.add(provider)
+    if (newAllDeps.has(provide)) {
+      newAllDeps.delete(provide)
+      newAllDeps.add(provider)
     }
   }
 
-  private configInjector() {
+  private static configInjector(newAllDeps: Set<any>) {
     const parent = ReflectiveInjector.resolveAndCreate(Array.from((allDeps as any)))
-    this.injector = parent.resolveAndCreateChild(Array.from(this.newAllDeps as any))
+    return parent.resolveAndCreateChild(Array.from(newAllDeps as any))
   }
 }
 
-export const testbed = new TestBed
+export class TestBed {
+
+  constructor(private injector: Injector) {}
+
+  getInstance(ins: any) {
+    return this.injector.get(ins)
+  }
+
+  connect(effectModule: any) {
+    return (...args: any[]) => {
+      const originalDispatch = args[1] || {}
+      const module = this.getInstance(effectModule)
+      Object.assign(originalDispatch, module.allDispatch)
+      args[1] = originalDispatch
+      return reactConnect.apply(null, args)
+    }
+  }
+
+  setupStore<MockGlobalState>(name: string, m: any): Store<MockGlobalState> {
+    const instance = this.getInstance(m)
+    return createStore(combineReducers({ [name]: instance.reducer }), compose(
+      applyMiddleware(createEpicMiddleware(instance.epic))
+    ))
+  }
+}
