@@ -55,4 +55,4 @@ class Module2 extends React.PureComponent<Module2Props> {
   }
 }
 
-export const Module2Container = connect(effectModule2 as any)(mapStateToProps, {})(Module2)
+export const Module2Container = connect(effectModule2)(mapStateToProps)(Module2)
