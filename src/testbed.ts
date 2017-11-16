@@ -12,6 +12,7 @@ export interface TestBedConfig {
 
 export class TestBed {
   private newAllDeps: Set<any>
+  private injector: Injector
 
   constructor() {
     this.newAllDeps = new Set(allDeps as any)
@@ -22,6 +23,11 @@ export class TestBed {
     const providers = config.providers
     providers.forEach(this.replaceDep)
     this.configInjector()
+  }
+
+  getInstance(ins: any) {
+    this.configInjector()
+    return this.injector.get(ins)
   }
 
   private replaceDep = (provider: Provider) => {
@@ -36,12 +42,6 @@ export class TestBed {
   private configInjector() {
     const parent = ReflectiveInjector.resolveAndCreate(Array.from((allDeps as any)))
     this.injector = parent.resolveAndCreateChild(Array.from(this.newAllDeps as any))
-  }
-
-  private injector: Injector
-  getInstance(ins: any) {
-    this.configInjector()
-    return this.injector.get(ins)
   }
 }
 

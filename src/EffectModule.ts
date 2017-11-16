@@ -95,7 +95,7 @@ export abstract class EffectModule<StateProps> {
 }
 
 export interface Constructorof<T> {
-  new (): T
+  new (...args: any[]): T
 }
 
 type Diff<T extends string, U extends string> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T]
