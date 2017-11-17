@@ -3,6 +3,7 @@ import { combineReducers, createStore, Store, compose, applyMiddleware } from 'r
 import { createEpicMiddleware } from 'redux-observable'
 import { ReflectiveInjector, Injector  } from 'injection-js'
 import { allDeps } from './decorators/Module'
+import { Constructorof } from './EffectModule'
 
 export interface Provider {
   provide: Function
@@ -15,7 +16,10 @@ export interface TestBedConfig {
 
 export class TestBedFactory {
 
-  static configureTestingModule(config: TestBedConfig) {
+  static configureTestingModule(config?: TestBedConfig) {
+    if (!config) {
+      return new TestBed(ReflectiveInjector.resolveAndCreate(Array.from((allDeps as any))))
+    }
     const newAllDeps = new Set(allDeps as any)
     const providers = config.providers
     providers.forEach(provider => this.replaceDep(provider, newAllDeps))
@@ -42,7 +46,7 @@ export class TestBed {
 
   constructor(private injector: Injector) {}
 
-  getInstance(ins: any) {
+  getInstance<T = any>(ins: Constructorof<T>): T {
     return this.injector.get(ins)
   }
 
