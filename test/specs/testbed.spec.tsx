@@ -43,7 +43,7 @@ describe('TestBed spec', () => {
     AppNode.unmount()
   })
 
-  it('shoudl configure empty TestBed', () => {
+  it('should configure empty TestBed', () => {
     testbed = TestBedFactory.configureTestingModule()
     const depModule = testbed.getInstance(DepModule4)
     const stub = Sinon.stub(depModule, 'getData')
