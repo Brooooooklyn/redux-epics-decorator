@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 import { combineEpics, ofType } from 'redux-observable'
 import { ActionFunctionAny, Reducer, handleActions, createAction, Action } from 'redux-actions'
-import { Dispatch } from 'redux'
 import { empty } from 'rxjs/observable/empty'
 
 import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer, withNamespace } from './symbol'
@@ -20,10 +19,7 @@ export abstract class EffectModule<StateProps> {
   private readonly ctor = this.constructor.prototype.constructor
   private moduleAction$: Observable<Action<any>>
 
-  protected readonly createAction: <ActionType extends string>(actionType: ActionType) =>
-  CreateAction<ActionType> = createAction
-
-  readonly dispatch: Dispatch<any>
+  protected readonly createAction = createAction
 
   constructor() {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
