@@ -40,7 +40,7 @@ class Module2 extends EffectModule<Module2StateProps> {
         mergeMap(() => generateMsg()
           .pipe(
             takeUntil(this.dispose),
-            map(msg => this.createAction('success')(msg))
+            map(msg => this.createAction<Msg>('success')(msg))
           )
         )
       )
