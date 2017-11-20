@@ -6,6 +6,7 @@ import { of as just } from 'rxjs/observable/of'
 import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
+import * as sinon from 'sinon'
 
 import { generateMsg, Msg } from '../service'
 import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
@@ -14,6 +15,9 @@ export interface Module1StateProps {
   currentMsgId: string | null
   allMsgs: Msg[]
 }
+
+export const createActionPayloadCreator = sinon.spy()
+export const createActionMetaCreator = sinon.spy()
 
 @Module('one')
 class Module1 extends EffectModule<Module1StateProps> {
@@ -70,6 +74,18 @@ class Module1 extends EffectModule<Module1StateProps> {
         mergeMap(() => just(push('/hmmm')))
       )
   }
+
+  @Effect({
+    createActionPayloadCreator,
+    createActionMetaCreator
+  })
+  noop(action$: Observable<void>) {
+    return action$
+      .pipe(
+        map(() => this.createAction('noop')())
+      )
+  }
+
 }
 
 export type Module1DispatchProps = ModuleActionProps<Module1StateProps, Module1>
