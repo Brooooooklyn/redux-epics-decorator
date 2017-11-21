@@ -57,6 +57,14 @@ class Module1 extends EffectModule<Module1StateProps> {
     return { ...state, currentMsgId: payload }
   }
 
+  @Reducer({
+    createActionPayloadCreator,
+    createActionMetaCreator
+  })
+  noopReducer() {
+    return {}
+  }
+
   @Effect()
   getModule3Msg(action$: Observable<void>) {
     return action$
