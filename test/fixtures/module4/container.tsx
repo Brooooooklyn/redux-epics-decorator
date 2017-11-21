@@ -8,7 +8,7 @@ export type Module4Props = Module4StateProps & Module4DispatchProps
 
 export const mapStateToProps = ({ module4 }: GlobalState) => module4
 
-export default class Module4 extends React.PureComponent<Module4Props> {
+export class Module4 extends React.PureComponent<Module4Props> {
 
   render() {
     return (

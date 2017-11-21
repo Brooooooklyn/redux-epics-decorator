@@ -4,28 +4,65 @@ import * as Sinon from 'sinon'
 import * as SinonChai from 'sinon-chai'
 import React from 'react'
 import * as enzyme from 'enzyme'
+import { Observable } from 'rxjs/Observable'
+import { map } from 'rxjs/operators/map'
 
 import { GlobalState } from '../fixtures/store'
-import Module4Component, { mapStateToProps } from '../fixtures/module4/container'
+import { Module4 as Module4Component, mapStateToProps } from '../fixtures/module4/container'
 import DepModule4 from '../fixtures/module4/depModule'
 import Module4, { Module4Props } from '../fixtures/module4'
-import { Injectable, connect } from '../../src'
-import { TestBedFactory } from '../../src/testbed'
+import { Module, connect, Reducer, Effect, EffectModule } from '../../src'
+import { TestBedFactory, TestBed } from '../../src/testbed'
 
 chai.use(SinonChai)
 
 describe('TestBed spec', () => {
 
-  @Injectable()
-  class MockDepModule4 {
+  @Module('mock_module_4')
+  class MockDepModule4 extends EffectModule<{}> {
+
+    defaultState = { }
+
     getData() {
       return 1234
+    }
+
+    @Reducer()
+    exposedReducer(state: any) {
+      return state
+    }
+
+    @Effect()
+    exposedEpic(action$: Observable<void>) {
+      return action$.pipe(
+        map(() => ({
+          type: 'yeah'
+        }))
+      )
+    }
+  }
+
+  @Module('mock_module_4')
+  class MockDepModule4WithoutDecorator extends EffectModule<{}> {
+
+    defaultState = { }
+
+    getData() {
+      return 1234
+    }
+
+    exposedReducer() {
+      return 1
+    }
+
+    exposedEpic() {
+      return 2
     }
   }
 
   let AppNode: enzyme.ShallowWrapper<Module4Props, any>
   let store: Store<GlobalState>
-  let testbed
+  let testbed: TestBed
   const props = {} as any
   beforeEach(() => {
     testbed = TestBedFactory.configureTestingModule({
@@ -61,5 +98,21 @@ describe('TestBed spec', () => {
   it('should configure TestBed', () => {
     AppNode.props().setData()
     expect(store.getState().module4.count).equal(1234)
+  })
+
+  it('should throw when provider non-decorated method', () => {
+    testbed = TestBedFactory.configureTestingModule({
+      providers: [{
+        provide: DepModule4,
+        useClass: MockDepModule4WithoutDecorator
+      }]
+    })
+    testbed.connect(Module4)(mapStateToProps)(Module4Component)
+
+    function fn() {
+      store = testbed.setupStore('module4', Module4)
+    }
+
+    expect(fn).to.throw('Could not createActionFrom a non-decoratored method')
   })
 })

@@ -11,6 +11,7 @@ import { ConnectedRouter } from 'react-router-redux'
 import { setupStore, GlobalState, history } from '../fixtures/store'
 import EffectModule1, { Module1Container, Module1Props, Module1 } from '../fixtures/module1'
 import { Module3Container } from '../fixtures/module3'
+import { Module4Container, Module4, Module4Props } from '../fixtures/module4'
 import { msgDelay } from '../fixtures/service'
 import { getAction } from '../../src'
 
@@ -19,6 +20,7 @@ chai.use(SinonChai)
 describe('Module specs', () => {
   let AppNode: enzyme.ReactWrapper<any, any>
   let Module1Node: enzyme.ReactWrapper<Module1Props, any>
+  let Module4Node: enzyme.ReactWrapper<Module4Props>
   let store: Store<GlobalState>
 
   beforeEach(() => {
@@ -29,12 +31,14 @@ describe('Module specs', () => {
           <div>
             <Route exact path='/' component={ Module1Container } />
             <Route path='/hmmm' component={ Module3Container } />
+            <Module4Container />
           </div>
         </ConnectedRouter>
       </Provider>
     )
     AppNode = enzyme.mount(App)
     Module1Node = AppNode.find(Module1) as enzyme.ReactWrapper<Module1Props>
+    Module4Node = AppNode.find(Module4)
   })
 
   afterEach(() => {
@@ -73,6 +77,13 @@ describe('Module specs', () => {
 
   it('should getAction from Module class with decorated method name', () => {
     expect(`${getAction(EffectModule1, 'getMsg')}`).to.equal('one/get_msg')
+  })
+
+  it('should createActionFrom the other module', () => {
+    const props = Module4Node.props()
+    props.dispatchOtherModulesAction()
+    const globalState = store.getState()
+    expect(globalState.depModule4.counter).to.equal(2)
   })
 
 })
