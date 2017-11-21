@@ -6,7 +6,7 @@ import * as SinonChai from 'sinon-chai'
 
 import { EffectModule, Reducer } from '../../src'
 import { setupStore } from '../fixtures/store'
-import { Module1Container, Module1Props } from '../fixtures/module1'
+import { Module1Container, Module1Props, createActionPayloadCreator, createActionMetaCreator } from '../fixtures/module1'
 import { msgDelay } from '../fixtures/service'
 
 chai.use(SinonChai)
@@ -32,6 +32,23 @@ describe('Reducer specs', () => {
     const [msg] = store.getState().module1.allMsgs
     props.selectMsg(msg.id)
     expect(store.getState().module1.currentMsgId).to.equal(msg.id)
+  })
+
+  it('should pass extra args to createAction', () => {
+    const props = AppNode.props()
+    const clock = Sinon.useFakeTimers()
+
+    props.noopReducer()
+
+    clock.tick(msgDelay)
+
+    createActionPayloadCreator.should.have.been.called
+    createActionMetaCreator.should.have.been.called
+
+    createActionPayloadCreator.reset()
+    createActionMetaCreator.reset()
+
+    clock.restore()
   })
 
   it('should throw when module without namespace', () => {
