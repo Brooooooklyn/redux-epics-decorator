@@ -72,7 +72,9 @@ describe('TestBed spec', () => {
       }]
     })
     const Module4Container = testbed.connect(Module4)(mapStateToProps)(Module4Component)
-    store = testbed.setupStore('module4', Module4)
+    store = testbed.setupStore({
+      module4: Module4
+    })
     AppNode = enzyme.shallow(<Module4Container store={ store } { ...props } />)
   })
 
@@ -85,7 +87,9 @@ describe('TestBed spec', () => {
     const depModule = testbed.getInstance(DepModule4)
     const stub = Sinon.stub(depModule, 'getData')
     stub.returns(123)
-    store = testbed.setupStore('module4', Module4)
+    store = testbed.setupStore({
+      module4: Module4
+    })
 
     const Container = connect(Module4)(mapStateToProps)(Module4Component)
     AppNode = enzyme.shallow(<Container store={ store } { ...props } />)
@@ -93,6 +97,13 @@ describe('TestBed spec', () => {
     expect(store.getState().module4.count).equal(123)
     expect(stub.callCount).to.equal(1)
     stub.restore()
+  })
+
+  it('should configure empty store', () => {
+    testbed = TestBedFactory.configureTestingModule()
+    store = testbed.setupStore()
+
+    expect(store.getState()).to.deep.equal({})
   })
 
   it('should configure TestBed', () => {
@@ -110,7 +121,9 @@ describe('TestBed spec', () => {
     testbed.connect(Module4)(mapStateToProps)(Module4Component)
 
     function fn() {
-      store = testbed.setupStore('module4', Module4)
+      store = testbed.setupStore({
+        module4: Module4
+      })
     }
 
     expect(fn).to.throw('Could not createActionFrom a non-decoratored method')
