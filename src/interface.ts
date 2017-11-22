@@ -4,8 +4,13 @@ import { MiddlewareAPI } from 'redux'
 
 import { EffectModule } from './EffectModule'
 
+// https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766 would break defination lookup
+// just a workaround to avoid `props.reducer()`
+// need refactor
 export type ModuleActionProps <S, T extends EffectModule<S>> = {
   [key in keyof T]: (...args: any[]) => Action<any>
+} & {
+  defaultState: never
 }
 
 export interface EpicLike<Input, Output, S, ActionType extends string> {
