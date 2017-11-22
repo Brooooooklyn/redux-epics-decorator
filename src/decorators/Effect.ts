@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { map } from 'rxjs/operators/map'
 import { Store } from 'redux'
+import { LOCATION_CHANGE, CALL_HISTORY_METHOD } from 'react-router-redux'
 import { Action as ReduxAction, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { ofType } from 'redux-observable'
@@ -26,12 +27,17 @@ export interface EffectHandler {
   [actionName: string]: ReduxReducer<any, any>
 }
 
+export type ReduxRouterActions = typeof LOCATION_CHANGE | typeof CALL_HISTORY_METHOD
+
 export function Effect (handler: EffectHandler = {}) {
   return <Target extends EffectModule<any>>(target: Target, method: string, descriptor: PropertyDescriptor) => {
     let startAction: ActionFunction0<ReduxAction<void>>
     let name: string
     const constructor = target.constructor
-    const epic: <Input, Output, ActionType extends (keyof Target)>(action$: Observable<Input>, store?: Store<any>) =>
+    const epic: <Input, Output, ActionType extends (keyof Target | keyof EffectHandler | ReduxRouterActions)>(
+      action$: Observable<Input>,
+      store?: Store<any>
+    ) =>
       Observable<EpicAction<ActionType, Output>> =
         function (this: EffectModule<any>, action$: Observable<any>, store?: Store<any>) {
           const matchedAction$ = action$
@@ -81,7 +87,7 @@ export function Effect (handler: EffectHandler = {}) {
 
     return {
       ...descriptor,
-      value: epic as any
+      value: epic
     }
   }
 }
