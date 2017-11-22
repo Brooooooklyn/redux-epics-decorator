@@ -2,11 +2,7 @@ import { createAction } from 'redux-actions'
 
 import { currentReducers, currentSetEffectQueue } from '../shared'
 import { symbolNamespace, symbolDispatch, symbolAction, withNamespace } from '../symbol'
-
-export interface ReducerHandler {
-  createActionPayloadCreator?: any
-  createActionMetaCreator?: any
-}
+import { ReducerHandler } from '../interface'
 
 export const Reducer = (handler: ReducerHandler = {}) => {
   return (target: any, method: string, descriptor: PropertyDescriptor) => {

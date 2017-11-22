@@ -9,7 +9,7 @@ import * as SinonChai from 'sinon-chai'
 
 import { EffectModule, DefineAction } from '../../src'
 import { setupStore } from '../fixtures/store'
-import { Module1Container, Module1Props } from '../fixtures/module1'
+import { Module1Container, Module1Props, createActionPayloadCreator, createActionMetaCreator } from '../fixtures/module1'
 import Module1 from '../fixtures/module1/module'
 import Module2 from '../fixtures/module2/module'
 import { getInstance } from '../../src/decorators/Module'
@@ -84,6 +84,18 @@ describe('DefineAction specs', () => {
       })
 
     range(callCount).forEach(() => props.dispose())
+  })
+
+  it('should pass extra args to createAction', () => {
+    const props = AppNode.props()
+
+    props.noopAction()
+
+    createActionPayloadCreator.should.have.been.called
+    createActionMetaCreator.should.have.been.called
+
+    createActionPayloadCreator.reset()
+    createActionMetaCreator.reset()
   })
 
   it('should throw when module without namespace', () => {
