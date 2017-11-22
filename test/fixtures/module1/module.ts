@@ -28,6 +28,11 @@ class Module1 extends EffectModule<Module1StateProps> {
 
   @DefineAction() dispose: Observable<Action<void>>
 
+  @DefineAction({
+    createActionPayloadCreator,
+    createActionMetaCreator
+  }) noopAction: Observable<Action<void>>
+
   @Reducer()
   dispose2(state: Module1StateProps) {
     return state
