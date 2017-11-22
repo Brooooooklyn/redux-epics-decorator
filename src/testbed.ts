@@ -1,6 +1,6 @@
 import { connect as reactConnect } from 'react-redux'
-import { combineReducers, createStore, Store, compose, applyMiddleware } from 'redux'
-import { createEpicMiddleware } from 'redux-observable'
+import { createStore, Store, compose, applyMiddleware, Reducer, combineReducers } from 'redux'
+import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import { ReflectiveInjector, Injector  } from 'injection-js'
 import { allDeps } from './decorators/Module'
 import { Constructorof } from './EffectModule'
@@ -60,10 +60,16 @@ export class TestBed {
     }
   }
 
-  setupStore<MockGlobalState>(name: string, m: any): Store<MockGlobalState> {
-    const instance = this.getInstance(m)
-    return createStore(combineReducers({ [name]: instance.reducer }), compose(
-      applyMiddleware(createEpicMiddleware(instance.epic))
+  setupStore<MockGlobalState>(modules: { [index: string]: Constructorof<any> } = { }): Store<MockGlobalState> {
+    const results = Object.keys(modules).reduce((acc, key) => {
+      const { reducer, epics } = acc
+      const instance = this.getInstance(modules[key])
+      Object.assign(reducer, { [key]: instance.reducer })
+      epics.push(instance.epic)
+      return acc
+    }, { reducer: {} as { [index: string]: Reducer<any> }, epics: [] as any[] })
+    return createStore(combineReducers(results.reducer), compose(
+      applyMiddleware(createEpicMiddleware(combineEpics(...results.epics)))
     ))
   }
 }
