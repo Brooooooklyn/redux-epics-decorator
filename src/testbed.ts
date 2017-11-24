@@ -2,6 +2,8 @@ import { connect as reactConnect } from 'react-redux'
 import { createStore, Store, compose, applyMiddleware, Reducer, combineReducers } from 'redux'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import { ReflectiveInjector, Injector  } from 'injection-js'
+import { catchError } from 'rxjs/operators/catchError'
+
 import { allDeps } from './decorators/Module'
 import { Constructorof } from './EffectModule'
 
@@ -69,7 +71,15 @@ export class TestBed {
       return acc
     }, { reducer: {} as { [index: string]: Reducer<any> }, epics: [] as any[] })
     return createStore(combineReducers(results.reducer), compose(
-      applyMiddleware(createEpicMiddleware(combineEpics(...results.epics)))
+      applyMiddleware(createEpicMiddleware(function() {
+        return combineEpics(...results.epics).apply(null, arguments)
+          .pipe(
+            catchError((err, source) => {
+              console.error(err)
+              return source
+            })
+          )
+      }))
     ))
   }
 }

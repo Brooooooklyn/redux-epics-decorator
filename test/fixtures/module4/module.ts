@@ -1,5 +1,6 @@
 import { map } from 'rxjs/operators/map'
 import { startWith } from 'rxjs/operators/startWith'
+import { _throw } from 'rxjs/observable/throw'
 import { Observable } from 'rxjs/Observable'
 
 import { EffectModule, Module, Effect, ModuleActionProps, Reducer } from '../../../src'
@@ -45,6 +46,13 @@ export default class Module4 extends EffectModule<Module4StateProps> {
     return action$.pipe(
       map(() => this.createActionFrom(this.depModule.exposedReducer)(2)),
       startWith(this.createActionFrom(this.depModule.exposedEpic)(2))
+    )
+  }
+
+  @Effect()
+  errorEpic(action$: Observable<void>) {
+    return action$.pipe(
+      map(() => _throw(new TypeError()) as any)
     )
   }
 }
