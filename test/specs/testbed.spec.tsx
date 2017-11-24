@@ -111,6 +111,15 @@ describe('TestBed spec', () => {
     expect(store.getState().module4.count).equal(1234)
   })
 
+  it('should catch epics error', () => {
+    const spy = Sinon.spy(console, 'error')
+
+    AppNode.props().errorEpic()
+    expect(spy.callCount).to.equal(1)
+
+    spy.restore()
+  })
+
   it('should throw when provider non-decorated method', () => {
     testbed = TestBedFactory.configureTestingModule({
       providers: [{
