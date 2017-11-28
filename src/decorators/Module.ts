@@ -1,6 +1,7 @@
 import { symbolNamespace, symbolDispatch, symbolReducerMap, symbolEpics } from '../symbol'
 import { ReflectiveInjector, Injectable, Injector  } from 'injection-js'
 import { currentReducers, currentSetEffectQueue } from '../shared'
+import { Constructorof } from '../EffectModule'
 
 function copyMap(map: Map<any, any>) {
   const dist = new Map()
@@ -44,7 +45,7 @@ export const Module = (moduleConfig: string | ModuleConfig) =>
 
 let lastDepsSize = 0
 let injector: Injector
-export const getInstance = (ins: any) => {
+export const getInstance = <T = any>(ins: Constructorof<T>): T => {
   // 动态注入
   if (lastDepsSize !== allDeps.size) {
     injector = ReflectiveInjector.resolveAndCreate(Array.from((allDeps as any)))
