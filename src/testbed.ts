@@ -1,16 +1,11 @@
 import { connect as reactConnect } from 'react-redux'
 import { createStore, Store, compose, applyMiddleware, Reducer, combineReducers } from 'redux'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
-import { ReflectiveInjector, Injector  } from 'injection-js'
+import { ReflectiveInjector, Injector, Provider } from 'injection-js'
 import { catchError } from 'rxjs/operators/catchError'
 
 import { allDeps } from './decorators/Module'
 import { Constructorof } from './EffectModule'
-
-export interface Provider {
-  provide: Function
-  useClass: Function
-}
 
 export interface TestBedConfig {
   providers: Provider[]
@@ -24,18 +19,9 @@ export class TestBedFactory {
     }
     const newAllDeps = new Set(allDeps as any)
     const providers = config.providers
-    providers.forEach(provider => this.replaceDep(provider, newAllDeps))
+    providers.forEach(provider => newAllDeps.add(provider))
     const testbed = new TestBed(this.configInjector(newAllDeps))
     return testbed
-  }
-
-  private static replaceDep = (provider: Provider, newAllDeps: Set<any>) => {
-    const { provide } = provider
-    /* istanbul ignore else*/
-    if (newAllDeps.has(provide)) {
-      newAllDeps.delete(provide)
-      newAllDeps.add(provider)
-    }
   }
 
   private static configInjector(newAllDeps: Set<any>) {
