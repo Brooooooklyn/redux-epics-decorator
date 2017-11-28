@@ -1,5 +1,6 @@
+import { ReflectiveInjector, Injectable, Injector, Provider  } from 'injection-js'
+
 import { symbolNamespace, symbolDispatch, symbolReducerMap, symbolEpics } from '../symbol'
-import { ReflectiveInjector, Injectable, Injector  } from 'injection-js'
 import { currentReducers, currentSetEffectQueue } from '../shared'
 import { Constructorof } from '../EffectModule'
 

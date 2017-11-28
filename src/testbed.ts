@@ -70,7 +70,7 @@ export class TestBed {
       epics.push(instance.epic)
       return acc
     }, { reducer: {} as { [index: string]: Reducer<any> }, epics: [] as any[] })
-    return createStore(combineReducers(results.reducer), compose(
+    return createStore(!Object.keys(results.reducer).length ? () => ({ } as any) : combineReducers(results.reducer), compose(
       applyMiddleware(createEpicMiddleware(function() {
         return combineEpics(...results.epics).apply(null, arguments)
           .pipe(
