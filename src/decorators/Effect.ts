@@ -43,7 +43,18 @@ export function Effect (handler: EffectHandler = {} as any) {
           return descriptor.value.call(this, matchedAction$, store)
             .pipe(
               map((actionResult: ReduxAction<any>) => {
+                if (!actionResult) {
+                  const methodPosition = `${ target.constructor.name }#${ method }`
+                  throw new TypeError(
+                    `${ methodPosition } emit a ${ Object.prototype.toString.call(actionResult, actionResult).replace(/(\[object)|(\])/g, '') }`
+                  )
+                }
                 const { type } = actionResult
+                if (!type) {
+                  console.warn(
+                    `result from ${ target.constructor.name }#${ method } epic is not a action: ${ JSON.stringify(actionResult, null, 2) }`
+                  )
+                }
                 return {
                   ...actionResult,
                   type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
