@@ -17,7 +17,6 @@ import {
   withReducer
 } from '../symbol'
 import { startsWith } from '../startsWith'
-import { EpicAction } from '../interface'
 import { EffectModule } from '../EffectModule'
 import { currentReducers, currentSetEffectQueue } from '../shared'
 
@@ -29,16 +28,12 @@ export interface EffectHandler {
 
 export type ReduxRouterActions = typeof LOCATION_CHANGE | typeof CALL_HISTORY_METHOD
 
-export function Effect (handler: EffectHandler = {}) {
-  return <Target extends EffectModule<any>>(target: Target, method: string, descriptor: PropertyDescriptor) => {
+export function Effect (handler: EffectHandler = {} as any) {
+  return (target: any, method: string, descriptor: PropertyDescriptor) => {
     let startAction: ActionFunction0<ReduxAction<void>>
     let name: string
     const constructor = target.constructor
-    const epic: <Input, Output, ActionType extends (keyof Target | keyof EffectHandler | ReduxRouterActions)>(
-      action$: Observable<Input>,
-      store?: Store<any>
-    ) =>
-      Observable<EpicAction<ActionType, Output>> =
+    const epic: any =
         function (this: EffectModule<any>, action$: Observable<any>, store?: Store<any>) {
           const matchedAction$ = action$
             .pipe(
