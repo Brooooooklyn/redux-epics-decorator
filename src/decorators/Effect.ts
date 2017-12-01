@@ -17,7 +17,6 @@ import {
   withReducer
 } from '../symbol'
 import { startsWith } from '../startsWith'
-import { EpicAction } from '../interface'
 import { EffectModule } from '../EffectModule'
 import { currentReducers, currentSetEffectQueue } from '../shared'
 
@@ -29,16 +28,12 @@ export interface EffectHandler {
 
 export type ReduxRouterActions = typeof LOCATION_CHANGE | typeof CALL_HISTORY_METHOD
 
-export function Effect (handler: EffectHandler = {}) {
-  return <Target extends EffectModule<any>>(target: Target, method: string, descriptor: PropertyDescriptor) => {
+export function Effect (handler: EffectHandler = {} as any) {
+  return (target: any, method: string, descriptor: PropertyDescriptor) => {
     let startAction: ActionFunction0<ReduxAction<void>>
     let name: string
     const constructor = target.constructor
-    const epic: <Input, Output, ActionType extends (keyof Target | keyof EffectHandler | ReduxRouterActions)>(
-      action$: Observable<Input>,
-      store?: Store<any>
-    ) =>
-      Observable<EpicAction<ActionType, Output>> =
+    const epic: any =
         function (this: EffectModule<any>, action$: Observable<any>, store?: Store<any>) {
           const matchedAction$ = action$
             .pipe(
@@ -48,7 +43,18 @@ export function Effect (handler: EffectHandler = {}) {
           return descriptor.value.call(this, matchedAction$, store)
             .pipe(
               map((actionResult: ReduxAction<any>) => {
+                if (!actionResult) {
+                  const methodPosition = `${ target.constructor.name }#${ method }`
+                  throw new TypeError(
+                    `${ methodPosition } emit a ${ Object.prototype.toString.call(actionResult, actionResult).replace(/(\[object)|(\])/g, '') }`
+                  )
+                }
                 const { type } = actionResult
+                if (!type) {
+                  console.warn(
+                    `result from ${ target.constructor.name }#${ method } epic is not a action: ${ JSON.stringify(actionResult, null, 2) }`
+                  )
+                }
                 return {
                   ...actionResult,
                   type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
