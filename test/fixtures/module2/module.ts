@@ -5,12 +5,13 @@ import { exhaustMap } from 'rxjs/operators/exhaustMap'
 import { map } from 'rxjs/operators/map'
 import { mergeMap } from 'rxjs/operators/mergeMap'
 import { takeUntil } from 'rxjs/operators/takeUntil'
+import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { toArray } from 'rxjs/operators/toArray'
 import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, Module, Effect, Reducer, ModuleActionProps } from '../../../src'
 
 export interface Module2StateProps {
   currentMsgId: string | null
@@ -18,7 +19,7 @@ export interface Module2StateProps {
   loading: boolean
 }
 
-@Module('two')
+@Module('module2')
 class Module2 extends EffectModule<Module2StateProps> {
   defaultState: Module2StateProps = {
     currentMsgId: null,
@@ -26,21 +27,25 @@ class Module2 extends EffectModule<Module2StateProps> {
     loading: false
   }
 
-  @DefineAction() dispose: Observable<Action<void>>
-
-  @Effect({
-    success: (state: Module2StateProps, { payload }: Action<Msg>) => {
-      const { allMsgs } = state
-      return { ...state, allMsgs: allMsgs.concat([payload!]), loading: false }
-    }
-  })
-  getMsg(action$: Observable<void>) {
+  @Effect()
+  dispose(action$: Observable<any>) {
     return action$
+  }
+
+  @Effect()
+  getMsg(current$: Observable<void>, { state$, action$ }: any) {
+    return current$
       .pipe(
         mergeMap(() => generateMsg()
           .pipe(
-            takeUntil(this.dispose),
-            map(msg => this.createAction('success')(msg))
+            withLatestFrom(state$, (msg: Msg, state: any) => ({
+              type: 'success',
+              payload: {
+                allMsgs: state.allMsgs.concat(msg),
+                loading: false
+              }
+            })),
+            takeUntil(this.dispose(action$))
           )
         )
       )
@@ -52,8 +57,8 @@ class Module2 extends EffectModule<Module2StateProps> {
   }
 
   @Effect()
-  loadMsgs(action$: Observable<void>) {
-    return action$
+  loadMsgs(current$: Observable<void>) {
+    return current$
       .pipe(
         exhaustMap(() => range(0, 10)
           .pipe(
@@ -63,35 +68,29 @@ class Module2 extends EffectModule<Module2StateProps> {
       )
   }
 
-  @Effect({
-    loading: (state: Module2StateProps) => {
-      return { ...state, loading: true }
-    }
-  })
-  loadFiveMsgs(action$: Observable<void>) {
-    return action$
+  @Effect()
+  loadFiveMsgs(current$: Observable<void>, { state$, action$ }: any) {
+    return current$
       .pipe(
         exhaustMap(() => {
           const request$ = range(0, 5)
             .pipe(
               mergeMap(() => generateMsg()
                 .pipe(
-                  takeUntil(this.dispose)
+                  takeUntil(this.dispose(action$))
                 )
               ),
               toArray(),
-              map(this.createActionFrom(this.setMsgs))
+              withLatestFrom(state$, this.setMsgs)
             )
-          return just(this.createAction('loading')())
+          return just({ type: 'loading', loading: true })
             .pipe(concat(request$))
         })
       )
   }
 
-  @Reducer()
-  private setMsgs(state: Module2StateProps, { payload }: Action<Msg[]>) {
-    const { allMsgs } = state
-    return { ...state, allMsgs: allMsgs.concat(payload!) }
+  private setMsgs(msg: any, state: Module2StateProps) {
+    return { type: 'success', payload: { allMsgs: state.allMsgs.concat(msg) } }
   }
 }
 

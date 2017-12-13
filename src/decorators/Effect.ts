@@ -1,6 +1,5 @@
 import 'reflect-metadata'
 import { map } from 'rxjs/operators/map'
-import { Store } from 'redux'
 import { LOCATION_CHANGE, CALL_HISTORY_METHOD } from 'react-router-redux'
 import { Action as ReduxAction, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
@@ -11,7 +10,6 @@ import {
   symbolDispatch,
   symbolEpics,
   symbolAction,
-  symbolNotTrasfer,
   routerActionNamespace,
   withNamespace,
   withReducer
@@ -34,13 +32,13 @@ export function Effect (handler: EffectHandler = {} as any) {
     let name: string
     const constructor = target.constructor
     const epic: any =
-        function (this: EffectModule<any>, action$: Observable<any>, store?: Store<any>) {
-          const matchedAction$ = action$
+        function (this: EffectModule<any>, action$: Observable<any>, state$: any) {
+          const current$ = action$
             .pipe(
               ofType(startAction.toString()),
               map(({ payload }) => payload)
             )
-          return descriptor.value.call(this, matchedAction$, store)
+          return descriptor.value.call(this, current$, { state$, action$ })
             .pipe(
               map((actionResult: ReduxAction<any>) => {
                 if (!actionResult) {
@@ -57,9 +55,10 @@ export function Effect (handler: EffectHandler = {} as any) {
                 }
                 return {
                   ...actionResult,
-                  type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
-                    type :
-                    withReducer(name, method, type)
+                  namespace: name,
+                  type: startsWith(actionResult.type, routerActionNamespace) || startsWith(actionResult.type, name)
+                    ? type
+                    : withReducer(name, method, type)
                 }
               })
             )

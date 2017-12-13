@@ -1,11 +1,11 @@
 import 'reflect-metadata'
-import { combineEpics, ofType } from 'redux-observable'
-import { ActionFunctionAny, Reducer, handleActions, Action, createAction } from 'redux-actions'
-import { empty } from 'rxjs/observable/empty'
+import { combineEpics } from 'redux-observable'
+import { ActionFunctionAny, Reducer, Action, createAction } from 'redux-actions'
 
-import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer, withNamespace } from './symbol'
+import { symbolDispatch, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer, withNamespace } from './symbol'
 import { EpicAction, EpicLike } from './interface'
-import { Observable } from 'rxjs/Observable'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { map } from 'rxjs/operators/map'
 
 export interface CreateAction<ActionType extends string> {
   <T>(payload: T): EpicAction<ActionType, T>
@@ -17,18 +17,12 @@ export abstract class EffectModule<StateProps> {
   abstract readonly defaultState: StateProps
 
   private readonly ctor = this.constructor.prototype.constructor
-  private moduleAction$: Observable<Action<any>>
 
   constructor() {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
     if (!name) {
       throw new TypeError('Should be decorator by @namespcae')
     }
-  }
-
-  private moduleEpic = <T> (action$: Observable<Action<T>>) => {
-    this.moduleAction$ = action$
-    return empty()
   }
 
   // @internal
@@ -38,24 +32,24 @@ export abstract class EffectModule<StateProps> {
 
   // @internal
   get epic() {
-    return combineEpics(this.moduleEpic, ...Reflect.getMetadata(symbolEpics, this.ctor).map((epic: any) => epic.bind(this)))
+    const name = Reflect.getMetadata(symbolNamespace, this.ctor)
+    const epics = Reflect.getMetadata(symbolEpics, this.ctor)
+      .map((epic: any) => epic.bind(this))
+    return (action$: any, store: any, dependencies: any) => {
+      const state$ = new BehaviorSubject(this.defaultState[name])
+      action$.pipe(map(() => store.getState()[name])).subscribe(state$)
+      return combineEpics(...epics)(action$, state$, dependencies)
+    }
   }
 
   // @internal
   get reducer(): Reducer<StateProps, any> {
-    const reducersMap: Map<string, Function> = Reflect.getMetadata(symbolReducerMap, this.ctor)
-    const reducers = { }
-    reducersMap.forEach((reducer, key) => {
-      reducers[key] = reducer.bind(this)
-    })
-    return handleActions(reducers, this.defaultState)
-  }
-
-  protected fromDecorated<T> (method: Reducer<any, T> | EpicLike<T, any, any, any>) {
-    const action = method[symbolAction]
-    return this.moduleAction$.pipe(
-      ofType(action)
-    ) as Observable<Action<T>>
+    const name = Reflect.getMetadata(symbolNamespace, this.ctor)
+    return (state: any = this.defaultState, action: Action<any>) => {
+      return action['namespace'] === name
+        ? { ...state, ...action.payload }
+        : state
+    }
   }
 
   protected createAction<ActionType extends string, T = any>(actionType: ActionType): (payload?: T) => EpicAction<ActionType, T>

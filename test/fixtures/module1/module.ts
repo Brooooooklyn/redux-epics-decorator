@@ -2,6 +2,7 @@ import { exhaustMap } from 'rxjs/operators/exhaustMap'
 import { map } from 'rxjs/operators/map'
 import { mergeMap } from 'rxjs/operators/mergeMap'
 import { takeUntil } from 'rxjs/operators/takeUntil'
+import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { of as just } from 'rxjs/observable/of'
 import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
@@ -19,39 +20,42 @@ export interface Module1StateProps {
 export const createActionPayloadCreator = sinon.spy()
 export const createActionMetaCreator = sinon.spy()
 
-@Module('one')
+@Module('module1')
 class Module1 extends EffectModule<Module1StateProps> {
   defaultState: Module1StateProps = {
     currentMsgId: null,
     allMsgs: []
   }
 
-  @DefineAction() dispose: Observable<Action<void>>
-
   @DefineAction({
     createActionPayloadCreator,
     createActionMetaCreator
   }) noopAction: Observable<Action<void>>
 
-  @Reducer()
-  dispose2(state: Module1StateProps) {
-    return state
+  @Effect()
+  dispose(current$: Observable<void>) {
+    return current$
   }
 
-  @Effect({
-    success: (state: Module1StateProps, { payload }: Action<Msg>) => {
-      const { allMsgs } = state
-      return { ...state, allMsgs: allMsgs.concat([payload!]) }
-    }
-  })
-  getMsg(action$: Observable<void>) {
-    return action$
+  @Effect()
+  dispose2(current$: Observable<void>) {
+    return current$
+  }
+
+  @Effect()
+  getMsg(current$: Observable<void>, { state$, action$ }: any) {
+    return current$
       .pipe(
         exhaustMap(() => generateMsg()
           .pipe(
-            takeUntil(this.dispose),
-            takeUntil(this.fromDecorated(this.dispose2)),
-            map(this.createAction('success'))
+            withLatestFrom(state$, (msg: Msg, state: any) => ({
+              type: 'success',
+              payload: {
+                allMsgs: state.allMsgs.concat(msg)
+              }
+            })),
+            takeUntil(this.dispose(action$)),
+            takeUntil(this.dispose2(action$))
           )
         )
       )
