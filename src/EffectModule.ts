@@ -6,6 +6,7 @@ import { symbolDispatch, symbolEpics, symbolAction, symbolNamespace, symbolNotTr
 import { EpicAction, EpicLike } from './interface'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { map } from 'rxjs/operators/map'
+import { startsWith } from './startsWith'
 
 export interface CreateAction<ActionType extends string> {
   <T>(payload: T): EpicAction<ActionType, T>
@@ -46,7 +47,7 @@ export abstract class EffectModule<StateProps> {
   get reducer(): Reducer<StateProps, any> {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
     return (state: any = this.defaultState, action: Action<any>) => {
-      return action['namespace'] === name
+      return startsWith(action.type, name)
         ? { ...state, ...action.payload }
         : state
     }

@@ -86,16 +86,9 @@ class Module1 extends EffectModule<Module1StateProps> {
   }
 
   @Effect()
-  undefinedEpic(action$: Observable<void>) {
-    return action$
-  }
-
-  @Effect()
   nonActionEpic(action$: Observable<void>) {
     return action$.pipe(
-      map(() => ({
-        payload: 'foo'
-      }))
+      map(() => () => {})
     )
   }
 

@@ -76,7 +76,7 @@ describe('Module specs', () => {
   })
 
   it('should getAction from Module class with decorated method name', () => {
-    expect(`${getAction(EffectModule1, 'getMsg')}`).to.equal('one/get_msg')
+    expect(`${getAction(EffectModule1, 'getMsg')}`).to.equal('module1/get_msg')
   })
 
   it('should createActionFrom the other module', () => {

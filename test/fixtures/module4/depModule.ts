@@ -7,7 +7,7 @@ export interface DepModule4StateProps {
   counter: number
 }
 
-@Module('dep_module4')
+@Module('depModule4')
 export default class DepModule4 extends EffectModule<DepModule4StateProps> {
   defaultState = {
     counter: 0

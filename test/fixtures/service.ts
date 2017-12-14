@@ -1,12 +1,6 @@
 import { Observable } from 'rxjs/Observable'
 import { Observer } from 'rxjs/Observer'
 
-// declare const process: {
-  // env: {
-    // [index: string]: string
-  // }
-// }
-
 let i = 0
 
 export interface Msg {
@@ -16,9 +10,6 @@ export interface Msg {
 
 export const CancelController = {
   cancelToken: () => {
-    // if (process.env.NODE_ENV !== 'test') {
-      // console.info('Cancel happen')
-    // }
   }
 }
 

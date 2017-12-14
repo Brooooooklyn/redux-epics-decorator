@@ -128,20 +128,9 @@ describe('Effect specs', () => {
     clock.restore()
   })
 
-  it('should throw when Epic emit a undefined value', () => {
+  it('should throw when Epic emit a non action value', () => {
     const props = Module1Node.props()
     const spy = Sinon.spy(console, 'error')
-
-    props.undefinedEpic()
-
-    expect(spy.callCount).to.equal(1)
-
-    spy.restore()
-  })
-
-  it('should warn when Epic emit a non action value', () => {
-    const props = Module1Node.props()
-    const spy = Sinon.spy(console, 'warn')
 
     props.nonActionEpic()
 

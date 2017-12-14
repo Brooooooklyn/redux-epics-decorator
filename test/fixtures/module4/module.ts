@@ -1,5 +1,5 @@
 import { map } from 'rxjs/operators/map'
-import { startWith } from 'rxjs/operators/startWith'
+import { concatMap } from 'rxjs/operators/concatMap'
 import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { _throw } from 'rxjs/observable/throw'
 import { Observable } from 'rxjs/Observable'
@@ -30,7 +30,7 @@ export default class Module4 extends EffectModule<Module4StateProps> {
     return current$.pipe(
       map(() => ({
         type: 'success',
-        payload: this.getData()
+        payload: { count: this.getData() }
       }))
     )
   }
@@ -50,15 +50,16 @@ export default class Module4 extends EffectModule<Module4StateProps> {
 
   @Effect()
   dispatchOtherModulesAction(action$: Observable<void>) {
+    const action = this.createActionFrom(this.depModule.exposedEpic)(2)
     return action$.pipe(
-      startWith(this.createActionFrom(this.depModule.exposedEpic)(2))
+      map(() => action)
     )
   }
 
   @Effect()
   errorEpic(action$: Observable<void>) {
     return action$.pipe(
-      map(() => _throw(new TypeError()) as any)
+      concatMap(() => _throw(new TypeError()) as any)
     )
   }
 }
