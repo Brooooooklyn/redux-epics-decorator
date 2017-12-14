@@ -7,11 +7,10 @@ import { mergeMap } from 'rxjs/operators/mergeMap'
 import { takeUntil } from 'rxjs/operators/takeUntil'
 import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { toArray } from 'rxjs/operators/toArray'
-import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, Module, Effect, Reducer, ModuleActionProps } from '../../../src'
+import { EffectModule, Module, Effect, ModuleActionProps } from '../../../src'
 
 export interface Module2StateProps {
   currentMsgId: string | null
@@ -49,11 +48,6 @@ class Module2 extends EffectModule<Module2StateProps> {
           )
         )
       )
-  }
-
-  @Reducer()
-  selectMsg(state: Module2StateProps, { payload }: Action<string>) {
-    return { ...state, currentMsgId: payload }
   }
 
   @Effect()

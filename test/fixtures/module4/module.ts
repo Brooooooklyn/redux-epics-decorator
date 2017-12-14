@@ -3,7 +3,7 @@ import { startWith } from 'rxjs/operators/startWith'
 import { _throw } from 'rxjs/observable/throw'
 import { Observable } from 'rxjs/Observable'
 
-import { EffectModule, Module, Effect, ModuleActionProps, Reducer } from '../../../src'
+import { EffectModule, Module, Effect, ModuleActionProps } from '../../../src'
 import DepModule from './depModule'
 
 export interface Module4StateProps {
@@ -24,11 +24,6 @@ export default class Module4 extends EffectModule<Module4StateProps> {
     return this.depModule.getData()
   }
 
-  @Reducer()
-  setData(state: Module4StateProps) {
-    return { ...state, count: this.getData() }
-  }
-
   @Effect({
     success: (state: Module4StateProps) => {
       return { ...state, count: state.count + 1 }
@@ -44,7 +39,6 @@ export default class Module4 extends EffectModule<Module4StateProps> {
   @Effect()
   dispatchOtherModulesAction(action$: Observable<void>) {
     return action$.pipe(
-      map(() => this.createActionFrom(this.depModule.exposedReducer)(2)),
       startWith(this.createActionFrom(this.depModule.exposedEpic)(2))
     )
   }

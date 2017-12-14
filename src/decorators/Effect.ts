@@ -10,6 +10,7 @@ import {
   symbolDispatch,
   symbolEpics,
   symbolAction,
+  symbolNotTrasfer,
   routerActionNamespace,
   withNamespace,
   withReducer
@@ -56,7 +57,9 @@ export function Effect (handler: EffectHandler = {} as any) {
                 return {
                   ...actionResult,
                   namespace: name,
-                  type: startsWith(actionResult.type, routerActionNamespace) || startsWith(actionResult.type, name)
+                  type: startsWith(actionResult.type, routerActionNamespace)
+                    || startsWith(actionResult.type, name)
+                    || actionResult[symbolNotTrasfer]
                     ? type
                     : withReducer(name, method, type)
                 }

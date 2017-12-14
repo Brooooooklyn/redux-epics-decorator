@@ -1,8 +1,7 @@
-import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { map } from 'rxjs/operators/map'
 
-import { EffectModule, Module, Reducer, Effect } from '../../../src'
+import { EffectModule, Module, Effect } from '../../../src'
 
 export interface DepModule4StateProps {
   counter: number
@@ -16,11 +15,6 @@ export default class DepModule4 extends EffectModule<DepModule4StateProps> {
 
   getData() {
     return 1729
-  }
-
-  @Reducer()
-  exposedReducer(state: DepModule4StateProps, action: Action<number>) {
-    return { ...state, counter: action.payload! }
   }
 
   @Effect({

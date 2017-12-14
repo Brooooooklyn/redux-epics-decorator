@@ -4,13 +4,12 @@ import { mergeMap } from 'rxjs/operators/mergeMap'
 import { takeUntil } from 'rxjs/operators/takeUntil'
 import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { of as just } from 'rxjs/observable/of'
-import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
 import * as sinon from 'sinon'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, Module, Effect, ModuleActionProps } from '../../../src'
 
 export interface Module1StateProps {
   currentMsgId: string | null
@@ -26,11 +25,6 @@ class Module1 extends EffectModule<Module1StateProps> {
     currentMsgId: null,
     allMsgs: []
   }
-
-  @DefineAction({
-    createActionPayloadCreator,
-    createActionMetaCreator
-  }) noopAction: Observable<Action<void>>
 
   @Effect()
   dispose(current$: Observable<void>) {
@@ -59,19 +53,6 @@ class Module1 extends EffectModule<Module1StateProps> {
           )
         )
       )
-  }
-
-  @Reducer()
-  selectMsg(state: Module1StateProps, { payload }: Action<string>) {
-    return { ...state, currentMsgId: payload }
-  }
-
-  @Reducer({
-    createActionPayloadCreator,
-    createActionMetaCreator
-  })
-  noopReducer() {
-    return {}
   }
 
   @Effect()
