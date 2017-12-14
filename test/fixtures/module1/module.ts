@@ -56,6 +56,18 @@ class Module1 extends EffectModule<Module1StateProps> {
   }
 
   @Effect()
+  selectMsg(current$: Observable<string>) {
+    return current$.pipe(
+      map((currentMsgId: string) => ({
+        type: 'success',
+        payload: {
+          currentMsgId
+        }
+      }))
+    )
+  }
+
+  @Effect()
   getModule3Msg(action$: Observable<void>) {
     return action$
       .pipe(

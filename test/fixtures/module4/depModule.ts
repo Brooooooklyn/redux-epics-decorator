@@ -17,14 +17,13 @@ export default class DepModule4 extends EffectModule<DepModule4StateProps> {
     return 1729
   }
 
-  @Effect({
-    success: (state: DepModule4StateProps, action: Action<number>) => {
-      return { ...state, counter: action.payload! }
-    }
-  })
+  @Effect()
   exposedEpic(action$: Observable<number>) {
     return action$.pipe(
-      map(p => this.createAction('success')(p))
+      map(p => ({
+        type: 'success',
+        payload: { counter: p }
+      }))
     )
   }
 }

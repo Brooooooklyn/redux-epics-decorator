@@ -1,5 +1,6 @@
 import { map } from 'rxjs/operators/map'
 import { startWith } from 'rxjs/operators/startWith'
+import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { _throw } from 'rxjs/observable/throw'
 import { Observable } from 'rxjs/Observable'
 
@@ -10,7 +11,7 @@ export interface Module4StateProps {
   count: number
 }
 
-@Module('four')
+@Module('module4')
 export default class Module4 extends EffectModule<Module4StateProps> {
   defaultState: Module4StateProps = {
     count: 0
@@ -24,15 +25,26 @@ export default class Module4 extends EffectModule<Module4StateProps> {
     return this.depModule.getData()
   }
 
-  @Effect({
-    success: (state: Module4StateProps) => {
-      return { ...state, count: state.count + 1 }
-    }
-  })
-  add(action$: Observable<void>) {
+  @Effect()
+  setData(current$: Observable<void>) {
+    return current$.pipe(
+      map(() => ({
+        type: 'success',
+        payload: this.getData()
+      }))
+    )
+  }
+
+  @Effect()
+  add(action$: Observable<void>, { state$ }: any) {
     return action$
       .pipe(
-        map(this.createAction('success'))
+        withLatestFrom(state$, (_, state: Module4StateProps) => ({
+          type: 'success',
+          payload: {
+            count: state.count + 1
+          }
+        }))
       )
   }
 
