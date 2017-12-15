@@ -8,7 +8,7 @@ import { range } from 'lodash'
 
 import { EffectModule, Effect } from '../../src'
 import { setupStore, GlobalState } from '../fixtures/store'
-import { Module1Container, Module1Props, createActionPayloadCreator, createActionMetaCreator } from '../fixtures/module1'
+import { Module1Container, Module1Props } from '../fixtures/module1'
 import { Module2Container, Module2Props } from '../fixtures/module2'
 import { msgDelay } from '../fixtures/service'
 
@@ -107,23 +107,6 @@ describe('Effect specs', () => {
     clock.tick(msgDelay)
 
     expect(store.getState().module2.allMsgs.length).to.equal(5)
-
-    clock.restore()
-  })
-
-  it('should pass extra args to createAction', () => {
-    const props = Module1Node.props()
-    const clock = Sinon.useFakeTimers()
-
-    props.noop()
-
-    clock.tick(msgDelay)
-
-    createActionPayloadCreator.should.have.been.called
-    createActionMetaCreator.should.have.been.called
-
-    createActionPayloadCreator.reset()
-    createActionMetaCreator.reset()
 
     clock.restore()
   })

@@ -6,7 +6,6 @@ import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { of as just } from 'rxjs/observable/of'
 import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
-import * as sinon from 'sinon'
 
 import { generateMsg, Msg } from '../service'
 import { EffectModule, Module, Effect, ModuleActionProps } from '../../../src'
@@ -15,9 +14,6 @@ export interface Module1StateProps {
   currentMsgId: string | null
   allMsgs: Msg[]
 }
-
-export const createActionPayloadCreator = sinon.spy()
-export const createActionMetaCreator = sinon.spy()
 
 @Module('module1')
 class Module1 extends EffectModule<Module1StateProps> {
@@ -68,8 +64,8 @@ class Module1 extends EffectModule<Module1StateProps> {
   }
 
   @Effect()
-  getModule3Msg(action$: Observable<void>) {
-    return action$
+  getModule3Msg(current$: Observable<void>) {
+    return current$
       .pipe(
         map(() => this.markAsGlobal({
           type: 'three_get_msg'
@@ -78,26 +74,23 @@ class Module1 extends EffectModule<Module1StateProps> {
   }
 
   @Effect()
-  changeRouter(action$: Observable<void>) {
-    return action$
+  changeRouter(current$: Observable<void>) {
+    return current$
       .pipe(
         mergeMap(() => just(push('/hmmm')))
       )
   }
 
   @Effect()
-  nonActionEpic(action$: Observable<void>) {
-    return action$.pipe(
+  nonActionEpic(current$: Observable<void>) {
+    return current$.pipe(
       map(() => () => {})
     )
   }
 
-  @Effect({
-    createActionPayloadCreator,
-    createActionMetaCreator
-  })
-  noop(action$: Observable<void>) {
-    return action$
+  @Effect()
+  noop(current$: Observable<void>) {
+    return current$
       .pipe(
         map(() => this.createAction('noop')())
       )

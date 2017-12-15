@@ -27,8 +27,8 @@ class Module2 extends EffectModule<Module2StateProps> {
   }
 
   @Effect()
-  dispose(action$: Observable<any>) {
-    return action$
+  dispose(current$: Observable<any>) {
+    return current$
   }
 
   @Effect()

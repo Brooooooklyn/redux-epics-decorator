@@ -21,8 +21,3 @@ export interface EpicAction<ActionType extends string, PayloadType> {
   type: ActionType
   payload: PayloadType
 }
-
-export interface ReducerHandler {
-  createActionPayloadCreator?: any
-  createActionMetaCreator?: any
-}
