@@ -22,7 +22,7 @@ import { currentSetEffectQueue } from '../shared'
 export type ReduxRouterActions = typeof LOCATION_CHANGE | typeof CALL_HISTORY_METHOD
 
 export function Effect () {
-  return (target: any, method: string, descriptor: PropertyDescriptor) => {
+  return (target: EffectModule<any>, method: string, descriptor: PropertyDescriptor) => {
     let startAction: ActionFunction0<ReduxAction<void>>
     let name: string
     const constructor = target.constructor
@@ -30,7 +30,7 @@ export function Effect () {
         function (this: EffectModule<any>, action$: Observable<any>, state$: Observable<any>) {
           const current$ = action$
             .pipe(
-              ofType(startAction.toString()),
+              ofType(startAction),
               map(({ payload }) => payload)
             )
           return descriptor.value.call(this, current$, { state$, action$ })
