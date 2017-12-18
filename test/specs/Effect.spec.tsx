@@ -122,6 +122,14 @@ describe('Effect specs', () => {
     spy.restore()
   })
 
+  it('should handle empty stream', () => {
+    const props = Module1Node.props()
+    const spy = Sinon.spy(console, 'error')
+    props.dispose()
+    expect(spy.callCount).to.equal(0)
+    spy.restore()
+  })
+
   it('should throw when module without namespace', () => {
     function defineModule() {
       class TestModule extends EffectModule<any> {

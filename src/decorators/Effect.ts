@@ -36,16 +36,14 @@ export function Effect () {
           return descriptor.value.call(this, current$, { state$, action$ })
             .pipe(
               map((actionResult: ReduxAction<any>) => {
+                if (!actionResult) {
+                  return { type: withReducer(name, method, '') }
+                }
                 if (Object.prototype.toString.call(actionResult) !== '[object Object]') {
                   const methodPosition = `${ target.constructor.name }#${ method }`
                   throw new TypeError(
                     `${ methodPosition } emit a ${ Object.prototype.toString.call(actionResult, actionResult).replace(/(\[object)|(\])/g, '') }`
                   )
-                }
-                if (actionResult && !actionResult.type) {
-                  return {
-                    type: withReducer(name, method, '')
-                  }
                 }
                 return {
                   ...actionResult,
