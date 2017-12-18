@@ -79,7 +79,7 @@ class Module1 extends EffectModule<Module1StateProps> {
   @Effect()
   nonActionEpic(current$: Observable<void>) {
     return current$.pipe(
-      map(() => () => {})
+      map(() => () => ({ func: 'function' }))
     )
   }
 

@@ -10,6 +10,7 @@ export interface Msg {
 
 export const CancelController = {
   cancelToken: () => {
+    return 'cancel_token'
   }
 }
 

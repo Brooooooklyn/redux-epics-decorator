@@ -61,7 +61,6 @@ export class TestBed {
         return combineEpics(...results.epics).apply(null, arguments)
           .pipe(
             catchError((err, source) => {
-              console.log(err)
               console.error(err)
               return source
             })
