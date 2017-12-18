@@ -6,6 +6,7 @@ import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { of as just } from 'rxjs/observable/of'
 import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
+import * as sinon from 'sinon'
 
 import { generateMsg, Msg } from '../service'
 import { EffectModule, Module, Effect, ModuleActionProps } from '../../../src'
@@ -14,6 +15,8 @@ export interface Module1StateProps {
   currentMsgId: string | null
   allMsgs: Msg[]
 }
+
+export const metaCreator = sinon.spy()
 
 @Module('module1')
 class Module1 extends EffectModule<Module1StateProps> {
@@ -52,9 +55,11 @@ class Module1 extends EffectModule<Module1StateProps> {
   @Effect()
   selectMsg(current$: Observable<string>) {
     return current$.pipe(
-      map((currentMsgId: string) => this.createAction('currentMsgId', {
-        currentMsgId
-      }))
+      map((currentMsgId: string) => this.createAction(
+        'currentMsgId',
+        { currentMsgId },
+        metaCreator
+      ))
     )
   }
 
