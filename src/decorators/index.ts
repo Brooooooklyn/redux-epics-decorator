@@ -1,3 +1,3 @@
 export { Effect } from './Effect'
-export { Module } from './Module'
+export { Module, getInstance } from './Module'
 export { Injectable } from './Injectable'
