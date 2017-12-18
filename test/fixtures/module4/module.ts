@@ -28,10 +28,10 @@ export default class Module4 extends EffectModule<Module4StateProps> {
   @Effect()
   setData(current$: Observable<void>) {
     return current$.pipe(
-      map(() => ({
-        type: 'success',
-        payload: { count: this.getData() }
-      }))
+      map(() => this.createAction(
+        'success',
+        { count: this.getData() }
+      ))
     )
   }
 
@@ -39,12 +39,10 @@ export default class Module4 extends EffectModule<Module4StateProps> {
   add(action$: Observable<void>, { state$ }: any) {
     return action$
       .pipe(
-        withLatestFrom(state$, (_, state: Module4StateProps) => ({
-          type: 'success',
-          payload: {
-            count: state.count + 1
-          }
-        }))
+        withLatestFrom(state$, (_, state: Module4StateProps) => this.createAction(
+          'success',
+          { count: state.count + 1 }
+        ))
       )
   }
 

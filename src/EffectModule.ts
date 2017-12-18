@@ -53,10 +53,12 @@ export abstract class EffectModule<StateProps> {
     }
   }
 
-  protected createAction<ActionType extends string, T = any>(actionType: ActionType): (payload?: T) => EpicAction<ActionType, T>
-  protected createAction<ActionType extends string, T = any>(actionType: ActionType, ...args: any[]): (payload?: T) => EpicAction<ActionType, T>
-  protected createAction(...args: any[]) {
-    return createAction.apply(null, args)
+  protected createAction(type: string, payload?: Partial<StateProps>, metaCreator?: any) {
+    return {
+      type,
+      payload,
+      meta: metaCreator && metaCreator(payload)
+    }
   }
 
   protected createActionFrom<Input, S>

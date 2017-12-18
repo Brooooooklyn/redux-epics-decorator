@@ -38,12 +38,10 @@ class Module1 extends EffectModule<Module1StateProps> {
       .pipe(
         exhaustMap(() => generateMsg()
           .pipe(
-            withLatestFrom(state$, (msg: Msg, state: any) => ({
-              type: 'success',
-              payload: {
-                allMsgs: state.allMsgs.concat(msg)
-              }
-            })),
+            withLatestFrom(state$, (msg: Msg, state: any) => this.createAction(
+              'message',
+              { allMsgs: state.allMsgs.concat(msg) }
+            )),
             takeUntil(this.dispose(action$)),
             takeUntil(this.dispose2(action$))
           )
@@ -54,11 +52,8 @@ class Module1 extends EffectModule<Module1StateProps> {
   @Effect()
   selectMsg(current$: Observable<string>) {
     return current$.pipe(
-      map((currentMsgId: string) => ({
-        type: 'success',
-        payload: {
-          currentMsgId
-        }
+      map((currentMsgId: string) => this.createAction('currentMsgId', {
+        currentMsgId
       }))
     )
   }
@@ -91,9 +86,6 @@ class Module1 extends EffectModule<Module1StateProps> {
   @Effect()
   noop(current$: Observable<void>) {
     return current$
-      .pipe(
-        map(() => this.createAction('noop')())
-      )
   }
 
 }

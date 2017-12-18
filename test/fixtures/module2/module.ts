@@ -37,13 +37,13 @@ class Module2 extends EffectModule<Module2StateProps> {
       .pipe(
         mergeMap(() => generateMsg()
           .pipe(
-            withLatestFrom(state$, (msg: Msg, state: any) => ({
-              type: 'success',
-              payload: {
+            withLatestFrom(state$, (msg: Msg, state: any) => this.createAction(
+              'new_message',
+              {
                 allMsgs: state.allMsgs.concat(msg),
                 loading: false
               }
-            })),
+            )),
             takeUntil(this.dispose(action$))
           )
         )
@@ -53,12 +53,10 @@ class Module2 extends EffectModule<Module2StateProps> {
   @Effect()
   selectMsg(current$: Observable<string>) {
     return current$.pipe(
-      map((currentMsgId: string) => ({
-        type: 'success',
-        payload: {
-          currentMsgId
-        }
-      }))
+      map((currentMsgId: string) => this.createAction(
+        'message',
+        { currentMsgId }
+      ))
     )
   }
 
@@ -87,16 +85,18 @@ class Module2 extends EffectModule<Module2StateProps> {
                 )
               ),
               toArray(),
-              withLatestFrom(state$, this.setMsgs)
+              withLatestFrom(state$, this.setMsgs.bind(this))
             )
-          return just({ type: 'loading', loading: true })
+          return just(this.createAction('loading', { loading: true }))
             .pipe(concat(request$))
         })
       )
   }
 
   private setMsgs(msg: any, state: Module2StateProps) {
-    return { type: 'success', payload: { allMsgs: state.allMsgs.concat(msg) } }
+    return this.createAction('success', {
+      allMsgs: state.allMsgs.concat(msg)
+    })
   }
 }
 

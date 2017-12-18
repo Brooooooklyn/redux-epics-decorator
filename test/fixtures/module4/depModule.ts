@@ -20,10 +20,10 @@ export default class DepModule4 extends EffectModule<DepModule4StateProps> {
   @Effect()
   exposedEpic(action$: Observable<number>) {
     return action$.pipe(
-      map(p => ({
-        type: 'success',
-        payload: { counter: p }
-      }))
+      map(p => this.createAction(
+        'success',
+        { counter: p }
+      ))
     )
   }
 }
