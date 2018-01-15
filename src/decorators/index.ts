@@ -1,5 +1,3 @@
-export { DefineAction } from './DefineAction'
 export { Effect } from './Effect'
-export { Module } from './Module'
-export { Reducer } from './Reducer'
+export { Module, getInstance } from './Module'
 export { Injectable } from './Injectable'

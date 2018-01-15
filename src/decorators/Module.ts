@@ -1,16 +1,8 @@
 import { ReflectiveInjector, Injectable, Injector, Provider  } from 'injection-js'
 
-import { symbolNamespace, symbolDispatch, symbolReducerMap, symbolEpics } from '../symbol'
-import { currentReducers, currentSetEffectQueue } from '../shared'
+import { symbolNamespace, symbolDispatch, symbolEpics } from '../symbol'
+import { currentSetEffectQueue } from '../shared'
 import { Constructorof } from '../EffectModule'
-
-function copyMap(map: Map<any, any>) {
-  const dist = new Map()
-  map.forEach((val, key) => {
-    dist.set(key, val)
-  })
-  return dist
-}
 
 export const allDeps = new Set()
 
@@ -25,9 +17,7 @@ export const Module = (moduleConfig: string | ModuleConfig) =>
   Reflect.defineMetadata(symbolDispatch, {}, target)
   Reflect.defineMetadata(symbolEpics, [], target)
   currentSetEffectQueue.forEach(setupFn => setupFn())
-  Reflect.defineMetadata(symbolReducerMap, copyMap(currentReducers), target)
   currentSetEffectQueue.length = 0
-  currentReducers.clear()
 
   allDeps.add(target)
 

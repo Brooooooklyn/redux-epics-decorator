@@ -11,7 +11,7 @@ import { GlobalState } from '../fixtures/store'
 import { Module4 as Module4Component, mapStateToProps } from '../fixtures/module4/container'
 import DepModule4 from '../fixtures/module4/depModule'
 import Module4, { Module4Props } from '../fixtures/module4'
-import { Module, connect, Reducer, Effect, EffectModule } from '../../src'
+import { Module, connect, Effect, EffectModule } from '../../src'
 import { TestBedFactory, TestBed } from '../../src/testbed'
 
 chai.use(SinonChai)
@@ -25,11 +25,6 @@ describe('TestBed spec', () => {
 
     getData() {
       return 1234
-    }
-
-    @Reducer()
-    exposedReducer(state: any) {
-      return state
     }
 
     @Effect()
@@ -49,10 +44,6 @@ describe('TestBed spec', () => {
 
     getData() {
       return 1234
-    }
-
-    exposedReducer() {
-      return 1
     }
 
     exposedEpic() {

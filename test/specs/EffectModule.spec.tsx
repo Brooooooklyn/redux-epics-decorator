@@ -9,7 +9,7 @@ import { Route } from 'react-router'
 import { ConnectedRouter } from 'react-router-redux'
 
 import { setupStore, GlobalState, history } from '../fixtures/store'
-import EffectModule1, { Module1Container, Module1Props, Module1 } from '../fixtures/module1'
+import EffectModule1, { Module1Container, Module1Props, Module1, metaCreator } from '../fixtures/module1'
 import { Module3Container } from '../fixtures/module3'
 import { Module4Container, Module4, Module4Props } from '../fixtures/module4'
 import { msgDelay } from '../fixtures/service'
@@ -68,15 +68,23 @@ describe('Module specs', () => {
     clock.restore()
   })
 
+  it('should createAction with metaCreator', () => {
+    const props = Module1Node.props()
+    metaCreator.reset()
+    props.selectMsg('test')
+
+    metaCreator.should.have.been.calledWith({ currentMsgId: 'test' })
+  })
+
+  it('should getAction from Module class with decorated method name', () => {
+    expect(`${getAction(EffectModule1, 'getMsg')}`).to.equal('module1/get_msg')
+  })
+
   it('should not transfer react-router-redux actions', () => {
     const props = Module1Node.props()
     props.changeRouter()
 
     expect(store.getState().router.location!.pathname).to.equal('/hmmm')
-  })
-
-  it('should getAction from Module class with decorated method name', () => {
-    expect(`${getAction(EffectModule1, 'getMsg')}`).to.equal('one/get_msg')
   })
 
   it('should createActionFrom the other module', () => {

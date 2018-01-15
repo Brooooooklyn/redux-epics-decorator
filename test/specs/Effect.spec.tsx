@@ -8,7 +8,7 @@ import { range } from 'lodash'
 
 import { EffectModule, Effect } from '../../src'
 import { setupStore, GlobalState } from '../fixtures/store'
-import { Module1Container, Module1Props, createActionPayloadCreator, createActionMetaCreator } from '../fixtures/module1'
+import { Module1Container, Module1Props } from '../fixtures/module1'
 import { Module2Container, Module2Props } from '../fixtures/module2'
 import { msgDelay } from '../fixtures/service'
 
@@ -111,42 +111,22 @@ describe('Effect specs', () => {
     clock.restore()
   })
 
-  it('should pass extra args to createAction', () => {
-    const props = Module1Node.props()
-    const clock = Sinon.useFakeTimers()
-
-    props.noop()
-
-    clock.tick(msgDelay)
-
-    createActionPayloadCreator.should.have.been.called
-    createActionMetaCreator.should.have.been.called
-
-    createActionPayloadCreator.reset()
-    createActionMetaCreator.reset()
-
-    clock.restore()
-  })
-
-  it('should throw when Epic emit a undefined value', () => {
+  it('should throw when Epic emit a non action value', () => {
     const props = Module1Node.props()
     const spy = Sinon.spy(console, 'error')
 
-    props.undefinedEpic()
+    props.nonActionEpic()
 
     expect(spy.callCount).to.equal(1)
 
     spy.restore()
   })
 
-  it('should warn when Epic emit a non action value', () => {
+  it('should handle empty stream', () => {
     const props = Module1Node.props()
-    const spy = Sinon.spy(console, 'warn')
-
-    props.nonActionEpic()
-
-    expect(spy.callCount).to.equal(1)
-
+    const spy = Sinon.spy(console, 'error')
+    props.dispose()
+    expect(spy.callCount).to.equal(0)
     spy.restore()
   })
 

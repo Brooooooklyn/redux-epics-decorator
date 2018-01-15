@@ -1,8 +1,7 @@
 import 'reflect-metadata'
 import { map } from 'rxjs/operators/map'
-import { Store } from 'redux'
 import { LOCATION_CHANGE, CALL_HISTORY_METHOD } from 'react-router-redux'
-import { Action as ReduxAction, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
+import { Action as ReduxAction, createAction, ActionFunction0 } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { ofType } from 'redux-observable'
 
@@ -18,48 +17,40 @@ import {
 } from '../symbol'
 import { startsWith } from '../startsWith'
 import { EffectModule } from '../EffectModule'
-import { currentReducers, currentSetEffectQueue } from '../shared'
-
-export interface EffectHandler {
-  createActionPayloadCreator?: any
-  createActionMetaCreator?: any
-  [actionName: string]: ReduxReducer<any, any>
-}
+import { currentSetEffectQueue } from '../shared'
 
 export type ReduxRouterActions = typeof LOCATION_CHANGE | typeof CALL_HISTORY_METHOD
 
-export function Effect (handler: EffectHandler = {} as any) {
-  return (target: any, method: string, descriptor: PropertyDescriptor) => {
+export function Effect () {
+  return (target: EffectModule<any>, method: string, descriptor: PropertyDescriptor) => {
     let startAction: ActionFunction0<ReduxAction<void>>
     let name: string
     const constructor = target.constructor
     const epic: any =
-        function (this: EffectModule<any>, action$: Observable<any>, store?: Store<any>) {
-          const matchedAction$ = action$
+        function (this: EffectModule<any>, action$: Observable<any>, state$: Observable<any>) {
+          const current$ = action$
             .pipe(
-              ofType(startAction.toString()),
+              ofType(startAction),
               map(({ payload }) => payload)
             )
-          return descriptor.value.call(this, matchedAction$, store)
+          return descriptor.value.call(this, current$, { state$, action$ })
             .pipe(
               map((actionResult: ReduxAction<any>) => {
                 if (!actionResult) {
+                  return { type: withReducer(name, method, '') }
+                }
+                if (Object.prototype.toString.call(actionResult) !== '[object Object]') {
                   const methodPosition = `${ target.constructor.name }#${ method }`
                   throw new TypeError(
                     `${ methodPosition } emit a ${ Object.prototype.toString.call(actionResult, actionResult).replace(/(\[object)|(\])/g, '') }`
                   )
                 }
-                const { type } = actionResult
-                if (!type) {
-                  console.warn(
-                    `result from ${ target.constructor.name }#${ method } epic is not a action: ${ JSON.stringify(actionResult, null, 2) }`
-                  )
-                }
                 return {
                   ...actionResult,
-                  type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
-                    type :
-                    withReducer(name, method, type)
+                  type: startsWith(actionResult.type, routerActionNamespace)
+                    || actionResult[symbolNotTrasfer]
+                    ? actionResult.type
+                    : withReducer(name, method, actionResult.type)
                 }
               })
             )
@@ -70,13 +61,7 @@ export function Effect (handler: EffectHandler = {} as any) {
       const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
       const epics = Reflect.getMetadata(symbolEpics, constructor)
       const actionWithNamespace = withNamespace(name, method)
-      const { createActionPayloadCreator, createActionMetaCreator, ...reducer } = handler
-      startAction = createAction(actionWithNamespace, createActionPayloadCreator, createActionMetaCreator)
-
-      Object.keys(reducer)
-        .forEach(key => {
-          currentReducers.set(withReducer(name, method, key), handler[key])
-        })
+      startAction = createAction(actionWithNamespace)
 
       dispatchs[method] = startAction
       epics.push(epic)

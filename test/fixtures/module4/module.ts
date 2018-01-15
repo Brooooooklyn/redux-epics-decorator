@@ -1,16 +1,17 @@
 import { map } from 'rxjs/operators/map'
-import { startWith } from 'rxjs/operators/startWith'
+import { concatMap } from 'rxjs/operators/concatMap'
+import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { _throw } from 'rxjs/observable/throw'
 import { Observable } from 'rxjs/Observable'
 
-import { EffectModule, Module, Effect, ModuleActionProps, Reducer } from '../../../src'
+import { EffectModule, Module, Effect, ModuleActionProps } from '../../../src'
 import DepModule from './depModule'
 
 export interface Module4StateProps {
   count: number
 }
 
-@Module('four')
+@Module('module4')
 export default class Module4 extends EffectModule<Module4StateProps> {
   defaultState: Module4StateProps = {
     count: 0
@@ -24,35 +25,39 @@ export default class Module4 extends EffectModule<Module4StateProps> {
     return this.depModule.getData()
   }
 
-  @Reducer()
-  setData(state: Module4StateProps) {
-    return { ...state, count: this.getData() }
+  @Effect()
+  setData(current$: Observable<void>) {
+    return current$.pipe(
+      map(() => this.createAction(
+        'success',
+        { count: this.getData() }
+      ))
+    )
   }
 
-  @Effect({
-    success: (state: Module4StateProps) => {
-      return { ...state, count: state.count + 1 }
-    }
-  })
-  add(action$: Observable<void>) {
+  @Effect()
+  add(action$: Observable<void>, { state$ }: any) {
     return action$
       .pipe(
-        map(this.createAction('success'))
+        withLatestFrom(state$, (_, state: Module4StateProps) => this.createAction(
+          'success',
+          { count: state.count + 1 }
+        ))
       )
   }
 
   @Effect()
   dispatchOtherModulesAction(action$: Observable<void>) {
+    const action = this.createActionFrom(this.depModule.exposedEpic)(2)
     return action$.pipe(
-      map(() => this.createActionFrom(this.depModule.exposedReducer)(2)),
-      startWith(this.createActionFrom(this.depModule.exposedEpic)(2))
+      map(() => action)
     )
   }
 
   @Effect()
   errorEpic(action$: Observable<void>) {
     return action$.pipe(
-      map(() => _throw(new TypeError()) as any)
+      concatMap(() => _throw(new TypeError()) as any)
     )
   }
 }

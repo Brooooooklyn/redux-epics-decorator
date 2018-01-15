@@ -2,77 +2,70 @@ import { exhaustMap } from 'rxjs/operators/exhaustMap'
 import { map } from 'rxjs/operators/map'
 import { mergeMap } from 'rxjs/operators/mergeMap'
 import { takeUntil } from 'rxjs/operators/takeUntil'
+import { withLatestFrom } from 'rxjs/operators/withLatestFrom'
 import { of as just } from 'rxjs/observable/of'
-import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 import { push } from 'react-router-redux'
 import * as sinon from 'sinon'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, Module, Effect, ModuleActionProps } from '../../../src'
 
 export interface Module1StateProps {
   currentMsgId: string | null
   allMsgs: Msg[]
 }
 
-export const createActionPayloadCreator = sinon.spy()
-export const createActionMetaCreator = sinon.spy()
+export const metaCreator = sinon.spy()
 
-@Module('one')
+@Module('module1')
 class Module1 extends EffectModule<Module1StateProps> {
   defaultState: Module1StateProps = {
     currentMsgId: null,
     allMsgs: []
   }
 
-  @DefineAction() dispose: Observable<Action<void>>
-
-  @DefineAction({
-    createActionPayloadCreator,
-    createActionMetaCreator
-  }) noopAction: Observable<Action<void>>
-
-  @Reducer()
-  dispose2(state: Module1StateProps) {
-    return state
+  @Effect()
+  dispose(current$: Observable<void>) {
+    return current$
   }
 
-  @Effect({
-    success: (state: Module1StateProps, { payload }: Action<Msg>) => {
-      const { allMsgs } = state
-      return { ...state, allMsgs: allMsgs.concat([payload!]) }
-    }
-  })
-  getMsg(action$: Observable<void>) {
-    return action$
+  @Effect()
+  dispose2(current$: Observable<void>) {
+    return current$
+  }
+
+  @Effect()
+  getMsg(current$: Observable<void>, { state$, action$ }: any) {
+    return current$
       .pipe(
         exhaustMap(() => generateMsg()
           .pipe(
-            takeUntil(this.dispose),
-            takeUntil(this.fromDecorated(this.dispose2)),
-            map(this.createAction('success'))
+            withLatestFrom(state$, (msg: Msg, state: any) => this.createAction(
+              'message',
+              { allMsgs: state.allMsgs.concat(msg) }
+            )),
+            takeUntil(this.dispose(action$)),
+            takeUntil(this.dispose2(action$))
           )
         )
       )
   }
 
-  @Reducer()
-  selectMsg(state: Module1StateProps, { payload }: Action<string>) {
-    return { ...state, currentMsgId: payload }
-  }
-
-  @Reducer({
-    createActionPayloadCreator,
-    createActionMetaCreator
-  })
-  noopReducer() {
-    return {}
+  @Effect()
+  selectMsg(current$: Observable<string>) {
+    return current$.pipe(
+      map((currentMsgId: string) => this.createAction(
+        'currentMsgId',
+        { currentMsgId },
+        metaCreator
+      ))
+    )
   }
 
   @Effect()
-  getModule3Msg(action$: Observable<void>) {
-    return action$
+  getModule3Msg(current$: Observable<void>) {
+    return current$
       .pipe(
         map(() => this.markAsGlobal({
           type: 'three_get_msg'
@@ -81,36 +74,23 @@ class Module1 extends EffectModule<Module1StateProps> {
   }
 
   @Effect()
-  changeRouter(action$: Observable<void>) {
-    return action$
+  changeRouter(current$: Observable<void>) {
+    return current$
       .pipe(
         mergeMap(() => just(push('/hmmm')))
       )
   }
 
   @Effect()
-  undefinedEpic(action$: Observable<void>) {
-    return action$
-  }
-
-  @Effect()
-  nonActionEpic(action$: Observable<void>) {
-    return action$.pipe(
-      map(() => ({
-        payload: 'foo'
-      }))
+  nonActionEpic(current$: Observable<void>) {
+    return current$.pipe(
+      map(() => () => ({ func: 'function' }))
     )
   }
 
-  @Effect({
-    createActionPayloadCreator,
-    createActionMetaCreator
-  })
-  noop(action$: Observable<void>) {
-    return action$
-      .pipe(
-        map(() => this.createAction('noop')())
-      )
+  @Effect()
+  noop(current$: Observable<void>) {
+    return current$
   }
 
 }
