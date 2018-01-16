@@ -95,7 +95,7 @@ export abstract class EffectModule<StateProps> {
     if (process.env.NODE_ENV !== 'production') {
       console.warn('using markAsGlobal is a bad practice, consider about using this.createActionFrom(module#something) instead')
     }
-    action[symbolNotTrasfer] = true
+    Object.defineProperty(action, symbolNotTrasfer, { value: true })
     return action as any
   }
 }
