@@ -26,12 +26,12 @@ class Module1 extends EffectModule<Module1StateProps> {
     allMsgs: []
   }
 
-  @DefineAction() dispose: Observable<Action<void>>
+  @DefineAction() dispose!: Observable<Action<void>>
 
   @DefineAction({
     createActionPayloadCreator,
     createActionMetaCreator
-  }) noopAction: Observable<Action<void>>
+  }) noopAction!: Observable<Action<void>>
 
   @Reducer()
   dispose2(state: Module1StateProps) {

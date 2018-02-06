@@ -15,6 +15,7 @@
     "stripInternal": true,
     "sourceMap": true,
     "declaration": true,
+    "skipLibCheck": true,
     "target": "ES5",
     "lib": [
       "dom",

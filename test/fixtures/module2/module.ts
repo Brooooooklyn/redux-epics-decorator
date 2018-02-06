@@ -26,7 +26,7 @@ class Module2 extends EffectModule<Module2StateProps> {
     loading: false
   }
 
-  @DefineAction() dispose: Observable<Action<void>>
+  @DefineAction() dispose!: Observable<Action<void>>
 
   @Effect({
     success: (state: Module2StateProps, { payload }: Action<Msg>) => {

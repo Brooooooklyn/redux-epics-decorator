@@ -17,7 +17,7 @@ export abstract class EffectModule<StateProps> {
   abstract readonly defaultState: StateProps
 
   private readonly ctor = this.constructor.prototype.constructor
-  private moduleAction$: Observable<Action<any>>
+  private moduleAction$: Observable<Action<any>> | null = null
 
   constructor() {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
@@ -53,7 +53,7 @@ export abstract class EffectModule<StateProps> {
 
   protected fromDecorated<T> (method: Reducer<any, T> | EpicLike<T, any, any, any>) {
     const action = method[symbolAction]
-    return this.moduleAction$.pipe(
+    return this.moduleAction$!.pipe(
       ofType(action)
     ) as Observable<Action<T>>
   }
