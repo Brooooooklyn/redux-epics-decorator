@@ -20,4 +20,6 @@ export class Module4 extends React.PureComponent<Module4Props> {
   }
 }
 
-export const Module4Container = connect(effectModule4)(mapStateToProps)(Module4)
+export const Module4Container = connect(effectModule4)(mapStateToProps, () => ({
+  test: 'foo',
+}))(Module4)
