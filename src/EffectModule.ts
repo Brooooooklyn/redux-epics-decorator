@@ -64,30 +64,17 @@ export abstract class EffectModule<StateProps> {
     return createAction.apply(null, args)
   }
 
-  protected createActionFrom<Input, S>
-    (epic: EpicLike<void, any, S, any>): () => EpicAction<string, Input>
-
-  protected createActionFrom<T, O, S>
-    (epic: EpicLike<T, O, S, string>): (payload: T) => EpicAction<string, O>
-
-  protected createActionFrom<T, S>
-    (reducer: Reducer<S, void>): () => EpicAction<string, T>
-
-  protected createActionFrom<S, T>
-    (reducer: Reducer<S, T>): (payload: T) => EpicAction<string, T>
-
-  protected createActionFrom<S, T>
-    (epicOrReducer: EpicLike<T, any, S, any> | Reducer<S, T>) {
-      const actionCreator = epicOrReducer[symbolAction]
-      if (!actionCreator) {
-        throw new TypeError('Could not createActionFrom a non-decoratored method')
-      }
-      return function(...args: any[]) {
-        const result = actionCreator.apply(null, args)
-        result[symbolNotTrasfer] = true
-        return result as EpicAction<string, T>
-      }
+  protected createActionFrom(epicOrReducer: any) {
+    const actionCreator = epicOrReducer[symbolAction]
+    if (!actionCreator) {
+      throw new TypeError('Could not createActionFrom a non-decoratored method')
     }
+    return function(...args: any[]) {
+      const result = actionCreator.apply(null, args)
+      result[symbolNotTrasfer] = true
+      return result as EpicAction<string, any>
+    }
+  }
 
   // giveup type check
   protected markAsGlobal<T>(action: Action<T>): any {
