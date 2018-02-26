@@ -79,6 +79,14 @@ describe('Module specs', () => {
     expect(`${getAction(EffectModule1, 'getMsg')}`).to.equal('one/get_msg')
   })
 
+  it('should dispatch the Effect belong to other modules', () => {
+    const props = Module4Node.props()
+    props.dispatchOtherModulesEffect(2)
+    const globalState = store.getState()
+    expect(globalState.module4.syncFromDepModuleCounter).to.equal(2)
+    expect(globalState.depModule4.counter).to.equal(2)
+  })
+
   it('should createActionFrom the other module', () => {
     const props = Module4Node.props()
     props.dispatchOtherModulesAction()

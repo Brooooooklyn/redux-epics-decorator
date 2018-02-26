@@ -1,5 +1,7 @@
 import 'reflect-metadata'
+import { of as just } from 'rxjs/observable/of'
 import { map } from 'rxjs/operators/map'
+import { mergeMap } from 'rxjs/operators/mergeMap'
 import { Store } from 'redux'
 import { LOCATION_CHANGE, CALL_HISTORY_METHOD } from 'react-router-redux'
 import { Action as ReduxAction, createAction, ActionFunction0, Reducer as ReduxReducer } from 'redux-actions'
@@ -12,9 +14,12 @@ import {
   symbolEpics,
   symbolAction,
   symbolNotTrasfer,
+  symbolEffectAction,
+  symbolEffectActionStream,
   routerActionNamespace,
   withNamespace,
-  withReducer
+  withReducer,
+  forkActionType,
 } from '../symbol'
 import { startsWith } from '../startsWith'
 import { EffectModule } from '../EffectModule'
@@ -34,35 +39,42 @@ export function Effect (handler: EffectHandler = {} as any) {
     let name: string
     const constructor = target.constructor
     const epic: any =
-        function (this: EffectModule<any>, action$: Observable<any>, store?: Store<any>) {
-          const matchedAction$ = action$
-            .pipe(
-              ofType(startAction.toString()),
-              map(({ payload }) => payload)
-            )
-          return descriptor.value.call(this, matchedAction$, store)
-            .pipe(
-              map((actionResult: ReduxAction<any>) => {
-                if (!actionResult) {
-                  const methodPosition = `${ target.constructor.name }#${ method }`
-                  throw new TypeError(
-                    `${ methodPosition } emit a ${ Object.prototype.toString.call(actionResult, actionResult).replace(/(\[object)|(\])/g, '') }`
-                  )
-                }
-                const { type } = actionResult
-                if (!type) {
-                  console.warn(
-                    `result from ${ target.constructor.name }#${ method } epic is not a action: ${ JSON.stringify(actionResult, null, 2) }`
-                  )
-                }
-                return {
-                  ...actionResult,
-                  type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
-                    type :
-                    withReducer(name, method, type)
-                }
-              })
-            )
+      function (this: EffectModule<any>, action$: Observable<any>, store?: Store<any>) {
+        const matchedAction$ = action$[symbolEffectActionStream] ? action$ : action$
+          .pipe(
+            ofType(startAction.toString()),
+            map(({ payload }) => payload)
+          )
+        matchedAction$[symbolEffectActionStream] = true
+        return descriptor.value.call(this, matchedAction$, store)
+          .pipe(
+            mergeMap((actionResult: ReduxAction<any>) => {
+              if (!actionResult) {
+                const methodPosition = `${ target.constructor.name }#${ method }`
+                throw new TypeError(
+                  `${ methodPosition } emit a ${ Object.prototype.toString.call(actionResult, actionResult).replace(/(\[object)|(\])/g, '') }`
+                )
+              }
+              const { type } = actionResult
+              if (!type) {
+                console.warn(
+                  `result from ${ target.constructor.name }#${ method } epic is not a action: ${ JSON.stringify(actionResult, null, 2) }`
+                )
+              }
+              const isActionFromEffect = actionResult[symbolEffectAction]
+              const actions = [{
+                ...actionResult,
+                type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
+                  type :
+                  isActionFromEffect ? forkActionType(name, method, type) : withReducer(name, method, type),
+                [symbolEffectAction]: true,
+              }]
+              if (isActionFromEffect) {
+                actions.push(actionResult as any)
+              }
+              return just(...actions)
+            })
+          )
         }
 
     const setup = () => {
