@@ -76,7 +76,7 @@ module.exports = function (config) {
       'karma-mocha-reporter',
       'karma-chrome-launcher',
       'karma-coverage-istanbul-reporter',
-      'karma-webpack-with-fast-source-maps'
+      'karma-webpack'
     ],
 
     mime: {
