@@ -22,4 +22,7 @@ export const withReducer = (namespace: string, method: string, reducerName: stri
   `${ withNamespace(namespace, method) }${ methodSplit }${ formatName(reducerName) }`
 
 export const forkActionType = (namespace: string, method: string, actionType: string) =>
-  namespace + namespaceSplit + formatName(method) + actionType.substr(actionType.indexOf(methodSplit))
+  namespace
+  + namespaceSplit
+  + formatName(method)
+  + actionType.substr(actionType.indexOf(methodSplit))

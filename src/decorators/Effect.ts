@@ -64,12 +64,14 @@ export function Effect (handler: EffectHandler = {} as any) {
               const isActionFromEffect = actionResult[symbolEffectAction]
               const actions = [{
                 ...actionResult,
-                type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace)) ?
-                  type :
-                  isActionFromEffect ? forkActionType(name, method, type) : withReducer(name, method, type),
+                type: (actionResult[symbolNotTrasfer] || startsWith(actionResult.type, routerActionNamespace))
+                  ? type
+                  : isActionFromEffect
+                    ? forkActionType(name, method, type)
+                    : withReducer(name, method, type),
                 [symbolEffectAction]: true,
               }]
-              if (isActionFromEffect) {
+              if (isActionFromEffect && !actionResult[symbolNotTrasfer]) {
                 actions.unshift(actionResult as any)
               }
               return just(...actions)
