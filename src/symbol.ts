@@ -9,7 +9,7 @@ export const symbolEffectActionStream = Symbol('EffectActionStream')
 export const routerActionNamespace = '@@router'
 
 const namespaceSplit = '/'
-const methodSplit = '-'
+const methodSplit = '\\'
 const subReducerSplit = '_'
 
 // getMsg -> get_msg

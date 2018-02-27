@@ -70,7 +70,7 @@ export function Effect (handler: EffectHandler = {} as any) {
                 [symbolEffectAction]: true,
               }]
               if (isActionFromEffect) {
-                actions.push(actionResult as any)
+                actions.unshift(actionResult as any)
               }
               return just(...actions)
             })
