@@ -5436,9 +5436,9 @@ redux-actions@^2.3.0:
     lodash-es "^4.17.4"
     reduce-reducers "^0.1.0"
 
-redux-observable@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/redux-observable/-/redux-observable-0.18.0.tgz#48de1f35554b7ba23a88b18379ca1c93f5124197"
+redux-observable@^1.0.0-alpha.0:
+  version "1.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/redux-observable/-/redux-observable-1.0.0-alpha.0.tgz#1e625f308f0e46acdf17926b83e16822f964b539"
   dependencies:
     gitbook-plugin-github "^2.0.0"
 
