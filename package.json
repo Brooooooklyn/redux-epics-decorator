@@ -80,7 +80,7 @@
     "react-test-renderer": "^16.2.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.3.0",
-    "redux-observable": "^0.18.0",
+    "redux-observable": "^1.0.0-alpha.0",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^5.5.6",
     "shelljs": "^0.8.1",
