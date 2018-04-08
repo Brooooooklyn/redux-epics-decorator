@@ -1,19 +1,23 @@
 import { map } from 'rxjs/operators/map'
+import { mergeMap } from 'rxjs/operators/mergeMap'
 import { startWith } from 'rxjs/operators/startWith'
 import { _throw } from 'rxjs/observable/throw'
 import { Observable } from 'rxjs/Observable'
+import { Action } from 'redux-actions'
 
 import { EffectModule, Module, Effect, ModuleActionProps, Reducer } from '../../../src'
 import DepModule from './depModule'
 
 export interface Module4StateProps {
   count: number
+  syncFromDepModuleCounter: number
 }
 
 @Module('four')
 export default class Module4 extends EffectModule<Module4StateProps> {
   defaultState: Module4StateProps = {
-    count: 0
+    count: 0,
+    syncFromDepModuleCounter: 0,
   }
 
   constructor(private depModule: DepModule) {
@@ -41,6 +45,15 @@ export default class Module4 extends EffectModule<Module4StateProps> {
       )
   }
 
+  @Effect({
+    success: (state: Module4StateProps, { payload }: Action<number>) => {
+      return { ...state, syncFromDepModuleCounter: payload }
+    }
+  })
+  dispatchOtherModulesEffect(action$: Observable<number>) {
+    return this.depModule.exposedEpic(action$)
+  }
+
   @Effect()
   dispatchOtherModulesAction(action$: Observable<void>) {
     return action$.pipe(
@@ -52,7 +65,7 @@ export default class Module4 extends EffectModule<Module4StateProps> {
   @Effect()
   errorEpic(action$: Observable<void>) {
     return action$.pipe(
-      map(() => _throw(new TypeError()) as any)
+      mergeMap(() => _throw(new TypeError()))
     )
   }
 }

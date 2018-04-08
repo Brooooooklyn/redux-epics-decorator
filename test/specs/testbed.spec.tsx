@@ -5,7 +5,9 @@ import * as SinonChai from 'sinon-chai'
 import React from 'react'
 import * as enzyme from 'enzyme'
 import { Observable } from 'rxjs/Observable'
+import { of as just } from 'rxjs/observable/of'
 import { map } from 'rxjs/operators/map'
+import { createAction } from 'redux-actions'
 
 import { GlobalState } from '../fixtures/store'
 import { Module4 as Module4Component, mapStateToProps } from '../fixtures/module4/container'
@@ -56,7 +58,7 @@ describe('TestBed spec', () => {
     }
 
     exposedEpic() {
-      return 2
+      return just(createAction('exposedEpic')())
     }
   }
 
