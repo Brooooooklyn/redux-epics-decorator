@@ -91,10 +91,9 @@ export interface Constructorof<T> {
   new (...args: any[]): T
 }
 
-type Diff<T extends string, U extends string> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T]
 type UseLessAction = 'dispatch' | 'epic' | 'reducer' | 'allDispatch'
 
-export const getAction = <T> (target: Constructorof<T>, actionName: Diff<keyof T, UseLessAction>) => {
+export const getAction = <T> (target: Constructorof<T>, actionName: Exclude<keyof T, UseLessAction>) => {
    /* istanbul ignore next*/
   if (process.env.NODE_ENV === 'development') {
     console.warn('This is a temporary method for normal style.')

@@ -9,7 +9,7 @@ import { push } from 'react-router-redux'
 import * as sinon from 'sinon'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, Module, Effect, Reducer, ModuleDispatchProps, DefineAction } from '../../../src'
 
 export interface Module1StateProps {
   currentMsgId: string | null
@@ -26,12 +26,12 @@ class Module1 extends EffectModule<Module1StateProps> {
     allMsgs: []
   }
 
-  @DefineAction() dispose!: Observable<Action<void>>
+  @DefineAction() dispose!: Observable<void>
 
   @DefineAction({
     createActionPayloadCreator,
     createActionMetaCreator
-  }) noopAction!: Observable<Action<void>>
+  }) noopAction!: Observable<void>
 
   @Reducer()
   dispose2(state: Module1StateProps) {
@@ -66,8 +66,8 @@ class Module1 extends EffectModule<Module1StateProps> {
     createActionPayloadCreator,
     createActionMetaCreator
   })
-  noopReducer() {
-    return {}
+  noopReducer(state: Module1StateProps) {
+    return state
   }
 
   @Effect()
@@ -115,6 +115,6 @@ class Module1 extends EffectModule<Module1StateProps> {
 
 }
 
-export type Module1DispatchProps = ModuleActionProps<Module1StateProps, Module1>
+export type Module1DispatchProps = ModuleDispatchProps<Module1>
 
 export default Module1

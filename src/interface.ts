@@ -4,13 +4,17 @@ import { MiddlewareAPI } from 'redux'
 
 import { EffectModule } from './EffectModule'
 
-// https://github.com/Microsoft/TypeScript/issues/12215#issuecomment-311923766 would break defination lookup
-// just a workaround to avoid `props.reducer()`
-// need refactor
-export type ModuleActionProps <S, T extends EffectModule<S>> = {
-  [key in keyof T]: (...args: any[]) => Action<any>
-} & {
-  defaultState: never
+export type UnpackPayload<T> = T extends Function ?
+    T extends (action$: Observable<infer U>) => any ? U :
+    T extends () => any ? void :
+    T extends (_: any) => any ? void :
+    T extends (_: any, action: Action<infer V>) => any ? V : void
+  : T extends Observable<infer K> ? K : void
+
+export type ModuleDispatchProps <T extends EffectModule<any>> = {
+  [key in Exclude<keyof T, 'defaultState'>]: UnpackPayload<T[key]> extends void ?
+    () => Action<void> :
+    (payload: UnpackPayload<T[key]>) => Action<UnpackPayload<T[key]>>
 }
 
 export interface EpicLike<Input, Output, S, ActionType extends string> {

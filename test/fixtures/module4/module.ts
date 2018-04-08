@@ -5,7 +5,7 @@ import { _throw } from 'rxjs/observable/throw'
 import { Observable } from 'rxjs/Observable'
 import { Action } from 'redux-actions'
 
-import { EffectModule, Module, Effect, ModuleActionProps, Reducer } from '../../../src'
+import { EffectModule, Module, Effect, ModuleDispatchProps, Reducer } from '../../../src'
 import DepModule from './depModule'
 
 export interface Module4StateProps {
@@ -70,4 +70,4 @@ export default class Module4 extends EffectModule<Module4StateProps> {
   }
 }
 
-export type Module4DispatchProps = ModuleActionProps<Module4StateProps, Module4>
+export type Module4DispatchProps = ModuleDispatchProps<Module4>
