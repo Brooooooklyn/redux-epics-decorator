@@ -41,6 +41,8 @@ module.exports = {
 
   module: { rules },
 
+  mode: 'development',
+
   devServer: {
     contentBase: resolve(process.cwd(), 'dist'),
     port: 8080

@@ -1,5 +1,6 @@
 import { Action, createAction, handleActions } from 'redux-actions'
-import { ActionsObservable } from 'redux-observable'
+import { ActionsObservable, ofType } from 'redux-observable'
+import { map, exhaustMap, takeUntil } from 'rxjs/operators'
 
 import { generateMsg, Msg } from '../service'
 
@@ -26,9 +27,12 @@ export const reducer = handleActions({
 })
 
 export const epic = (action$: ActionsObservable<Action<void>>) =>
-  action$.ofType(`${ getMsg }`)
-    .exhaustMap(() =>
-      generateMsg()
-        .takeUntil(action$.ofType(`${ dispose }`))
-    )
-    .map(getMsgFinish)
+  action$.pipe(
+    ofType(`${ getMsg }`),
+    exhaustMap(() =>
+      generateMsg().pipe(
+        takeUntil(action$.ofType(`${ dispose }`))
+      )
+    ),
+    map(getMsgFinish),
+  )
