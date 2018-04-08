@@ -4,17 +4,21 @@ import { MiddlewareAPI } from 'redux'
 
 import { EffectModule } from './EffectModule'
 
-export type UnpackPayload<T> = T extends Function ?
-    T extends (action$: Observable<infer U>) => any ? U :
-    T extends () => any ? void :
-    T extends (_: any) => any ? void :
-    T extends (_: any, action: Action<infer V>) => any ? V : void
+export type UnpackPayload<T> = T extends Function
+  ? T extends () => any ? void :
+    T extends (action$: infer U) => any
+    ? U extends Observable<infer P> ? P  : void
+  : T extends (action$: infer U, action: infer V) => any
+    ? U extends Observable<infer P> ? P : V extends Action<infer P> ? P : void
+    : void
   : T extends Observable<infer K> ? K : void
 
 export type ModuleDispatchProps <T extends EffectModule<any>> = {
-  [key in Exclude<keyof T, 'defaultState'>]: UnpackPayload<T[key]> extends void ?
+  [key in keyof T]: UnpackPayload<T[key]> extends void ?
     () => Action<void> :
     (payload: UnpackPayload<T[key]>) => Action<UnpackPayload<T[key]>>
+} & {
+  defaultState: never
 }
 
 export interface EpicLike<Input, Output, S, ActionType extends string> {
