@@ -10,7 +10,7 @@ import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, Module, Effect, Reducer, ModuleActionProps, DefineAction } from '../../../src'
+import { EffectModule, Module, Effect, Reducer, ModuleDispatchProps, DefineAction } from '../../../src'
 
 export interface Module2StateProps {
   currentMsgId: string | null
@@ -26,7 +26,7 @@ class Module2 extends EffectModule<Module2StateProps> {
     loading: false
   }
 
-  @DefineAction() dispose!: Observable<Action<void>>
+  @DefineAction() dispose!: Observable<void>
 
   @Effect({
     success: (state: Module2StateProps, { payload }: Action<Msg>) => {
@@ -95,6 +95,6 @@ class Module2 extends EffectModule<Module2StateProps> {
   }
 }
 
-export type Module2DispatchProps = ModuleActionProps<Module2StateProps, Module2>
+export type Module2DispatchProps = ModuleDispatchProps<Module2>
 
 export default Module2

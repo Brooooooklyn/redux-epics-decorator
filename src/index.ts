@@ -1,7 +1,7 @@
 export { Module, Effect, Reducer, DefineAction, Injectable } from './decorators'
 export { EffectModule, getAction } from './EffectModule'
 export { connect } from './connect'
-export { ModuleActionProps } from './interface'
+export { ModuleDispatchProps } from './interface'
 export { combineModuleEpics } from './combineModuleEpics'
 export { combineModuleReducers } from './combineModuleReducers'
 export { Inject } from 'injection-js'
