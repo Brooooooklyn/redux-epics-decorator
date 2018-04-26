@@ -17,22 +17,23 @@ export interface Module3DispatchProps {
   getMsg: typeof getMsg
 }
 
-export const reducer = handleActions({
-  [`${ getMsgFinish }`](state: Module3StateProps, { payload }: Action<Msg>) {
-    const { allMsgs } = state
-    return { ...state, allMsgs: [...allMsgs, payload!] }
-  }
-}, {
-  allMsgs: [] as Msg[]
-})
+export const reducer = handleActions(
+  {
+    [`${getMsgFinish}`](state: Module3StateProps, { payload }: Action<Msg>) {
+      const { allMsgs } = state
+      return { ...state, allMsgs: [...allMsgs, payload!] }
+    },
+  },
+  {
+    allMsgs: [] as Msg[],
+  },
+)
 
 export const epic = (action$: ActionsObservable<Action<void>>) =>
   action$.pipe(
-    ofType(`${ getMsg }`),
+    ofType(`${getMsg}`),
     exhaustMap(() =>
-      generateMsg().pipe(
-        takeUntil(action$.ofType(`${ dispose }`))
-      )
+      generateMsg().pipe(takeUntil(action$.ofType(`${dispose}`))),
     ),
     map(getMsgFinish),
   )

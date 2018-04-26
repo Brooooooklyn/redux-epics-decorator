@@ -10,7 +10,14 @@ import { Action } from 'redux-actions'
 import { Observable } from 'rxjs/Observable'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, Module, Effect, Reducer, ModuleDispatchProps, DefineAction } from '../../../src'
+import {
+  EffectModule,
+  Module,
+  Effect,
+  Reducer,
+  ModuleDispatchProps,
+  DefineAction,
+} from '../../../src'
 
 export interface Module2StateProps {
   currentMsgId: string | null
@@ -23,7 +30,7 @@ class Module2 extends EffectModule<Module2StateProps> {
   defaultState: Module2StateProps = {
     currentMsgId: null,
     allMsgs: [],
-    loading: false
+    loading: false,
   }
 
   @DefineAction() dispose!: Observable<void>
@@ -32,18 +39,17 @@ class Module2 extends EffectModule<Module2StateProps> {
     success: (state: Module2StateProps, { payload }: Action<Msg>) => {
       const { allMsgs } = state
       return { ...state, allMsgs: allMsgs.concat([payload!]), loading: false }
-    }
+    },
   })
   getMsg(action$: Observable<void>) {
-    return action$
-      .pipe(
-        mergeMap(() => generateMsg()
-          .pipe(
-            takeUntil(this.dispose),
-            map(msg => this.createAction('success')(msg))
-          )
-        )
-      )
+    return action$.pipe(
+      mergeMap(() =>
+        generateMsg().pipe(
+          takeUntil(this.dispose),
+          map((msg) => this.createAction('success')(msg)),
+        ),
+      ),
+    )
   }
 
   @Reducer()
@@ -53,39 +59,29 @@ class Module2 extends EffectModule<Module2StateProps> {
 
   @Effect()
   loadMsgs(action$: Observable<void>) {
-    return action$
-      .pipe(
-        exhaustMap(() => range(0, 10)
-          .pipe(
-            map(this.createActionFrom(this.getMsg))
-          )
-        )
-      )
+    return action$.pipe(
+      exhaustMap(() =>
+        range(0, 10).pipe(map(this.createActionFrom(this.getMsg))),
+      ),
+    )
   }
 
   @Effect({
     loading: (state: Module2StateProps) => {
       return { ...state, loading: true }
-    }
+    },
   })
   loadFiveMsgs(action$: Observable<void>) {
-    return action$
-      .pipe(
-        exhaustMap(() => {
-          const request$ = range(0, 5)
-            .pipe(
-              mergeMap(() => generateMsg()
-                .pipe(
-                  takeUntil(this.dispose)
-                )
-              ),
-              toArray(),
-              map(this.createActionFrom(this.setMsgs))
-            )
-          return just(this.createAction('loading')())
-            .pipe(concat(request$))
-        })
-      )
+    return action$.pipe(
+      exhaustMap(() => {
+        const request$ = range(0, 5).pipe(
+          mergeMap(() => generateMsg().pipe(takeUntil(this.dispose))),
+          toArray(),
+          map(this.createActionFrom(this.setMsgs)),
+        )
+        return just(this.createAction('loading')()).pipe(concat(request$))
+      }),
+    )
   }
 
   @Reducer()

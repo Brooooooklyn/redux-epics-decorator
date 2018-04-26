@@ -26,8 +26,5 @@
       "es2015.core"
     ],
     "outDir": "./lib"
-  },
-  "include": [
-    "src/**/*.ts"
-  ]
+  }
 }

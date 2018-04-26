@@ -1,12 +1,16 @@
 import { createAction } from 'redux-actions'
 
 import { currentReducers, currentSetEffectQueue } from '../shared'
-import { symbolNamespace, symbolDispatch, symbolAction, withNamespace } from '../symbol'
+import {
+  symbolNamespace,
+  symbolDispatch,
+  symbolAction,
+  withNamespace,
+} from '../symbol'
 import { ReducerHandler } from '../interface'
 
 export const Reducer = (handler: ReducerHandler = {}) => {
   return (target: any, method: string, descriptor: PropertyDescriptor) => {
-
     const reducer = descriptor.value
     const constructor = target.constructor
 
@@ -15,14 +19,18 @@ export const Reducer = (handler: ReducerHandler = {}) => {
       const dispatchs = Reflect.getMetadata(symbolDispatch, constructor)
       const actionWithNamespace = withNamespace(name, method)
       const { createActionPayloadCreator, createActionMetaCreator } = handler
-      const startAction = createAction(actionWithNamespace, createActionPayloadCreator, createActionMetaCreator)
+      const startAction = createAction(
+        actionWithNamespace,
+        createActionPayloadCreator,
+        createActionMetaCreator,
+      )
       currentReducers.set(actionWithNamespace, reducer)
       dispatchs[method] = startAction
 
       Object.defineProperty(reducer, symbolAction, {
         enumerable: false,
         configurable: false,
-        value: startAction
+        value: startAction,
       })
     }
 
@@ -30,7 +38,7 @@ export const Reducer = (handler: ReducerHandler = {}) => {
 
     return {
       ...descriptor,
-      value: reducer
+      value: reducer,
     }
   }
 }

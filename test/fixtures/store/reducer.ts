@@ -22,8 +22,8 @@ export default combineReducers<GlobalState>({
     module1: Module1,
     module2: Module2,
     module4: Module4,
-    depModule4: DepModule4
+    depModule4: DepModule4,
   }),
   module3,
-  router: routerReducer
+  router: routerReducer,
 })

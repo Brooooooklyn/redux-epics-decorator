@@ -19,7 +19,7 @@ export const CancelController = {
     if (process.env.NODE_ENV !== 'test') {
       console.info('Cancel happen')
     }
-  }
+  },
 }
 
 export const msgDelay = 1500
@@ -28,8 +28,8 @@ export function generateMsg(): Observable<Msg> {
   return Observable.create((observer: Observer<Msg>) => {
     const timer = setTimeout(() => {
       observer.next({
-        id: `${ i++ }`,
-        content: 'msg content' + i
+        id: `${i++}`,
+        content: 'msg content' + i,
       })
       observer.complete()
     }, msgDelay)

@@ -1,5 +1,12 @@
 import { connect as reactConnect } from 'react-redux'
-import { createStore, Store, compose, applyMiddleware, Reducer, combineReducers } from 'redux'
+import {
+  createStore,
+  Store,
+  compose,
+  applyMiddleware,
+  Reducer,
+  combineReducers,
+} from 'redux'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import { ReflectiveInjector, Injector, Provider } from 'injection-js'
 import { catchError } from 'rxjs/operators/catchError'
@@ -12,26 +19,28 @@ export interface TestBedConfig {
 }
 
 export class TestBedFactory {
-
   static configureTestingModule(config?: TestBedConfig) {
     if (!config) {
-      return new TestBed(ReflectiveInjector.resolveAndCreate(Array.from((allDeps as any))))
+      return new TestBed(
+        ReflectiveInjector.resolveAndCreate(Array.from(allDeps as any)),
+      )
     }
     const newAllDeps = new Set(allDeps as any)
     const providers = config.providers
-    providers.forEach(provider => newAllDeps.add(provider))
+    providers.forEach((provider) => newAllDeps.add(provider))
     const testbed = new TestBed(this.configInjector(newAllDeps))
     return testbed
   }
 
   private static configInjector(newAllDeps: Set<any>) {
-    const parent = ReflectiveInjector.resolveAndCreate(Array.from((allDeps as any)))
+    const parent = ReflectiveInjector.resolveAndCreate(
+      Array.from(allDeps as any),
+    )
     return parent.resolveAndCreateChild(Array.from(newAllDeps as any))
   }
 }
 
 export class TestBed {
-
   constructor(private injector: Injector) {}
 
   getInstance<T = any>(ins: Constructorof<T>): T {
@@ -48,24 +57,37 @@ export class TestBed {
     }
   }
 
-  setupStore<MockGlobalState>(modules: { [index: string]: Constructorof<any> } = { }): Store<MockGlobalState> {
-    const results = Object.keys(modules).reduce((acc, key) => {
-      const { reducer, epics } = acc
-      const instance = this.getInstance(modules[key])
-      Object.assign(reducer, { [key]: instance.reducer })
-      epics.push(instance.epic)
-      return acc
-    }, { reducer: {} as { [index: string]: Reducer<any> }, epics: [] as any[] })
-    return createStore(!Object.keys(results.reducer).length ? () => ({ } as any) : combineReducers(results.reducer), compose(
-      applyMiddleware(createEpicMiddleware(function() {
-        return combineEpics(...results.epics).apply(null, arguments)
-          .pipe(
-            catchError((err, source) => {
-              console.error(err)
-              return source
-            })
-          )
-      }))
-    ))
+  setupStore<MockGlobalState>(
+    modules: { [index: string]: Constructorof<any> } = {},
+  ): Store<MockGlobalState> {
+    const results = Object.keys(modules).reduce(
+      (acc, key) => {
+        const { reducer, epics } = acc
+        const instance = this.getInstance(modules[key])
+        Object.assign(reducer, { [key]: instance.reducer })
+        epics.push(instance.epic)
+        return acc
+      },
+      { reducer: {} as { [index: string]: Reducer<any> }, epics: [] as any[] },
+    )
+    return createStore(
+      !Object.keys(results.reducer).length
+        ? () => ({} as any)
+        : combineReducers(results.reducer),
+      compose(
+        applyMiddleware(
+          createEpicMiddleware(function() {
+            return combineEpics(...results.epics)
+              .apply(null, arguments)
+              .pipe(
+                catchError((err, source) => {
+                  console.error(err)
+                  return source
+                }),
+              )
+          }),
+        ),
+      ),
+    )
   }
 }

@@ -8,10 +8,6 @@ import Module4 from '../module4'
 import { combineModuleEpics } from '../../../src'
 
 export default combineEpics(
-  combineModuleEpics(
-    Module1,
-    Module2,
-    Module4,
-  ),
+  combineModuleEpics(Module1, Module2, Module4),
   module3Epic,
 )

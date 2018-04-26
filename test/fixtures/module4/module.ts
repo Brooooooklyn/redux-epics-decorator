@@ -5,7 +5,13 @@ import { _throw } from 'rxjs/observable/throw'
 import { Observable } from 'rxjs/Observable'
 import { Action } from 'redux-actions'
 
-import { EffectModule, Module, Effect, ModuleDispatchProps, Reducer } from '../../../src'
+import {
+  EffectModule,
+  Module,
+  Effect,
+  ModuleDispatchProps,
+  Reducer,
+} from '../../../src'
 import DepModule from './depModule'
 
 export interface Module4StateProps {
@@ -36,19 +42,16 @@ export default class Module4 extends EffectModule<Module4StateProps> {
   @Effect({
     success: (state: Module4StateProps) => {
       return { ...state, count: state.count + 1 }
-    }
+    },
   })
   add(action$: Observable<void>) {
-    return action$
-      .pipe(
-        map(this.createAction('success'))
-      )
+    return action$.pipe(map(this.createAction('success')))
   }
 
   @Effect({
     success: (state: Module4StateProps, { payload }: Action<number>) => {
       return { ...state, syncFromDepModuleCounter: payload }
-    }
+    },
   })
   dispatchOtherModulesEffect(action$: Observable<number>) {
     return this.depModule.exposedEpic(action$)
@@ -58,15 +61,13 @@ export default class Module4 extends EffectModule<Module4StateProps> {
   dispatchOtherModulesAction(action$: Observable<void>) {
     return action$.pipe(
       map(() => this.createActionFrom(this.depModule.exposedReducer)(2)),
-      startWith(this.createActionFrom(this.depModule.exposedEpic)(2))
+      startWith(this.createActionFrom(this.depModule.exposedEpic)(2)),
     )
   }
 
   @Effect()
   errorEpic(action$: Observable<void>) {
-    return action$.pipe(
-      mergeMap(() => _throw(new TypeError()))
-    )
+    return action$.pipe(mergeMap(() => _throw(new TypeError())))
   }
 }
 

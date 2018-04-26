@@ -1,9 +1,23 @@
 import 'reflect-metadata'
 import { combineEpics, ofType } from 'redux-observable'
-import { ActionFunctionAny, Reducer, handleActions, Action, createAction } from 'redux-actions'
+import {
+  ActionFunctionAny,
+  Reducer,
+  handleActions,
+  Action,
+  createAction,
+} from 'redux-actions'
 import { empty } from 'rxjs/observable/empty'
 
-import { symbolDispatch, symbolReducerMap, symbolEpics, symbolAction, symbolNamespace, symbolNotTrasfer, withNamespace } from './symbol'
+import {
+  symbolDispatch,
+  symbolReducerMap,
+  symbolEpics,
+  symbolAction,
+  symbolNamespace,
+  symbolNotTrasfer,
+  withNamespace,
+} from './symbol'
 import { EpicAction, EpicLike } from './interface'
 import { Observable } from 'rxjs/Observable'
 
@@ -13,7 +27,6 @@ export interface CreateAction<ActionType extends string> {
 }
 
 export abstract class EffectModule<StateProps> {
-
   abstract readonly defaultState: StateProps
 
   private readonly ctor = this.constructor.prototype.constructor
@@ -26,7 +39,7 @@ export abstract class EffectModule<StateProps> {
     }
   }
 
-  private moduleEpic = <T> (action$: Observable<Action<T>>) => {
+  private moduleEpic = <T>(action$: Observable<Action<T>>) => {
     this.moduleAction$ = action$
     return empty()
   }
@@ -38,28 +51,41 @@ export abstract class EffectModule<StateProps> {
 
   // @internal
   get epic() {
-    return combineEpics(this.moduleEpic, ...Reflect.getMetadata(symbolEpics, this.ctor).map((epic: any) => epic.bind(this)))
+    return combineEpics(
+      this.moduleEpic,
+      ...Reflect.getMetadata(symbolEpics, this.ctor).map((epic: any) =>
+        epic.bind(this),
+      ),
+    )
   }
 
   // @internal
   get reducer(): Reducer<StateProps, any> {
-    const reducersMap: Map<string, Function> = Reflect.getMetadata(symbolReducerMap, this.ctor)
-    const reducers = { }
+    const reducersMap: Map<string, Function> = Reflect.getMetadata(
+      symbolReducerMap,
+      this.ctor,
+    )
+    const reducers = {}
     reducersMap.forEach((reducer, key) => {
       reducers[key] = reducer.bind(this)
     })
     return handleActions(reducers, this.defaultState)
   }
 
-  protected fromDecorated<T> (method: Reducer<any, T> | EpicLike<T, any, any, any>) {
+  protected fromDecorated<T>(
+    method: Reducer<any, T> | EpicLike<T, any, any, any>,
+  ) {
     const action = method[symbolAction]
-    return this.moduleAction$!.pipe(
-      ofType(action)
-    ) as Observable<Action<T>>
+    return this.moduleAction$!.pipe(ofType(action)) as Observable<Action<T>>
   }
 
-  protected createAction<ActionType extends string, T = any>(actionType: ActionType): (payload?: T) => EpicAction<ActionType, T>
-  protected createAction<ActionType extends string, T = any>(actionType: ActionType, ...args: any[]): (payload?: T) => EpicAction<ActionType, T>
+  protected createAction<ActionType extends string, T = any>(
+    actionType: ActionType,
+  ): (payload?: T) => EpicAction<ActionType, T>
+  protected createAction<ActionType extends string, T = any>(
+    actionType: ActionType,
+    ...args: any[]
+  ): (payload?: T) => EpicAction<ActionType, T>
   protected createAction(...args: any[]) {
     return createAction.apply(null, args)
   }
@@ -80,7 +106,9 @@ export abstract class EffectModule<StateProps> {
   protected markAsGlobal<T>(action: Action<T>): any {
     /* istanbul ignore else */
     if (process.env.NODE_ENV !== 'production') {
-      console.warn('using markAsGlobal is a bad practice, consider about using this.createActionFrom(module#something) instead')
+      console.warn(
+        'using markAsGlobal is a bad practice, consider about using this.createActionFrom(module#something) instead',
+      )
     }
     Object.defineProperty(action, symbolNotTrasfer, { value: true })
     return action as any
@@ -93,8 +121,11 @@ export interface Constructorof<T> {
 
 type UseLessAction = 'dispatch' | 'epic' | 'reducer' | 'allDispatch'
 
-export const getAction = <T> (target: Constructorof<T>, actionName: Exclude<keyof T, UseLessAction>) => {
-   /* istanbul ignore next*/
+export const getAction = <T>(
+  target: Constructorof<T>,
+  actionName: Exclude<keyof T, UseLessAction>,
+) => {
+  /* istanbul ignore next*/
   if (process.env.NODE_ENV === 'development') {
     console.warn('This is a temporary method for normal style.')
   }

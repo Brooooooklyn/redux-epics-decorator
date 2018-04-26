@@ -9,7 +9,14 @@ import { push } from 'react-router-redux'
 import * as sinon from 'sinon'
 
 import { generateMsg, Msg } from '../service'
-import { EffectModule, Module, Effect, Reducer, ModuleDispatchProps, DefineAction } from '../../../src'
+import {
+  EffectModule,
+  Module,
+  Effect,
+  Reducer,
+  ModuleDispatchProps,
+  DefineAction,
+} from '../../../src'
 
 export interface Module1StateProps {
   currentMsgId: string | null
@@ -23,15 +30,16 @@ export const createActionMetaCreator = sinon.spy()
 class Module1 extends EffectModule<Module1StateProps> {
   defaultState: Module1StateProps = {
     currentMsgId: null,
-    allMsgs: []
+    allMsgs: [],
   }
 
   @DefineAction() dispose!: Observable<void>
 
   @DefineAction({
     createActionPayloadCreator,
-    createActionMetaCreator
-  }) noopAction!: Observable<void>
+    createActionMetaCreator,
+  })
+  noopAction!: Observable<void>
 
   @Reducer()
   dispose2(state: Module1StateProps) {
@@ -42,19 +50,18 @@ class Module1 extends EffectModule<Module1StateProps> {
     success: (state: Module1StateProps, { payload }: Action<Msg>) => {
       const { allMsgs } = state
       return { ...state, allMsgs: allMsgs.concat([payload!]) }
-    }
+    },
   })
   getMsg(action$: Observable<void>) {
-    return action$
-      .pipe(
-        exhaustMap(() => generateMsg()
-          .pipe(
-            takeUntil(this.dispose),
-            takeUntil(this.fromDecorated(this.dispose2)),
-            map(this.createAction('success'))
-          )
-        )
-      )
+    return action$.pipe(
+      exhaustMap(() =>
+        generateMsg().pipe(
+          takeUntil(this.dispose),
+          takeUntil(this.fromDecorated(this.dispose2)),
+          map(this.createAction('success')),
+        ),
+      ),
+    )
   }
 
   @Reducer()
@@ -64,7 +71,7 @@ class Module1 extends EffectModule<Module1StateProps> {
 
   @Reducer({
     createActionPayloadCreator,
-    createActionMetaCreator
+    createActionMetaCreator,
   })
   noopReducer(state: Module1StateProps) {
     return state
@@ -72,20 +79,18 @@ class Module1 extends EffectModule<Module1StateProps> {
 
   @Effect()
   getModule3Msg(action$: Observable<void>) {
-    return action$
-      .pipe(
-        map(() => this.markAsGlobal({
-          type: 'three_get_msg'
-        }))
-      )
+    return action$.pipe(
+      map(() =>
+        this.markAsGlobal({
+          type: 'three_get_msg',
+        }),
+      ),
+    )
   }
 
   @Effect()
   changeRouter(action$: Observable<void>) {
-    return action$
-      .pipe(
-        mergeMap(() => just(push('/hmmm')))
-      )
+    return action$.pipe(mergeMap(() => just(push('/hmmm'))))
   }
 
   @Effect()
@@ -97,22 +102,18 @@ class Module1 extends EffectModule<Module1StateProps> {
   nonActionEpic(action$: Observable<void>) {
     return action$.pipe(
       map(() => ({
-        payload: 'foo'
-      }))
+        payload: 'foo',
+      })),
     )
   }
 
   @Effect({
     createActionPayloadCreator,
-    createActionMetaCreator
+    createActionMetaCreator,
   })
   noop(action$: Observable<void>) {
-    return action$
-      .pipe(
-        map(() => this.createAction('noop')())
-      )
+    return action$.pipe(map(() => this.createAction('noop')()))
   }
-
 }
 
 export type Module1DispatchProps = ModuleDispatchProps<Module1>

@@ -10,7 +10,7 @@ const __karmaWebpackManifest__: any[] = []
 
 const testsContext = require.context('./specs', true, /\.spec\.tsx?$/)
 
-function inManifest (path: string) {
+function inManifest(path: string) {
   return __karmaWebpackManifest__.indexOf(path) >= 0
 }
 

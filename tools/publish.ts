@@ -26,7 +26,7 @@ const cjsPkg = { ...pkg, main: './index.js', typings: './index.d.ts' }
 
 const write = (distPath: string, data: any) => {
   return new Promise((res, reject) => {
-    fs.writeFile(resolve(process.cwd(), distPath), data, 'utf8', err => {
+    fs.writeFile(resolve(process.cwd(), distPath), data, 'utf8', (err) => {
       if (!err) {
         return res()
       }
@@ -39,9 +39,8 @@ const cjsPkgData = JSON.stringify(cjsPkg, null, 2)
 
 Promise.all([
   write('./lib/package.json', cjsPkgData),
-  write('./lib/README.md', README)
-])
-  .catch((e: Error) => {
-    console.error(e)
-    process.exit(1)
-  })
+  write('./lib/README.md', README),
+]).catch((e: Error) => {
+  console.error(e)
+  process.exit(1)
+})
