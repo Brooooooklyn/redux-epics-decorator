@@ -45,7 +45,7 @@ export function Effect (handler: EffectHandler = {} as any) {
             ofType(startAction.toString()),
             map(({ payload }) => payload)
           )
-        matchedAction$[symbolEffectActionStream] = true
+        Object.defineProperty(matchedAction$, symbolEffectActionStream, { value: true })
         return descriptor.value.call(this, matchedAction$, store)
           .pipe(
             mergeMap((actionResult: ReduxAction<any>) => {
@@ -68,14 +68,14 @@ export function Effect (handler: EffectHandler = {} as any) {
                 type: (isActionNotTransfer || startsWith(actionResult.type, routerActionNamespace)) ?
                   type :
                   isActionFromEffect ? forkActionType(name, method, type) : withReducer(name, method, type),
-                [symbolEffectAction]: true,
               }
+              Object.defineProperty(trasnferedAction, symbolEffectAction, { value: true })
               if (isActionNotTransfer) {
                 Object.defineProperty(trasnferedAction, symbolNotTrasfer, { value: true })
               }
               const actions = [trasnferedAction]
               if (isActionFromEffect && !isActionNotTransfer) {
-                actions.unshift(actionResult as any)
+                actions.unshift(actionResult)
               }
               return just(...actions)
             })

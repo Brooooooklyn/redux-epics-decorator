@@ -71,7 +71,7 @@ export abstract class EffectModule<StateProps> {
     }
     return function(...args: any[]) {
       const result = actionCreator.apply(null, args)
-      result[symbolNotTrasfer] = true
+      Object.defineProperty(result, symbolNotTrasfer, { value: true })
       return result as EpicAction<string, any>
     }
   }
