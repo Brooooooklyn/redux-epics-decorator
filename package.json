@@ -47,7 +47,7 @@
     "@types/lodash": "^4.14.106",
     "@types/mocha": "^5.0.0",
     "@types/react-dom": "^16.0.4",
-    "@types/react-redux": "^5.0.15",
+    "@types/react-redux": "^6.0.0",
     "@types/react-router": "^4.0.23",
     "@types/react-router-redux": "^5.0.13",
     "@types/redux-actions": "^2.2.4",
