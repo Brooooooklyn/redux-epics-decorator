@@ -51,7 +51,7 @@
     "@types/react-router": "^4.0.23",
     "@types/react-router-redux": "^5.0.13",
     "@types/redux-actions": "^2.2.4",
-    "@types/shelljs": "^0.7.8",
+    "@types/shelljs": "^0.8.0",
     "@types/sinon": "^4.3.1",
     "@types/sinon-chai": "^2.7.29",
     "chai": "^4.1.2",
