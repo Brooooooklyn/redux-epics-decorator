@@ -4,9 +4,8 @@ import * as Sinon from 'sinon'
 import * as SinonChai from 'sinon-chai'
 import React from 'react'
 import * as enzyme from 'enzyme'
-import { Observable } from 'rxjs/Observable'
-import { of as just } from 'rxjs/observable/of'
-import { map } from 'rxjs/operators/map'
+import { Observable, of as just } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { createAction } from 'redux-actions'
 
 import { GlobalState } from '../fixtures/store'
@@ -44,7 +43,7 @@ describe('TestBed spec', () => {
     }
   }
 
-  @Module('mock_module_4')
+  @Module('mock_module_4_without_decorator')
   class MockDepModule4WithoutDecorator extends EffectModule<{}> {
 
     defaultState = { }
@@ -129,14 +128,9 @@ describe('TestBed spec', () => {
         useClass: MockDepModule4WithoutDecorator
       }]
     })
-    testbed.connect(Module4)(mapStateToProps)(Module4Component)
-
-    function fn() {
-      store = testbed.setupStore({
-        module4: Module4
-      })
-    }
-
+    const fn = () => testbed.setupStore({
+      module4: Module4
+    })
     expect(fn).to.throw('Could not createActionFrom a non-decoratored method')
   })
 })

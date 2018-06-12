@@ -9,7 +9,7 @@ import {
 } from 'redux'
 import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import { ReflectiveInjector, Injector, Provider } from 'injection-js'
-import { catchError } from 'rxjs/operators/catchError'
+import { catchError } from 'rxjs/operators'
 
 import { allDeps } from './decorators/Module'
 import { Constructorof } from './EffectModule'
@@ -60,6 +60,7 @@ export class TestBed {
   setupStore<MockGlobalState>(
     modules: { [index: string]: Constructorof<any> } = {},
   ): Store<MockGlobalState> {
+    let epicSetupError: Error | null = null
     const results = Object.keys(modules).reduce(
       (acc, key) => {
         const { reducer, epics } = acc
@@ -70,24 +71,31 @@ export class TestBed {
       },
       { reducer: {} as { [index: string]: Reducer<any> }, epics: [] as any[] },
     )
-    return createStore(
+    const epicMiddleware = createEpicMiddleware()
+    const store = createStore(
       !Object.keys(results.reducer).length
         ? () => ({} as any)
         : combineReducers(results.reducer),
-      compose(
-        applyMiddleware(
-          createEpicMiddleware(function() {
-            return combineEpics(...results.epics)
-              .apply(null, arguments)
-              .pipe(
-                catchError((err, source) => {
-                  console.error(err)
-                  return source
-                }),
-              )
-          }),
-        ),
-      ),
+      compose(applyMiddleware(epicMiddleware)),
     )
+
+    epicMiddleware.run((action$, state$) => {
+      try {
+        return combineEpics(...results.epics)
+          .call(null, action$, state$)
+          .pipe(
+            catchError((err, source) => {
+              console.error(err)
+              return source
+            }),
+          )
+      } catch (e) {
+        epicSetupError = e
+      }
+    })
+    if (epicSetupError) {
+      throw epicSetupError
+    }
+    return store
   }
 }

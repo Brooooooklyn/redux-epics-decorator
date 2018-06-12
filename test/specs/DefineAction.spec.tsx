@@ -1,7 +1,8 @@
 import React from 'react'
 import * as enzyme from 'enzyme'
 import { expect } from 'chai'
-import { Observable, Subscription, Scheduler } from 'rxjs'
+import { Observable, Subscription, asyncScheduler } from 'rxjs'
+import { share, take, observeOn } from 'rxjs/operators'
 import observableSymbol from 'symbol-observable'
 import { range } from 'lodash'
 import * as Sinon from 'sinon'
@@ -48,7 +49,7 @@ describe('DefineAction specs', () => {
       type: 'one/dispose'
     }
     const module1 = getInstance(Module1)
-    subscription = module1.dispose.take(1)
+    subscription = module1.dispose.pipe(take(1))
       .subscribe((a: any) => {
         expect(a).to.deep.equal(action)
         done()
@@ -68,14 +69,15 @@ describe('DefineAction specs', () => {
 
     const callCount = 5
     const module1 = getInstance(Module1)
-    const signal$ = module1.dispose
-      .share()
+    const signal$ = module1.dispose.pipe(share())
 
     signal$.subscribe(spy)
 
-    signal$.take(callCount)
-      .observeOn(Scheduler.async)
-      .take(callCount)
+    signal$.pipe(
+      take(callCount),
+      observeOn(asyncScheduler),
+      take(callCount)
+    )
       .subscribe((a: any) => {
         expect(a).to.deep.equal(action)
       }, void 0, () => {
@@ -94,8 +96,8 @@ describe('DefineAction specs', () => {
     createActionPayloadCreator.should.have.been.called
     createActionMetaCreator.should.have.been.called
 
-    createActionPayloadCreator.reset()
-    createActionMetaCreator.reset()
+    createActionPayloadCreator.resetHistory()
+    createActionMetaCreator.resetHistory()
   })
 
   it('should throw when module without namespace', () => {

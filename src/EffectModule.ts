@@ -7,7 +7,7 @@ import {
   Action,
   createAction,
 } from 'redux-actions'
-import { empty } from 'rxjs/observable/empty'
+import { empty, Observable } from 'rxjs'
 
 import {
   symbolDispatch,
@@ -19,7 +19,6 @@ import {
   withNamespace,
 } from './symbol'
 import { EpicAction, EpicLike } from './interface'
-import { Observable } from 'rxjs/Observable'
 
 export interface CreateAction<ActionType extends string> {
   <T>(payload: T): EpicAction<ActionType, T>
@@ -35,7 +34,7 @@ export abstract class EffectModule<StateProps> {
   constructor() {
     const name = Reflect.getMetadata(symbolNamespace, this.ctor)
     if (!name) {
-      throw new TypeError('Should be decorator by @namespcae')
+      throw new TypeError('Should be decorator by @Module')
     }
   }
 
@@ -130,6 +129,6 @@ export const getAction = <T>(
     console.warn('This is a temporary method for normal style.')
   }
   const name = Reflect.getMetadata(symbolNamespace, target)
-  const actionWithNamespace = withNamespace(name, actionName)
+  const actionWithNamespace = withNamespace(name, actionName as string)
   return createAction<any>(actionWithNamespace)
 }

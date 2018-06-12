@@ -1,8 +1,5 @@
-import { map } from 'rxjs/operators/map'
-import { mergeMap } from 'rxjs/operators/mergeMap'
-import { startWith } from 'rxjs/operators/startWith'
-import { _throw } from 'rxjs/observable/throw'
-import { Observable } from 'rxjs/Observable'
+import { startWith, mergeMap, map } from 'rxjs/operators'
+import { Observable, throwError } from 'rxjs'
 import { Action } from 'redux-actions'
 
 import {
@@ -67,7 +64,7 @@ export default class Module4 extends EffectModule<Module4StateProps> {
 
   @Effect()
   errorEpic(action$: Observable<void>) {
-    return action$.pipe(mergeMap(() => _throw(new TypeError())))
+    return action$.pipe(mergeMap(() => throwError(new TypeError())))
   }
 }
 

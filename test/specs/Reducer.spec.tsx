@@ -45,8 +45,8 @@ describe('Reducer specs', () => {
     createActionPayloadCreator.should.have.been.called
     createActionMetaCreator.should.have.been.called
 
-    createActionPayloadCreator.reset()
-    createActionMetaCreator.reset()
+    createActionPayloadCreator.resetHistory()
+    createActionMetaCreator.resetHistory()
 
     clock.restore()
   })

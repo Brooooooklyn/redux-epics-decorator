@@ -1,5 +1,4 @@
-import { Observable } from 'rxjs/Observable'
-import { Observer } from 'rxjs/Observer'
+import { Observable, Observer } from 'rxjs'
 
 declare const process: {
   env: {
