@@ -17,6 +17,8 @@
     "declaration": true,
     "skipLibCheck": true,
     "target": "ES5",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "lib": [
       "dom",
       "es5",
@@ -26,5 +28,8 @@
       "es2015.core"
     ],
     "outDir": "./lib"
-  }
+  },
+  "include": [
+    "src"
+  ]
 }
