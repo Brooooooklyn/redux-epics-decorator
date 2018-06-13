@@ -46,7 +46,7 @@ export function Effect(handler: EffectHandler = {} as any) {
     const epic: any = function(
       this: EffectModule<any>,
       action$: Observable<any>,
-      store?: Store<any>,
+      store$?: Observable<Store<any>>,
     ) {
       const matchedAction$ = action$[symbolEffectActionStream]
         ? action$
@@ -57,7 +57,7 @@ export function Effect(handler: EffectHandler = {} as any) {
       Object.defineProperty(matchedAction$, symbolEffectActionStream, {
         value: true,
       })
-      return descriptor.value.call(this, matchedAction$, store).pipe(
+      return descriptor.value.call(this, matchedAction$, store$).pipe(
         mergeMap((actionResult: ReduxAction<any>) => {
           if (!actionResult) {
             const methodPosition = `${target.constructor.name}#${method}`

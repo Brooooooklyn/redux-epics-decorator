@@ -1,18 +1,44 @@
-import { connect as reactConnect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import {
+  connect as reactConnect,
+  MapDispatchToPropsParam,
+  MapStateToProps,
+} from 'react-redux'
+import { bindActionCreators, Dispatch } from 'redux'
 
 import { getInstance } from './decorators/Module'
+import { Constructorof, EffectModule } from './EffectModule'
+import { ModuleDispatchProps } from './interface'
 
-export const connect = (effectModule: any) => {
-  return function(...args: any[]) {
-    const originalDispatch = args[1] || {}
+export const connect = <Module extends EffectModule<any>>(
+  effectModule: Constructorof<Module>,
+) => {
+  /**
+   * TODO
+   * support more connect params
+   */
+  return function<
+    GlobalState,
+    StateProps,
+    OwnProps = {},
+    OtherDisptchProps = {}
+  >(
+    mapStateToProps: MapStateToProps<StateProps, OwnProps, GlobalState>,
+    mapDispatchToProps?: MapDispatchToPropsParam<OtherDisptchProps, OwnProps>,
+  ) {
     const { allDispatch } = getInstance(effectModule)
-    args[1] = (dispatch: any, ownProps: any) => ({
+    const mapDispatchToPropsFn = (dispatch: Dispatch, ownProps: OwnProps) => ({
       ...bindActionCreators(allDispatch, dispatch),
-      ...(typeof originalDispatch === 'function'
-        ? originalDispatch.call(null, dispatch, ownProps)
-        : bindActionCreators(originalDispatch, dispatch)),
+      ...(!mapDispatchToProps
+        ? {}
+        : typeof mapDispatchToProps === 'function'
+          ? mapDispatchToProps.call(null, dispatch, ownProps)
+          : bindActionCreators(mapDispatchToProps as {}, dispatch)),
     })
-    return reactConnect.apply(null, args)
+    return reactConnect<
+      StateProps,
+      ModuleDispatchProps<Module>,
+      OwnProps,
+      GlobalState
+    >(mapStateToProps, mapDispatchToPropsFn)
   }
 }
