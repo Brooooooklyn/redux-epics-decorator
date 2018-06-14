@@ -1,6 +1,6 @@
 import { Action } from 'redux-actions'
-import { Observable } from 'rxjs/Observable'
-import { map } from 'rxjs/operators/map'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
 import { EffectModule, Module, Reducer, Effect } from '../../../src'
 

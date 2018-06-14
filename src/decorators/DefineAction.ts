@@ -1,6 +1,5 @@
-import { never } from 'rxjs/observable/never'
 import { createAction, Action as ReduxAction } from 'redux-actions'
-import { Observable } from 'rxjs/Observable'
+import { Observable, never } from 'rxjs'
 import { ActionsObservable, ofType } from 'redux-observable'
 
 import { EffectModule } from '../EffectModule'

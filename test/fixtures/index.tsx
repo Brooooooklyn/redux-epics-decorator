@@ -19,10 +19,8 @@ export const AppContainer = (store: Store<GlobalState>) => {
       })
     }
 
-    props = {} as any
-
     render() {
-      const container = !this.state.replace ? <Module1Container { ...this.props } /> : <Module2Container { ...this.props }/>
+      const container = !this.state.replace ? <Module1Container /> : <Module2Container />
       return (
         <Provider store={ store }>
           <div>

@@ -1,6 +1,6 @@
 import { Action } from 'redux-actions'
-import { Observable } from 'rxjs/Observable'
-import { MiddlewareAPI } from 'redux'
+import { Observable } from 'rxjs'
+import { MiddlewareAPI, Dispatch } from 'redux'
 
 import { EffectModule } from './EffectModule'
 
@@ -12,7 +12,7 @@ export type UnpackPayload<T> = T extends Function
       : T extends (action$: infer U, action: infer V) => any
         ? U extends Observable<infer P>
           ? P
-          : V extends Action<infer P> ? P : void
+          : V extends Action<infer Payload> ? Payload : void
         : void
   : T extends Observable<infer K> ? K : void
 
@@ -27,7 +27,7 @@ export type ModuleDispatchProps<T extends EffectModule<any>> = {
 export interface EpicLike<Input, Output, S, ActionType extends string> {
   (
     action$: Observable<Input>,
-    store?: MiddlewareAPI<S>,
+    store?: MiddlewareAPI<Dispatch, S>,
     dependencies?: any,
   ): Observable<EpicAction<ActionType, Output>>
 }

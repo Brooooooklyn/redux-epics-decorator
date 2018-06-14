@@ -1,10 +1,6 @@
-import { exhaustMap } from 'rxjs/operators/exhaustMap'
-import { map } from 'rxjs/operators/map'
-import { mergeMap } from 'rxjs/operators/mergeMap'
-import { takeUntil } from 'rxjs/operators/takeUntil'
-import { of as just } from 'rxjs/observable/of'
+import { exhaustMap, map, mergeMap, takeUntil } from 'rxjs/operators'
 import { Action } from 'redux-actions'
-import { Observable } from 'rxjs/Observable'
+import { Observable, of as just } from 'rxjs'
 import { push } from 'react-router-redux'
 import * as sinon from 'sinon'
 

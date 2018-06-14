@@ -1,6 +1,6 @@
 import React from 'react'
-import { bindActionCreators } from 'redux'
-import { connect, Dispatch } from 'react-redux'
+import { bindActionCreators, Dispatch, AnyAction } from 'redux'
+import { connect } from 'react-redux'
 
 import { Module3StateProps, Module3DispatchProps, getMsg, dispose } from './module'
 import { GlobalState } from '../store'
@@ -8,7 +8,7 @@ import { GlobalState } from '../store'
 export type Module3Props = Module3StateProps & Module3DispatchProps
 
 const mapStateToProps = ({ module3 }: GlobalState) => module3
-const mapDispatchToProps = (dispatch: Dispatch<any>) => bindActionCreators({
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
   getMsg,
   dispose,
 }, dispatch)

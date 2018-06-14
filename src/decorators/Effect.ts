@@ -1,7 +1,5 @@
 import 'reflect-metadata'
-import { of as just } from 'rxjs/observable/of'
-import { map } from 'rxjs/operators/map'
-import { mergeMap } from 'rxjs/operators/mergeMap'
+import { map, mergeMap } from 'rxjs/operators'
 import { Store } from 'redux'
 import { LOCATION_CHANGE, CALL_HISTORY_METHOD } from 'react-router-redux'
 import {
@@ -10,7 +8,7 @@ import {
   ActionFunction0,
   Reducer as ReduxReducer,
 } from 'redux-actions'
-import { Observable } from 'rxjs/Observable'
+import { Observable, of as just, throwError } from 'rxjs'
 import { ofType } from 'redux-observable'
 
 import {
@@ -48,25 +46,27 @@ export function Effect(handler: EffectHandler = {} as any) {
     const epic: any = function(
       this: EffectModule<any>,
       action$: Observable<any>,
-      store?: Store<any>,
+      store$?: Observable<Store<any>>,
     ) {
       const matchedAction$ = action$[symbolEffectActionStream]
         ? action$
         : action$.pipe(
             ofType(startAction.toString()),
-            map(({ payload }) => payload),
+            map(({ payload }: any) => payload),
           )
       Object.defineProperty(matchedAction$, symbolEffectActionStream, {
         value: true,
       })
-      return descriptor.value.call(this, matchedAction$, store).pipe(
+      return descriptor.value.call(this, matchedAction$, store$).pipe(
         mergeMap((actionResult: ReduxAction<any>) => {
           if (!actionResult) {
             const methodPosition = `${target.constructor.name}#${method}`
-            throw new TypeError(
-              `${methodPosition} emit a ${Object.prototype.toString
-                .call(actionResult, actionResult)
-                .replace(/(\[object)|(\])/g, '')}`,
+            return throwError(
+              new TypeError(
+                `${methodPosition} emit a ${Object.prototype.toString
+                  .call(actionResult, actionResult)
+                  .replace(/(\[object)|(\])/g, '')}`,
+              ),
             )
           }
           const { type } = actionResult
