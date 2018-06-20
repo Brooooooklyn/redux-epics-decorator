@@ -36,7 +36,7 @@ export const connect = <Module extends EffectModule<any>>(
     })
     return reactConnect<
       StateProps,
-      ModuleDispatchProps<Module>,
+      ModuleDispatchProps<Module> & OtherDisptchProps,
       OwnProps,
       GlobalState
     >(mapStateToProps, mapDispatchToPropsFn)
