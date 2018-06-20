@@ -1,10 +1,15 @@
 import React from 'react'
+import { createAction } from 'redux-actions'
 
 import { connect } from '../../../src'
 import effectModule2, { Module2StateProps, Module2DispatchProps } from './module'
 import { GlobalState } from '../store'
 
-export type Module2Props = Module2StateProps & Module2DispatchProps
+interface OtherDispatchProps {
+  otherDispatch: (...args: any[]) => any
+}
+
+export type Module2Props = Module2StateProps & Module2DispatchProps & OtherDispatchProps
 
 const mapStateToProps = ({ module2 }: GlobalState) => module2
 
@@ -55,4 +60,6 @@ class Module2 extends React.PureComponent<Module2Props> {
   }
 }
 
-export const Module2Container = connect(effectModule2)(mapStateToProps)(Module2)
+export const Module2Container = connect(effectModule2)(mapStateToProps, {
+  otherDispatch: createAction('otherDispatch')
+})(Module2)
