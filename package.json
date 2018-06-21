@@ -40,6 +40,7 @@
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-actions": "^2.4.0",
+    "redux-observable": "1.0.0-beta.2",
     "reflect-metadata": "*",
     "rxjs": "^6.2.1"
   },
@@ -112,7 +113,7 @@
   "lint-staged": {
     "*.ts": [
       "prettier --write",
-      "tslint -c tslint.json -p tsconfig.json --fix",
+      "tslint -c tslint.json --fix",
       "git add"
     ]
   }

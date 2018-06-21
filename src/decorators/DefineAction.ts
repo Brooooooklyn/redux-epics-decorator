@@ -1,5 +1,6 @@
 import { createAction, Action as ReduxAction } from 'redux-actions'
-import { Observable, never } from 'rxjs'
+import { Observable, Subject, EMPTY } from 'rxjs'
+import { mergeMap, tap } from 'rxjs/operators'
 import { ActionsObservable, ofType } from 'redux-observable'
 
 import { EffectModule } from '../EffectModule'
@@ -23,8 +24,13 @@ export function DefineAction<S>(reducerHandler: ReducerHandler = {}): any {
     let actionWithNamespace: string
 
     const epic = (actions$: ActionsObservable<ReduxAction<any>>) => {
-      action$ = actions$.pipe(ofType(actionWithNamespace))
-      return never()
+      const actionSubject$ = new Subject<ReduxAction<any>>()
+      action$ = new ActionsObservable(actionSubject$)
+      return actions$.pipe(
+        ofType(actionWithNamespace),
+        tap(actionSubject$),
+        mergeMap(() => EMPTY),
+      )
     }
 
     function setup() {

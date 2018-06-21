@@ -46,6 +46,7 @@ class Module2 extends EffectModule<Module2StateProps> {
       mergeMap(() =>
         generateMsg().pipe(
           takeUntil(this.dispose),
+          // or map(this.createAction('success'))
           map((msg) => this.createAction('success')(msg)),
         ),
       ),
@@ -61,7 +62,10 @@ class Module2 extends EffectModule<Module2StateProps> {
   loadMsgs(action$: Observable<void>) {
     return action$.pipe(
       exhaustMap(() =>
-        range(0, 10).pipe(map(this.createActionFrom(this.getMsg))),
+        range(0, 10).pipe(
+          // or map(this.createActionFrom(this.getMsg))
+          map((index) => this.createActionFrom(this.getMsg)(index)),
+        ),
       ),
     )
   }
