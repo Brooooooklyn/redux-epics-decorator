@@ -216,3 +216,16 @@ export class LandingModule extends EffectModule<LandingStateProps> {
 }
 ```
 
+# Triggering actions in EffectModule outside
+
+If you want to trigger `@Effect` or `@Reducer` or `@DefineAction` in `EffectModule`, you can use `getAction` function outside :
+
+```typescript
+import { getAction } from 'redux-epics-decorator'
+
+// LandingModule Class
+import { LandingModule } from '~/modules/landing'
+
+getAction(LandingModule, 'login') // ---------> 'landing/login'
+```
+

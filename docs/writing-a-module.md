@@ -166,7 +166,7 @@ export class LoginModule extends EffectModule<LandingStateProps> {
 
   @Reducer()
   editUserName(state: LandingStateProps, { payload }: Action<string>) {
-	  return { ...state, user: { ...state.user, name: payload! } }
+    return { ...state, user: { ...state.user, name: payload! } }
   }
 
   @Effect({
@@ -214,7 +214,7 @@ export class LoginModule extends EffectModule<LandingStateProps> {
     user: null,
     loading: true,
   }
-  
+
   @DefineAction dispose!: Observable<void>
 
   // dependencies inject
@@ -258,7 +258,7 @@ connect(LandingModule)(mapStateToProps)(LandingComponent)
 
 ## Writing DispatchProps
 
-`ModuleDispatchProps` is just a TypeScript type which could provide `Go to Definition` and `Type Check` for `Dispatch Props`.
+`ModuleDispatchProps` is just a TypeScript type which provide `Go to Definition` and `Type Check` for `Dispatch Props`.
 
 
 
