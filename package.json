@@ -33,15 +33,14 @@
   "homepage": "https://github.com/Brooooooklyn/redux-effects-decorator#readme",
   "dependencies": {
     "injection-js": "^2.2.1",
+    "reflect-metadata": "^0.1.12",
     "tslib": "^1.9.2"
   },
   "peerDependencies": {
-    "injection-js": "^2.2.1",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-actions": "^2.4.0",
-    "redux-observable": "1.0.0-beta.2",
-    "reflect-metadata": "*",
+    "redux-observable": "^1.0.0",
     "rxjs": "^6.2.1"
   },
   "devDependencies": {
@@ -87,7 +86,6 @@
     "redux": "^4.0.0",
     "redux-actions": "^2.4.0",
     "redux-observable": "1.0.0",
-    "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.1",
     "shelljs": "^0.8.2",
     "sinon": "^6.0.0",
