@@ -1,4 +1,5 @@
-export { Module, Effect, Reducer, DefineAction, Injectable } from './decorators'
+export { Module, Effect, Reducer, DefineAction } from './decorators'
+export { Injectable } from './inject'
 export { EffectModule, getAction } from './EffectModule'
 export { connect } from './connect'
 export { ModuleDispatchProps } from './interface'
