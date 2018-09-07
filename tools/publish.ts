@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import { resolve } from 'path'
 import * as shelljs from 'shelljs'
 
-const tagReg = /^[0-9]+(\.[0-9]+)*(-(alpha|beta)\.[0-9]+)?/
+// const tagReg = /^[0-9]+(\.[0-9]+)*(-(alpha|beta)\.[0-9]+)?/
 
 const gitExecResult = shelljs.exec('git log -1 --pretty=%B')
 const gitError = gitExecResult.stderr
@@ -12,12 +12,12 @@ if (gitError) {
   process.exit(1)
 }
 
-const gitStdout = gitExecResult.stdout
+// const gitStdout = gitExecResult.stdout
 
-if (!tagReg.test(gitStdout)) {
-  console.info('Not a release commit.')
-  process.exit(0)
-}
+// if (!tagReg.test(gitStdout)) {
+//   console.info('Not a release commit.')
+//   process.exit(0)
+// }
 
 const pkg = require('../package.json')
 const README = fs.readFileSync(resolve(process.cwd(), 'README.md'), 'utf8')
@@ -34,6 +34,8 @@ const write = (distPath: string, data: any) => {
     })
   })
 }
+
+shelljs.mv('es', 'lib/')
 
 const cjsPkgData = JSON.stringify(cjsPkg, null, 2)
 
