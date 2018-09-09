@@ -1,4 +1,10 @@
-export { Module, Effect, Reducer, DefineAction } from './decorators'
+export {
+  Module,
+  Effect,
+  Reducer,
+  DefineAction,
+  getInstance,
+} from './decorators'
 export { Injectable } from './inject'
 export { EffectModule, getAction } from './EffectModule'
 export { connect } from './connect'
