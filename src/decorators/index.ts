@@ -1,5 +1,5 @@
 export { DefineAction } from './DefineAction'
 export { Effect } from './Effect'
-export { Module } from './Module'
+export { Module, getInstance } from './Module'
 export { Reducer } from './Reducer'
 export { Injectable } from './Injectable'
