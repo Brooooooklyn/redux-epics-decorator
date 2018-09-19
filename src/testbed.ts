@@ -7,8 +7,8 @@ import {
   Reducer,
   combineReducers,
 } from 'redux'
-import { createEpicMiddleware, combineEpics } from 'redux-observable'
 import { ReflectiveInjector, Injector, Provider } from 'injection-js'
+import { Observable } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 
 import { allDeps } from './decorators/Module'
@@ -60,6 +60,7 @@ export class TestBed {
   setupStore<MockGlobalState>(
     modules: { [index: string]: Constructorof<any> } = {},
   ): Store<MockGlobalState> {
+    const { createEpicMiddleware, combineEpics } = require('redux-observable')
     let epicSetupError: Error | null = null
     const results = Object.keys(modules).reduce(
       (acc, key) => {
@@ -79,7 +80,7 @@ export class TestBed {
       compose(applyMiddleware(epicMiddleware)),
     )
 
-    epicMiddleware.run((action$, state$) => {
+    epicMiddleware.run((action$: Observable<any>, state$: Observable<any>) => {
       try {
         return combineEpics(...results.epics)
           .call(null, action$, state$)
