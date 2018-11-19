@@ -16,7 +16,7 @@ describe('Injectable Spec', () => {
 
   const EngienProvider = {
     provide: EngineProviderToken,
-    useValue: () => 1122
+    useValue: () => 1122,
   }
 
   @Injectable()
@@ -28,24 +28,27 @@ describe('Injectable Spec', () => {
 
   @Module({
     name: 'bar',
-    providers: [EngienProvider]
+    providers: [EngienProvider],
   })
   class Bar {
-    constructor(public api: Api, @Inject(EngineProviderToken) public engine: Function ) {}
+    constructor(
+      public api: Api,
+      @Inject(EngineProviderToken) public engine: Function,
+    ) {}
   }
 
-  function configureInvalidModule () {
+  function configureInvalidModule() {
     @Module({
       name: 'Invalid',
-      providers: 'haha' as any
+      providers: 'haha' as any,
     })
-    class Invalid { }
+    class Invalid {}
     return Invalid
   }
 
   @Module({
     name: 'foo',
-    providers: []
+    providers: [],
   })
   class Foo {
     f() {
@@ -59,7 +62,7 @@ describe('Injectable Spec', () => {
   const props = {} as any
   beforeEach(() => {
     store = setupStore()
-    AppNode = enzyme.shallow(<Module4Container store={ store } { ...props } />)
+    AppNode = enzyme.shallow(<Module4Container store={store} {...props} />)
   })
   afterEach(() => {
     AppNode.unmount()
@@ -67,7 +70,7 @@ describe('Injectable Spec', () => {
 
   it('Module decorator should not change source class', () => {
     expect(Foo.x).equal(123)
-    const foo = new Foo
+    const foo = new Foo()
     expect(foo.f()).equal(1)
   })
 
@@ -92,5 +95,4 @@ describe('Injectable Spec', () => {
   it('Providers invalid should throw', () => {
     expect(configureInvalidModule).to.throw()
   })
-
 })

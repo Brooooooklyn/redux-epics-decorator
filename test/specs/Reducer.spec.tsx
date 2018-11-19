@@ -6,7 +6,12 @@ import * as SinonChai from 'sinon-chai'
 
 import { EffectModule, Reducer } from '../../src'
 import { setupStore } from '../fixtures/store'
-import { Module1Container, Module1Props, createActionPayloadCreator, createActionMetaCreator } from '../fixtures/module1'
+import {
+  Module1Container,
+  Module1Props,
+  createActionPayloadCreator,
+  createActionMetaCreator,
+} from '../fixtures/module1'
 import { msgDelay } from '../fixtures/service'
 
 chai.use(SinonChai)
@@ -17,7 +22,7 @@ describe('Reducer specs', () => {
   const propsSpy = {} as any
 
   beforeEach(() => {
-    AppNode = enzyme.shallow(<Module1Container store={ store } { ...propsSpy } />)
+    AppNode = enzyme.shallow(<Module1Container store={store} {...propsSpy} />)
   })
 
   afterEach(() => {
@@ -62,7 +67,7 @@ describe('Reducer specs', () => {
         }
       }
 
-      return new TestModule
+      return new TestModule()
     }
 
     expect(defineModule).to.throw()

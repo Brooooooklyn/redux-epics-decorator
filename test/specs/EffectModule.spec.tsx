@@ -6,10 +6,14 @@ import { expect } from 'chai'
 import * as Sinon from 'sinon'
 import * as SinonChai from 'sinon-chai'
 import { Route } from 'react-router'
-import { ConnectedRouter } from 'react-router-redux'
+import { ConnectedRouter } from 'connected-react-router'
 
 import { setupStore, GlobalState, history } from '../fixtures/store'
-import EffectModule1, { Module1Container, Module1Props, Module1 } from '../fixtures/module1'
+import EffectModule1, {
+  Module1Container,
+  Module1Props,
+  Module1,
+} from '../fixtures/module1'
 import { Module3Container } from '../fixtures/module3'
 import { Module4Container, Module4, Module4Props } from '../fixtures/module4'
 import { msgDelay } from '../fixtures/service'
@@ -26,11 +30,11 @@ describe('Module specs', () => {
   beforeEach(() => {
     store = setupStore()
     const App = (
-      <Provider store={ store }>
-        <ConnectedRouter history={ history }>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
           <div>
-            <Route exact path='/' component={ Module1Container } />
-            <Route path='/hmmm' component={ Module3Container } />
+            <Route exact path="/" component={Module1Container} />
+            <Route path="/hmmm" component={Module3Container} />
             <Module4Container />
           </div>
         </ConnectedRouter>
@@ -93,5 +97,4 @@ describe('Module specs', () => {
     const globalState = store.getState()
     expect(globalState.depModule4.counter).to.equal(2)
   })
-
 })

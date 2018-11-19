@@ -31,8 +31,8 @@ export const connect = <Module extends EffectModule<any>>(
       ...(!mapDispatchToProps
         ? {}
         : typeof mapDispatchToProps === 'function'
-          ? mapDispatchToProps.call(null, dispatch, ownProps)
-          : bindActionCreators(mapDispatchToProps as {}, dispatch)),
+        ? mapDispatchToProps.call(null, dispatch, ownProps)
+        : bindActionCreators(mapDispatchToProps as {}, dispatch)),
     })
     return reactConnect<
       StateProps,

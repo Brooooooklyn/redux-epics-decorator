@@ -10,7 +10,12 @@ import * as SinonChai from 'sinon-chai'
 
 import { EffectModule, DefineAction } from '../../src'
 import { setupStore } from '../fixtures/store'
-import { Module1Container, Module1Props, createActionPayloadCreator, createActionMetaCreator } from '../fixtures/module1'
+import {
+  Module1Container,
+  Module1Props,
+  createActionPayloadCreator,
+  createActionMetaCreator,
+} from '../fixtures/module1'
 import Module1 from '../fixtures/module1/module'
 import Module2 from '../fixtures/module2/module'
 import { getInstance } from '../../src/decorators/Module'
@@ -23,7 +28,9 @@ describe('DefineAction specs', () => {
   const propsSpy = {} as any
 
   beforeEach(() => {
-    AppNode = enzyme.shallow(<Module1Container store={ setupStore() } { ...propsSpy }/>)
+    AppNode = enzyme.shallow(
+      <Module1Container store={setupStore()} {...propsSpy} />,
+    )
   })
 
   afterEach(() => {
@@ -42,29 +49,28 @@ describe('DefineAction specs', () => {
     expect(module2.dispose[observableSymbol]).to.not.be.null
   })
 
-  it('should emit action when action was called', done => {
+  it('should emit action when action was called', (done) => {
     const props = AppNode.props()
 
     const action = {
-      type: 'one/dispose'
+      type: 'one/dispose',
     }
     const module1 = getInstance(Module1)
-    subscription = module1.dispose.pipe(take(1))
-      .subscribe((a: any) => {
-        expect(a).to.deep.equal(action)
-        done()
-      })
+    subscription = module1.dispose.pipe(take(1)).subscribe((a: any) => {
+      expect(a).to.deep.equal(action)
+      done()
+    })
 
     props.dispose()
   })
 
-  it('should emit multiple value', done => {
+  it('should emit multiple value', (done) => {
     const props = AppNode.props()
 
     const spy = Sinon.spy()
 
     const action = {
-      type: 'one/dispose'
+      type: 'one/dispose',
     }
 
     const callCount = 5
@@ -73,17 +79,22 @@ describe('DefineAction specs', () => {
 
     signal$.subscribe(spy)
 
-    signal$.pipe(
-      take(callCount),
-      observeOn(asyncScheduler),
-      take(callCount)
-    )
-      .subscribe((a: any) => {
-        expect(a).to.deep.equal(action)
-      }, void 0, () => {
-        expect(spy.callCount).to.equal(callCount)
-        done()
-      })
+    signal$
+      .pipe(
+        take(callCount),
+        observeOn(asyncScheduler),
+        take(callCount),
+      )
+      .subscribe(
+        (a: any) => {
+          expect(a).to.deep.equal(action)
+        },
+        void 0,
+        () => {
+          expect(spy.callCount).to.equal(callCount)
+          done()
+        },
+      )
 
     range(callCount).forEach(() => props.dispose())
   })
@@ -107,7 +118,7 @@ describe('DefineAction specs', () => {
         defaultState = { foo: 1 }
       }
 
-      return new TestModule
+      return new TestModule()
     }
 
     expect(defineModule).to.throw()

@@ -10,22 +10,26 @@ import { Module3Container } from './module3'
 export const AppContainer = (store: Store<GlobalState>) => {
   return class App extends React.PureComponent {
     readonly state = {
-      replace: false
+      replace: false,
     }
 
     replaceContainer = () => {
       this.setState({
-        replace: !this.state.replace
+        replace: !this.state.replace,
       })
     }
 
     render() {
-      const container = !this.state.replace ? <Module1Container /> : <Module2Container />
+      const container = !this.state.replace ? (
+        <Module1Container />
+      ) : (
+        <Module2Container />
+      )
       return (
-        <Provider store={ store }>
+        <Provider store={store}>
           <div>
-            { container }
-            <button onClick={ this.replaceContainer }> replace module </button>
+            {container}
+            <button onClick={this.replaceContainer}> replace module </button>
             <Module3Container />
           </div>
         </Provider>
