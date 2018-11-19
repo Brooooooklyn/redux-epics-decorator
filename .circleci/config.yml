@@ -10,6 +10,8 @@ jobs:
     steps:
       - checkout
       - run: echo 'export PATH=${PATH}:${HOME}/${CIRCLE_PROJECT_REPONAME}/node_modules/.bin' >> $BASH_ENV
+      - run: curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
+      - run: sudo ln -sf ~/.yarn/bin/yarn /usr/local/bin/yarn
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
