@@ -8,13 +8,19 @@ export type UnpackPayload<T> = T extends Function
   ? T extends () => any
     ? void
     : T extends (action$: infer U) => any
-      ? U extends Observable<infer P> ? P : void
-      : T extends (action$: infer U, action: infer V) => any
-        ? U extends Observable<infer P>
-          ? P
-          : V extends Action<infer Payload> ? Payload : void
-        : void
-  : T extends Observable<infer K> ? K : void
+    ? U extends Observable<infer P>
+      ? P
+      : void
+    : T extends (action$: infer U, action: infer V) => any
+    ? U extends Observable<infer P>
+      ? P
+      : V extends Action<infer Payload>
+      ? Payload
+      : void
+    : void
+  : T extends Observable<infer K>
+  ? K
+  : void
 
 export type ModuleDispatchProps<T extends EffectModule<any>> = {
   [key in keyof T]: UnpackPayload<T[key]> extends void

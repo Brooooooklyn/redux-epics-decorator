@@ -2,19 +2,23 @@ import React from 'react'
 import { createAction } from 'redux-actions'
 
 import { connect } from '../../../src'
-import effectModule2, { Module2StateProps, Module2DispatchProps } from './module'
+import effectModule2, {
+  Module2StateProps,
+  Module2DispatchProps,
+} from './module'
 import { GlobalState } from '../store'
 
 interface OtherDispatchProps {
   otherDispatch: (...args: any[]) => any
 }
 
-export type Module2Props = Module2StateProps & Module2DispatchProps & OtherDispatchProps
+export type Module2Props = Module2StateProps &
+  Module2DispatchProps &
+  OtherDispatchProps
 
 const mapStateToProps = ({ module2 }: GlobalState) => module2
 
 class Module2 extends React.PureComponent<Module2Props> {
-
   defaultState: any = {}
 
   private loadMsg = () => {
@@ -35,22 +39,21 @@ class Module2 extends React.PureComponent<Module2Props> {
 
   render() {
     const { allMsgs } = this.props
-    const messages = allMsgs
-      .map(msg => (
-        <div key={ msg.id } onClick={ this.changeMsg(msg.id) }>
-          { msg.content }
-        </div>
-      ))
+    const messages = allMsgs.map((msg) => (
+      <div key={msg.id} onClick={this.changeMsg(msg.id)}>
+        {msg.content}
+      </div>
+    ))
 
-    const currentMsg = allMsgs.find(msg => msg.id === this.props.currentMsgId)
-    const msgNode = currentMsg ? <h2> current: { currentMsg.content } </h2> : null
+    const currentMsg = allMsgs.find((msg) => msg.id === this.props.currentMsgId)
+    const msgNode = currentMsg ? <h2> current: {currentMsg.content} </h2> : null
     return (
       <div>
-        { msgNode }
-        { messages }
-        <button onClick={ this.loadMsg }>load message</button>
-        <button onClick={ this.loadFiveMsgs }>load message</button>
-        <button onClick={ this.loadMsgs }>load 10 messages</button>
+        {msgNode}
+        {messages}
+        <button onClick={this.loadMsg}>load message</button>
+        <button onClick={this.loadFiveMsgs}>load message</button>
+        <button onClick={this.loadMsgs}>load 10 messages</button>
       </div>
     )
   }
@@ -61,5 +64,5 @@ class Module2 extends React.PureComponent<Module2Props> {
 }
 
 export const Module2Container = connect(effectModule2)(mapStateToProps, {
-  otherDispatch: createAction('otherDispatch')
+  otherDispatch: createAction('otherDispatch'),
 })(Module2)

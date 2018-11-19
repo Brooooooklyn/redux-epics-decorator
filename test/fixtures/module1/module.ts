@@ -1,7 +1,7 @@
 import { exhaustMap, map, mergeMap, takeUntil } from 'rxjs/operators'
 import { Action } from 'redux-actions'
 import { Observable, of as just } from 'rxjs'
-import { push } from 'react-router-redux'
+import { push } from 'connected-react-router'
 import * as sinon from 'sinon'
 
 import { generateMsg, Msg } from '../service'

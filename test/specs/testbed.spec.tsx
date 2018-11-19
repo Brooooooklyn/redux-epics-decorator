@@ -9,7 +9,10 @@ import { map } from 'rxjs/operators'
 import { createAction } from 'redux-actions'
 
 import { GlobalState } from '../fixtures/store'
-import { Module4 as Module4Component, mapStateToProps } from '../fixtures/module4/container'
+import {
+  Module4 as Module4Component,
+  mapStateToProps,
+} from '../fixtures/module4/container'
 import DepModule4 from '../fixtures/module4/depModule'
 import Module4, { Module4Props } from '../fixtures/module4'
 import { Module, connect, Reducer, Effect, EffectModule } from '../../src'
@@ -18,11 +21,9 @@ import { TestBedFactory, TestBed } from '../../src/testbed'
 chai.use(SinonChai)
 
 describe('TestBed spec', () => {
-
   @Module('mock_module_4')
   class MockDepModule4 extends EffectModule<{}> {
-
-    defaultState = { }
+    defaultState = {}
 
     getData() {
       return 1234
@@ -37,16 +38,15 @@ describe('TestBed spec', () => {
     exposedEpic(action$: Observable<void>) {
       return action$.pipe(
         map(() => ({
-          type: 'yeah'
-        }))
+          type: 'yeah',
+        })),
       )
     }
   }
 
   @Module('mock_module_4_without_decorator')
   class MockDepModule4WithoutDecorator extends EffectModule<{}> {
-
-    defaultState = { }
+    defaultState = {}
 
     getData() {
       return 1234
@@ -67,16 +67,20 @@ describe('TestBed spec', () => {
   const props = {} as any
   beforeEach(() => {
     testbed = TestBedFactory.configureTestingModule({
-      providers: [{
-        provide: DepModule4,
-        useClass: MockDepModule4
-      }]
+      providers: [
+        {
+          provide: DepModule4,
+          useClass: MockDepModule4,
+        },
+      ],
     })
-    const Module4Container = testbed.connect(Module4)(mapStateToProps)(Module4Component)
+    const Module4Container = testbed.connect(Module4)(mapStateToProps)(
+      Module4Component,
+    )
     store = testbed.setupStore({
-      module4: Module4
+      module4: Module4,
     })
-    AppNode = enzyme.shallow(<Module4Container store={ store } { ...props } />)
+    AppNode = enzyme.shallow(<Module4Container store={store} {...props} />)
   })
 
   afterEach(() => {
@@ -89,11 +93,11 @@ describe('TestBed spec', () => {
     const stub = Sinon.stub(depModule, 'getData')
     stub.returns(123)
     store = testbed.setupStore({
-      module4: Module4
+      module4: Module4,
     })
 
     const Container = connect(Module4)(mapStateToProps)(Module4Component)
-    AppNode = enzyme.shallow(<Container store={ store } { ...props } />)
+    AppNode = enzyme.shallow(<Container store={store} {...props} />)
     AppNode.props().setData()
     expect(store.getState().module4.count).equal(123)
     expect(stub.callCount).to.equal(1)
@@ -123,14 +127,17 @@ describe('TestBed spec', () => {
 
   it('should throw when provider non-decorated method', () => {
     testbed = TestBedFactory.configureTestingModule({
-      providers: [{
-        provide: DepModule4,
-        useClass: MockDepModule4WithoutDecorator
-      }]
+      providers: [
+        {
+          provide: DepModule4,
+          useClass: MockDepModule4WithoutDecorator,
+        },
+      ],
     })
-    const fn = () => testbed.setupStore({
-      module4: Module4
-    })
+    const fn = () =>
+      testbed.setupStore({
+        module4: Module4,
+      })
     expect(fn).to.throw('Could not createActionFrom a non-decoratored method')
   })
 })

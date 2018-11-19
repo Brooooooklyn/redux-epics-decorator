@@ -32,7 +32,7 @@ module.exports = {
 
   output: {
     path: resolve(process.cwd(), 'dist'),
-    filename: 'bundle.js'
+    filename: '[name]-[hash].js'
   },
 
   resolve: {

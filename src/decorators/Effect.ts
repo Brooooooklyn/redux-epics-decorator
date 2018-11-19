@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { map, mergeMap } from 'rxjs/operators'
 import { Store } from 'redux'
-import { LOCATION_CHANGE, CALL_HISTORY_METHOD } from 'react-router-redux'
+import { LOCATION_CHANGE, CALL_HISTORY_METHOD } from 'connected-react-router'
 import {
   Action as ReduxAction,
   createAction,
@@ -87,8 +87,8 @@ export function Effect(handler: EffectHandler = {} as any) {
               startsWith(actionResult.type, routerActionNamespace)
                 ? type
                 : isActionFromEffect
-                  ? forkActionType(name, method, type)
-                  : withReducer(name, method, type),
+                ? forkActionType(name, method, type)
+                : withReducer(name, method, type),
           }
           Object.defineProperty(trasnferedAction, symbolEffectAction, {
             value: true,

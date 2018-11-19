@@ -8,7 +8,12 @@ import { range } from 'lodash'
 
 import { EffectModule, Effect } from '../../src'
 import { setupStore, GlobalState } from '../fixtures/store'
-import { Module1Container, Module1Props, createActionPayloadCreator, createActionMetaCreator } from '../fixtures/module1'
+import {
+  Module1Container,
+  Module1Props,
+  createActionPayloadCreator,
+  createActionMetaCreator,
+} from '../fixtures/module1'
 import { Module2Container, Module2Props } from '../fixtures/module2'
 import { msgDelay } from '../fixtures/service'
 
@@ -22,8 +27,12 @@ describe('Effect specs', () => {
 
   beforeEach(() => {
     store = setupStore()
-    Module1Node = enzyme.shallow(<Module1Container store={ store } { ...propsSpy }/>)
-    Module2Node = enzyme.shallow(<Module2Container store={ store } { ...propsSpy }/>)
+    Module1Node = enzyme.shallow(
+      <Module1Container store={store} {...propsSpy} />,
+    )
+    Module2Node = enzyme.shallow(
+      <Module2Container store={store} {...propsSpy} />,
+    )
   })
 
   afterEach(() => {
@@ -161,10 +170,9 @@ describe('Effect specs', () => {
         }
       }
 
-      return new TestModule
+      return new TestModule()
     }
 
     expect(defineModule).to.throw()
   })
-
 })
