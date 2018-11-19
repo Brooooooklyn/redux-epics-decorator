@@ -12,7 +12,6 @@
     "compile:es5": "rm -rf lib && tsc -p tsconfig.json --diagnostics --pretty",
     "compile:module": "rm -rf es && tsc -p tsconfig.json -m esnext --diagnostics --pretty --outDir es",
     "lint": "tslint -c tslint.json -p tsconfig.json && tslint -c tslint.json -p test/tsconfig.json",
-    "precommit": "lint-staged",
     "start": "webpack-dev-server --config ./webpack.config.js --progress --color",
     "test": "rm -rf coverage && NODE_ENV=test karma start",
     "watch": "karma start",
@@ -118,5 +117,10 @@
       "tslint -c tslint.json --fix",
       "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
