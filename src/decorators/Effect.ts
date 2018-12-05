@@ -64,7 +64,7 @@ export function Effect(handler: EffectHandler = {} as any) {
             return throwError(
               new TypeError(
                 `${methodPosition} emit a ${Object.prototype.toString
-                  .call(actionResult, actionResult)
+                  .call(actionResult)
                   .replace(/(\[object)|(\])/g, '')}`,
               ),
             )

@@ -17,6 +17,7 @@ import DepModule4 from '../fixtures/module4/depModule'
 import Module4, { Module4Props } from '../fixtures/module4'
 import { Module, connect, Reducer, Effect, EffectModule } from '../../src'
 import { TestBedFactory, TestBed } from '../../src/testbed'
+import { Provider } from 'react-redux';
 
 chai.use(SinonChai)
 
@@ -61,7 +62,8 @@ describe('TestBed spec', () => {
     }
   }
 
-  let AppNode: enzyme.ShallowWrapper<Module4Props, any>
+  let rootNode: enzyme.ReactWrapper
+  let AppNode: enzyme.ReactWrapper<Module4Props, any>
   let store: Store<GlobalState>
   let testbed: TestBed
   const props = {} as any
@@ -80,11 +82,16 @@ describe('TestBed spec', () => {
     store = testbed.setupStore({
       module4: Module4,
     })
-    AppNode = enzyme.shallow(<Module4Container store={store} {...props} />)
+    rootNode = enzyme.mount(
+      <Provider store={store}>
+        <Module4Container {...props} />
+      </Provider>
+    )
+    AppNode = rootNode.find(Module4Component)
   })
 
   afterEach(() => {
-    AppNode.unmount()
+    rootNode.unmount()
   })
 
   it('should configure empty TestBed', () => {
@@ -97,7 +104,12 @@ describe('TestBed spec', () => {
     })
 
     const Container = connect(Module4)(mapStateToProps)(Module4Component)
-    AppNode = enzyme.shallow(<Container store={store} {...props} />)
+    rootNode = enzyme.mount(
+      <Provider store={store}>
+        <Container {...props} />
+      </Provider>
+    )
+    AppNode = rootNode.find(Module4Component)
     AppNode.props().setData()
     expect(store.getState().module4.count).equal(123)
     expect(stub.callCount).to.equal(1)

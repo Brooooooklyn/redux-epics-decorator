@@ -3,10 +3,12 @@ import * as enzyme from 'enzyme'
 import { expect } from 'chai'
 import * as Sinon from 'sinon'
 import * as SinonChai from 'sinon-chai'
+import { Provider } from 'react-redux'
 
 import { EffectModule, Reducer } from '../../src'
 import { setupStore } from '../fixtures/store'
 import {
+  Module1,
   Module1Container,
   Module1Props,
   createActionPayloadCreator,
@@ -17,16 +19,22 @@ import { msgDelay } from '../fixtures/service'
 chai.use(SinonChai)
 
 describe('Reducer specs', () => {
-  let AppNode: enzyme.ShallowWrapper<Module1Props, any>
+  let AppNode: enzyme.ReactWrapper<Module1Props, any>
+  let rootNode: enzyme.ReactWrapper
   const store = setupStore()
   const propsSpy = {} as any
 
   beforeEach(() => {
-    AppNode = enzyme.shallow(<Module1Container store={store} {...propsSpy} />)
+    rootNode = enzyme.mount(
+      <Provider store={store}>
+        <Module1Container {...propsSpy} />
+      </Provider>
+    )
+    AppNode = rootNode.find(Module1)
   })
 
   afterEach(() => {
-    AppNode.unmount()
+    rootNode.unmount()
   })
 
   it('should handler directly called action', () => {

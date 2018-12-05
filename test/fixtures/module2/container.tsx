@@ -18,7 +18,7 @@ export type Module2Props = Module2StateProps &
 
 const mapStateToProps = ({ module2 }: GlobalState) => module2
 
-class Module2 extends React.PureComponent<Module2Props> {
+export class Module2 extends React.PureComponent<Module2Props> {
   defaultState: any = {}
 
   private loadMsg = () => {

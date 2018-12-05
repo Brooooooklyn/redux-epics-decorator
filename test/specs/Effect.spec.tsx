@@ -5,39 +5,43 @@ import { expect } from 'chai'
 import * as Sinon from 'sinon'
 import * as SinonChai from 'sinon-chai'
 import { range } from 'lodash'
+import { Provider } from 'react-redux'
 
 import { EffectModule, Effect } from '../../src'
 import { setupStore, GlobalState } from '../fixtures/store'
 import {
+  Module1,
   Module1Container,
   Module1Props,
   createActionPayloadCreator,
   createActionMetaCreator,
 } from '../fixtures/module1'
-import { Module2Container, Module2Props } from '../fixtures/module2'
+import { Module2, Module2Container, Module2Props } from '../fixtures/module2'
 import { msgDelay } from '../fixtures/service'
 
 chai.use(SinonChai)
 
 describe('Effect specs', () => {
-  let Module1Node: enzyme.ShallowWrapper<Module1Props, any>
-  let Module2Node: enzyme.ShallowWrapper<Module2Props, any>
+  let Module1Node: enzyme.ReactWrapper<Module1Props, any>
+  let Module2Node: enzyme.ReactWrapper<Module2Props, any>
+  let rootNode: enzyme.ReactWrapper
   let store: Store<GlobalState>
   const propsSpy = {} as any
 
   beforeEach(() => {
     store = setupStore()
-    Module1Node = enzyme.shallow(
-      <Module1Container store={store} {...propsSpy} />,
+    rootNode = enzyme.mount(
+      <Provider store={store}>
+        <Module1Container {...propsSpy} />,
+        <Module2Container {...propsSpy} />,
+      </Provider>
     )
-    Module2Node = enzyme.shallow(
-      <Module2Container store={store} {...propsSpy} />,
-    )
+    Module1Node = rootNode.find(Module1)
+    Module2Node = rootNode.find(Module2)
   })
 
   afterEach(() => {
-    Module1Node.unmount()
-    Module2Node.unmount()
+    rootNode.unmount()
   })
 
   it('should define epics + reducer with @Effect', () => {

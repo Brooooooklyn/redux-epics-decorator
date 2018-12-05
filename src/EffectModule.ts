@@ -86,7 +86,7 @@ export abstract class EffectModule<StateProps> {
     ...args: any[]
   ): (payload?: T) => EpicAction<ActionType, T>
   protected createAction(...args: any[]) {
-    return createAction.apply(null, args)
+    return (createAction as any).apply(null, args)
   }
 
   protected createActionFrom(epicOrReducer: any) {

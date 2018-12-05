@@ -2,6 +2,7 @@ import {
   connect as reactConnect,
   MapDispatchToPropsParam,
   MapStateToProps,
+  MapDispatchToPropsFunction,
 } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
 
@@ -26,14 +27,18 @@ export const connect = <Module extends EffectModule<any>>(
     mapDispatchToProps?: MapDispatchToPropsParam<OtherDisptchProps, OwnProps>,
   ) {
     const { allDispatch } = getInstance(effectModule)
-    const mapDispatchToPropsFn = (dispatch: Dispatch, ownProps: OwnProps) => ({
-      ...bindActionCreators(allDispatch, dispatch),
-      ...(!mapDispatchToProps
-        ? {}
-        : typeof mapDispatchToProps === 'function'
-        ? mapDispatchToProps.call(null, dispatch, ownProps)
-        : bindActionCreators(mapDispatchToProps as {}, dispatch)),
-    })
+    const mapDispatchToPropsFn = (dispatch: Dispatch, ownProps: OwnProps) =>
+      ({
+        ...bindActionCreators(allDispatch, dispatch),
+        ...(!mapDispatchToProps
+          ? {}
+          : typeof mapDispatchToProps === 'function'
+          ? (mapDispatchToProps as MapDispatchToPropsFunction<
+              OtherDisptchProps,
+              OwnProps
+            >).call(null, dispatch, ownProps)
+          : bindActionCreators(mapDispatchToProps as {}, dispatch)),
+      } as ModuleDispatchProps<Module> & OtherDisptchProps)
     return reactConnect<
       StateProps,
       ModuleDispatchProps<Module> & OtherDisptchProps,
