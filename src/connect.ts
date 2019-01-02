@@ -25,6 +25,8 @@ export const connect = <Module extends EffectModule<any>>(
   >(
     mapStateToProps: MapStateToProps<StateProps, OwnProps, GlobalState>,
     mapDispatchToProps?: MapDispatchToPropsParam<OtherDisptchProps, OwnProps>,
+    mergeProps?: any,
+    options?: any,
   ) {
     const { allDispatch } = getInstance(effectModule)
     const mapDispatchToPropsFn = (dispatch: Dispatch, ownProps: OwnProps) =>
@@ -44,6 +46,6 @@ export const connect = <Module extends EffectModule<any>>(
       ModuleDispatchProps<Module> & OtherDisptchProps,
       OwnProps,
       GlobalState
-    >(mapStateToProps, mapDispatchToPropsFn)
+    >(mapStateToProps, mapDispatchToPropsFn, mergeProps, options)
   }
 }
