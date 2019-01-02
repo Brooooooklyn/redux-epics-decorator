@@ -3,9 +3,10 @@ import { Store } from 'redux'
 import * as SinonChai from 'sinon-chai'
 import React from 'react'
 import * as enzyme from 'enzyme'
+import { Provider } from 'react-redux'
 
 import { setupStore, GlobalState } from '../fixtures/store'
-import { Module4Container, Module4Props } from '../fixtures/module4'
+import { Module4Container, Module4, Module4Props } from '../fixtures/module4'
 import { Module, getInstance } from '../../src/decorators/Module'
 import { Injectable, Inject } from '../../src'
 
@@ -57,15 +58,22 @@ describe('Injectable Spec', () => {
     static x = 123
   }
 
-  let AppNode: enzyme.ShallowWrapper<Module4Props, any>
+  let rootNode: enzyme.ReactWrapper
+  let appNode: enzyme.ReactWrapper<Module4Props, any>
   let store: Store<GlobalState>
   const props = {} as any
   beforeEach(() => {
     store = setupStore()
-    AppNode = enzyme.shallow(<Module4Container store={store} {...props} />)
+    rootNode = enzyme.mount(
+      <Provider store={store}>
+        <Module4Container {...props} />
+      </Provider>
+    )
+
+    appNode = rootNode.find(Module4)
   })
   afterEach(() => {
-    AppNode.unmount()
+    rootNode.unmount()
   })
 
   it('Module decorator should not change source class', () => {
@@ -75,10 +83,10 @@ describe('Injectable Spec', () => {
   })
 
   it('Module decorator should work (react container)', () => {
-    AppNode.props().add()
-    AppNode.props().add()
+    appNode.props().add()
+    appNode.props().add()
     expect(store.getState().module4.count).equal(2)
-    AppNode.props().setData()
+    appNode.props().setData()
     expect(store.getState().module4.count).equal(1729)
   })
 

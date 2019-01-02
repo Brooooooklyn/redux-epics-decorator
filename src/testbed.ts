@@ -48,7 +48,7 @@ export class TestBed {
   }
 
   connect(effectModule: any) {
-    return (...args: any[]) => {
+    return (...args: any) => {
       const originalDispatch = args[1] || {}
       const module = this.getInstance(effectModule)
       Object.assign(originalDispatch, module.allDispatch)
