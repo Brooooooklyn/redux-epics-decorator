@@ -23,7 +23,7 @@ export class Module1 extends React.PureComponent<Module1Props> {
   render() {
     const { allMsgs } = this.props
     const messages = allMsgs.map((msg) => (
-      <div key={msg.id} onClick={this.changeMsg(msg.id)}>
+      <div key={msg.id} data-id={msg.id} onClick={this.changeMsg(msg.id)}>
         {msg.content}
       </div>
     ))
