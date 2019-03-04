@@ -23,7 +23,7 @@ export const createActionPayloadCreator = sinon.spy()
 export const createActionMetaCreator = sinon.spy()
 
 @Module('one')
-class Module1 extends EffectModule<Module1StateProps> {
+export class Module1 extends EffectModule<Module1StateProps> {
   defaultState: Module1StateProps = {
     currentMsgId: null,
     allMsgs: [],
