@@ -40,7 +40,7 @@ export class Module2 extends React.PureComponent<Module2Props> {
   render() {
     const { allMsgs } = this.props
     const messages = allMsgs.map((msg) => (
-      <div key={msg.id} onClick={this.changeMsg(msg.id)}>
+      <div key={msg.id} data-id={msg.id} onClick={this.changeMsg(msg.id)}>
         {msg.content}
       </div>
     ))
@@ -51,9 +51,9 @@ export class Module2 extends React.PureComponent<Module2Props> {
       <div>
         {msgNode}
         {messages}
-        <button onClick={this.loadMsg}>load message</button>
-        <button onClick={this.loadFiveMsgs}>load message</button>
-        <button onClick={this.loadMsgs}>load 10 messages</button>
+        <button id="btn1" onClick={this.loadMsg}>load message</button>
+        <button id="btn2" onClick={this.loadFiveMsgs}>load message</button>
+        <button id="btn3" onClick={this.loadMsgs}>load 10 messages</button>
       </div>
     )
   }
