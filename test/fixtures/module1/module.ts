@@ -79,6 +79,7 @@ export class Module1 extends EffectModule<Module1StateProps> {
       map(() =>
         this.markAsGlobal({
           type: 'three_get_msg',
+          payload: null,
         }),
       ),
     )
