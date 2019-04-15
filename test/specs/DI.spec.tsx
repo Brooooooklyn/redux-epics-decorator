@@ -7,8 +7,7 @@ import { Provider } from 'react-redux'
 
 import { setupStore, GlobalState } from '../fixtures/store'
 import { Module4Container, Module4, Module4Props } from '../fixtures/module4'
-import { Module, getInstance } from '../../src/decorators/Module'
-import { Injectable, Inject } from '../../src'
+import { Injectable, Inject, getInstance, Module } from '../../src'
 
 chai.use(SinonChai)
 

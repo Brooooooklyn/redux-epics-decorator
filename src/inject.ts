@@ -1,2 +1,5 @@
-export * from './decorators/Injectable'
-export { getInstance } from './decorators/Module'
+import { InjectableFactory, Type } from '@asuka/di'
+
+export { Injectable } from '@asuka/di'
+export const getInstance = <T>(target: Type<T>): T =>
+  InjectableFactory.getInstance(target)

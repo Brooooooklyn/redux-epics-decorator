@@ -20,7 +20,7 @@ import {
 } from '../fixtures/module1'
 import EffectModule1 from '../fixtures/module1/module'
 import EffectModule2 from '../fixtures/module2/module'
-import { getInstance } from '../../src/decorators/Module'
+import { getInstance } from '../../src'
 
 chai.use(SinonChai)
 
