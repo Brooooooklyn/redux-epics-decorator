@@ -18,7 +18,7 @@ import {
   symbolNotTrasfer,
   withNamespace,
 } from './symbol'
-import { EpicAction, EpicLike } from './interface'
+import { EpicAction, EpicLike, UnpackPayload } from './interface'
 
 export interface CreateAction<ActionType extends string> {
   <T>(payload: T): EpicAction<ActionType, T>
@@ -120,9 +120,9 @@ export interface Constructorof<T> {
 
 type UseLessAction = 'dispatch' | 'epic' | 'reducer' | 'allDispatch'
 
-export const getAction = <T>(
+export const getAction = <M extends Exclude<keyof T, UseLessAction>, T extends EffectModule<any>>(
   target: Constructorof<T>,
-  actionName: Exclude<keyof T, UseLessAction>,
+  actionName: M,
 ) => {
   /* istanbul ignore next*/
   if (process.env.NODE_ENV === 'development') {
@@ -130,5 +130,5 @@ export const getAction = <T>(
   }
   const name = Reflect.getMetadata(symbolNamespace, target)
   const actionWithNamespace = withNamespace(name, actionName as string)
-  return createAction<any>(actionWithNamespace)
+  return createAction<UnpackPayload<T[M]>(actionWithNamespace)
 }
