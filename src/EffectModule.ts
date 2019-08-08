@@ -120,7 +120,10 @@ export interface Constructorof<T> {
 
 type UseLessAction = 'dispatch' | 'epic' | 'reducer' | 'allDispatch'
 
-export const getAction = <M extends Exclude<keyof T, UseLessAction>, T extends EffectModule<any>>(
+export const getAction = <
+  M extends Exclude<keyof T, UseLessAction>,
+  T extends EffectModule<any>
+>(
   target: Constructorof<T>,
   actionName: M,
 ) => {

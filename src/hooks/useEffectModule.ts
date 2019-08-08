@@ -14,8 +14,8 @@ export function useEffectModule<
   M: Constructorof<Module>,
   mapStateToProps: (state: GlobalState) => State,
 ): [State, ModuleDispatchProps<Module>] {
-  const { store, storeState } = useContext(ReactReduxContext)
-  const [state, setState] = useState(mapStateToProps(storeState))
+  const { store } = useContext(ReactReduxContext)
+  const [state, setState] = useState(mapStateToProps(store.getState()))
 
   useEffect(
     () =>

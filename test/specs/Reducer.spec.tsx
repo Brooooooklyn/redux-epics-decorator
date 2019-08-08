@@ -28,7 +28,7 @@ describe('Reducer specs', () => {
     rootNode = enzyme.mount(
       <Provider store={store}>
         <Module1Container {...propsSpy} />
-      </Provider>
+      </Provider>,
     )
     AppNode = rootNode.find(Module1)
   })

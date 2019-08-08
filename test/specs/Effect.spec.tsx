@@ -34,7 +34,7 @@ describe('Effect specs', () => {
       <Provider store={store}>
         <Module1Container {...propsSpy} />,
         <Module2Container {...propsSpy} />,
-      </Provider>
+      </Provider>,
     )
     Module1Node = rootNode.find(Module1)
     Module2Node = rootNode.find(Module2)

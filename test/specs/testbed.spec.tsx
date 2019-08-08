@@ -17,7 +17,7 @@ import DepModule4 from '../fixtures/module4/depModule'
 import Module4, { Module4Props } from '../fixtures/module4'
 import { Module, connect, Reducer, Effect, EffectModule } from '../../src'
 import { TestBedFactory, TestBed } from '../../src/testbed'
-import { Provider } from 'react-redux';
+import { Provider } from 'react-redux'
 
 chai.use(SinonChai)
 
@@ -85,7 +85,7 @@ describe('TestBed spec', () => {
     rootNode = enzyme.mount(
       <Provider store={store}>
         <Module4Container {...props} />
-      </Provider>
+      </Provider>,
     )
     AppNode = rootNode.find(Module4Component)
   })
@@ -107,7 +107,7 @@ describe('TestBed spec', () => {
     rootNode = enzyme.mount(
       <Provider store={store}>
         <Container {...props} />
-      </Provider>
+      </Provider>,
     )
     AppNode = rootNode.find(Module4Component)
     AppNode.props().setData()

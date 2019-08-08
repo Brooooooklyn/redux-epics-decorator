@@ -66,7 +66,7 @@ describe('Injectable Spec', () => {
     rootNode = enzyme.mount(
       <Provider store={store}>
         <Module4Container {...props} />
-      </Provider>
+      </Provider>,
     )
 
     appNode = rootNode.find(Module4)

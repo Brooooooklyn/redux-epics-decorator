@@ -34,7 +34,7 @@ describe('DefineAction specs', () => {
     rootNode = enzyme.mount(
       <Provider store={setupStore()}>
         <Module1Container {...propsSpy} />,
-      </Provider>
+      </Provider>,
     )
     AppNode = rootNode.find(Module1)
   })

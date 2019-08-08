@@ -11,11 +11,9 @@ export function HooksModule2Container() {
   )
 
   useEffect(() => {
-    function onUnmount() {
-      return action.dispose()
+    return () => {
+      action.dispose()
     }
-
-    return onUnmount
   }, [])
 
   const changeMsg = (id: string) => () => action.selectMsg(id)
@@ -33,9 +31,15 @@ export function HooksModule2Container() {
           {content}
         </div>
       ))}
-      <button id="btn1" onClick={loadMsg}>load message</button>
-      <button id="btn2" onClick={loadFiveMsgs}>load message</button>
-      <button id="btn3" onClick={loadMsgs}>load 10 messages</button>
+      <button id="btn1" onClick={loadMsg}>
+        load message
+      </button>
+      <button id="btn2" onClick={loadFiveMsgs}>
+        load message
+      </button>
+      <button id="btn3" onClick={loadMsgs}>
+        load 10 messages
+      </button>
     </div>
   )
 }

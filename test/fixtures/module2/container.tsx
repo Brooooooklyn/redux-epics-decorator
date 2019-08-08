@@ -51,9 +51,15 @@ export class Module2 extends React.PureComponent<Module2Props> {
       <div>
         {msgNode}
         {messages}
-        <button id="btn1" onClick={this.loadMsg}>load message</button>
-        <button id="btn2" onClick={this.loadFiveMsgs}>load message</button>
-        <button id="btn3" onClick={this.loadMsgs}>load 10 messages</button>
+        <button id="btn1" onClick={this.loadMsg}>
+          load message
+        </button>
+        <button id="btn2" onClick={this.loadFiveMsgs}>
+          load message
+        </button>
+        <button id="btn3" onClick={this.loadMsgs}>
+          load 10 messages
+        </button>
       </div>
     )
   }

@@ -72,9 +72,7 @@ export function Effect(handler: EffectHandler = {} as any) {
           const { type } = actionResult
           if (!type) {
             console.warn(
-              `result from ${
-                target.constructor.name
-              }#${method} epic is not a action: `,
+              `result from ${target.constructor.name}#${method} epic is not a action: `,
               actionResult,
             )
           }
