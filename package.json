@@ -1,6 +1,6 @@
 {
   "name": "redux-epics-decorator",
-  "version": "0.10.5",
+  "version": "0.10.6",
   "description": "Dumb decorator for redux & redux-observable & react-redux & redux-actions",
   "main": "lib/index.js",
   "module": "es/index.js",
