@@ -40,7 +40,7 @@
     "tslib": "^1.10.0"
   },
   "peerDependencies": {
-    "@asuka/di": "^0.1.6",
+    "@asuka/di": "^0.2.0",
     "react": "^16.8.6",
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
@@ -49,7 +49,7 @@
     "rxjs": "^6.5.2"
   },
   "devDependencies": {
-    "@asuka/di": "^0.1.6",
+    "@asuka/di": "^0.2.0",
     "@types/chai": "^4.1.7",
     "@types/enzyme": "^3.10.3",
     "@types/lodash": "^4.14.136",
