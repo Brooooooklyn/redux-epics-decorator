@@ -28,9 +28,9 @@ export const connect = <Module extends EffectModule<any>>(
     mergeProps?: any,
     options?: any,
   ) {
-    const { allDispatch } = InjectableFactory.getInstance(effectModule)
-    const mapDispatchToPropsFn = (dispatch: Dispatch, ownProps: OwnProps) =>
-      ({
+    const mapDispatchToPropsFn = (dispatch: Dispatch, ownProps: OwnProps) => {
+      const { allDispatch } = InjectableFactory.getInstance(effectModule)
+      return {
         ...bindActionCreators(allDispatch, dispatch),
         ...(!mapDispatchToProps
           ? {}
@@ -40,7 +40,8 @@ export const connect = <Module extends EffectModule<any>>(
               OwnProps
             >).call(null, dispatch, ownProps)
           : bindActionCreators(mapDispatchToProps as {}, dispatch)),
-      } as ModuleDispatchProps<Module> & OtherDisptchProps)
+      } as ModuleDispatchProps<Module> & OtherDisptchProps
+    }
     return reactConnect<
       StateProps,
       ModuleDispatchProps<Module> & OtherDisptchProps,
