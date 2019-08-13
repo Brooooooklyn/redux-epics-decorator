@@ -38,9 +38,9 @@ jobs:
       - run: yarn lint
       - run: yarn check_circular_dependencies
       - run: yarn test
-      - run:
-          name: test-coverage
-          command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+      # - run:
+      #     name: test-coverage
+      #     command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
   deploy:
     <<: *defaults
