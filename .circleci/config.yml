@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/redux-epic-decorator
   docker:
-    - image: circleci/node:10-browsers
+    - image: circleci/node:12-browsers
 
 version: 2
 jobs:
@@ -15,17 +15,13 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: yarn-with-greenkeeper
-          command: |
-            sudo yarn global add greenkeeper-lockfile@1
-            yarn
+          name: yarn-install
+          command: yarn
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ~/.cache/yarn
-      - run: greenkeeper-lockfile-update
       - run: yarn compile
-      - run: greenkeeper-lockfile-upload
       - persist_to_workspace:
           root: ~/redux-epic-decorator
           paths:
