@@ -1,3 +1,9 @@
+import {
+  Inject,
+  InjectionToken,
+  Injectable,
+  rootInjectableFactory,
+} from '@asuka/di'
 import { expect } from 'chai'
 import { Store } from 'redux'
 import * as SinonChai from 'sinon-chai'
@@ -7,61 +13,62 @@ import { Provider } from 'react-redux'
 
 import { setupStore, GlobalState } from '../fixtures/store'
 import { Module4Container, Module4, Module4Props } from '../fixtures/module4'
-import { Injectable, Inject, getInstance, Module } from '../../src'
+import { Module } from '../../src'
 
 chai.use(SinonChai)
 
+const EngineProviderToken = new InjectionToken('EngineProviderToken')
+
+const EngienProvider = rootInjectableFactory.addProvider({
+  provide: EngineProviderToken,
+  useValue: () => 1122,
+})
+
+@Injectable()
+class Api {
+  getData() {
+    return 1729
+  }
+}
+
+@Module({
+  name: 'bar',
+  providers: [EngienProvider],
+})
+class Bar {
+  constructor(
+    public api: Api,
+    @Inject(EngineProviderToken) public engine: Function,
+  ) {}
+}
+
+function configureInvalidModule() {
+  @Module({
+    name: 'Invalid',
+    providers: 'haha' as any,
+  })
+  class Invalid {}
+  return Invalid
+}
+
+@Module({
+  name: 'foo',
+  providers: [],
+})
+class Foo {
+  f() {
+    return 1
+  }
+  static x = 123
+}
+
 describe('Injectable Spec', () => {
-  const EngineProviderToken = Symbol('EngineProviderToken')
-
-  const EngienProvider = {
-    provide: EngineProviderToken,
-    useValue: () => 1122,
-  }
-
-  @Injectable()
-  class Api {
-    getData() {
-      return 1729
-    }
-  }
-
-  @Module({
-    name: 'bar',
-    providers: [EngienProvider],
-  })
-  class Bar {
-    constructor(
-      public api: Api,
-      @Inject(EngineProviderToken) public engine: Function,
-    ) {}
-  }
-
-  function configureInvalidModule() {
-    @Module({
-      name: 'Invalid',
-      providers: 'haha' as any,
-    })
-    class Invalid {}
-    return Invalid
-  }
-
-  @Module({
-    name: 'foo',
-    providers: [],
-  })
-  class Foo {
-    f() {
-      return 1
-    }
-    static x = 123
-  }
-
   let rootNode: enzyme.ReactWrapper
   let appNode: enzyme.ReactWrapper<Module4Props, any>
   let store: Store<GlobalState>
   const props = {} as any
   beforeEach(() => {
+    rootInjectableFactory.resolveProviders()
     store = setupStore()
     rootNode = enzyme.mount(
       <Provider store={store}>
@@ -73,6 +80,8 @@ describe('Injectable Spec', () => {
   })
   afterEach(() => {
     rootNode.unmount()
+    const providers = Array.from(rootInjectableFactory.providers)
+    rootInjectableFactory.reset().addProviders(...providers)
   })
 
   it('Module decorator should not change source class', () => {
@@ -90,12 +99,12 @@ describe('Injectable Spec', () => {
   })
 
   it('Injectable decorator should work', () => {
-    const bar = getInstance(Bar)
+    const bar = rootInjectableFactory.getInstance(Bar)
     expect(bar.api.getData()).equal(1729)
   })
 
-  it('Injecrt decorator should work', () => {
-    const bar = getInstance(Bar)
+  it('Inject decorator should work', () => {
+    const bar = rootInjectableFactory.getInstance(Bar)
     expect(bar.engine()).to.equal(1122)
   })
 

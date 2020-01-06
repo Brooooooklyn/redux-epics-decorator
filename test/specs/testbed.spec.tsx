@@ -1,3 +1,4 @@
+import { rootInjectableFactory } from '@asuka/di'
 import { expect } from 'chai'
 import { Store } from 'redux'
 import * as Sinon from 'sinon'
@@ -7,6 +8,7 @@ import * as enzyme from 'enzyme'
 import { Observable, of as just } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { createAction } from 'redux-actions'
+import { Provider } from 'react-redux'
 
 import { GlobalState } from '../fixtures/store'
 import {
@@ -17,7 +19,6 @@ import DepModule4 from '../fixtures/module4/depModule'
 import Module4, { Module4Props } from '../fixtures/module4'
 import { Module, connect, Reducer, Effect, EffectModule } from '../../src'
 import { TestBedFactory, TestBed } from '../../src/testbed'
-import { Provider } from 'react-redux'
 
 chai.use(SinonChai)
 
@@ -68,6 +69,7 @@ describe('TestBed spec', () => {
   let testbed: TestBed
   const props = {} as any
   beforeEach(() => {
+    rootInjectableFactory.resolveProviders()
     testbed = TestBedFactory.configureTestingModule({
       providers: [
         {
@@ -92,6 +94,8 @@ describe('TestBed spec', () => {
 
   afterEach(() => {
     rootNode.unmount()
+    const providers = Array.from(rootInjectableFactory.providers)
+    rootInjectableFactory.reset().addProviders(...providers)
   })
 
   it('should configure empty TestBed', () => {

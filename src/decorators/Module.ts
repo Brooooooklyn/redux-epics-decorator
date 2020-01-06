@@ -1,4 +1,4 @@
-import { Injectable, Provider, InjectableFactory } from '@asuka/di'
+import { Injectable, Provider, rootInjectableFactory } from '@asuka/di'
 
 import {
   symbolNamespace,
@@ -46,9 +46,9 @@ export const Module = (moduleConfig: string | ModuleConfig) => (
 }
 
 export const getReducer = (ins: any) => {
-  return InjectableFactory.getInstance<any>(ins).reducer
+  return rootInjectableFactory.getInstance<any>(ins).reducer
 }
 
 export const getEpic = (ins: any) => {
-  return InjectableFactory.getInstance<any>(ins).epic
+  return rootInjectableFactory.getInstance<any>(ins).epic
 }

@@ -1,3 +1,4 @@
+import { rootInjectableFactory } from '@asuka/di'
 import React from 'react'
 import { Store } from 'redux'
 import { Provider } from 'react-redux'
@@ -28,6 +29,7 @@ describe('Module specs', () => {
   let store: Store<GlobalState>
 
   beforeEach(() => {
+    rootInjectableFactory.resolveProviders()
     store = setupStore()
     const App = (
       <Provider store={store}>
@@ -47,6 +49,8 @@ describe('Module specs', () => {
 
   afterEach(() => {
     AppNode.unmount()
+    const providers = Array.from(rootInjectableFactory.providers)
+    rootInjectableFactory.reset().addProviders(...providers)
   })
 
   it('should not transfer Action that markAsGlobal', () => {

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import { bindActionCreators } from 'redux'
 import { ReactReduxContext } from 'react-redux'
-import { InjectableFactory } from '@asuka/di'
+import { rootInjectableFactory } from '@asuka/di'
 
 import { ModuleDispatchProps } from '../interface'
 import { Constructorof, EffectModule } from '../EffectModule'
@@ -29,7 +29,7 @@ export function useEffectModule<
   return [
     state,
     bindActionCreators(
-      InjectableFactory.getInstance<Module>(M).allDispatch,
+      rootInjectableFactory.getInstance<Module>(M).allDispatch,
       store.dispatch,
     ) as ModuleDispatchProps<Module>,
   ]

@@ -1,3 +1,4 @@
+import { rootInjectableFactory } from '@asuka/di'
 import React from 'react'
 import { Store } from 'redux'
 import * as enzyme from 'enzyme'
@@ -29,6 +30,7 @@ describe('Effect specs', () => {
   const propsSpy = {} as any
 
   beforeEach(() => {
+    rootInjectableFactory.resolveProviders()
     store = setupStore()
     rootNode = enzyme.mount(
       <Provider store={store}>
@@ -42,6 +44,8 @@ describe('Effect specs', () => {
 
   afterEach(() => {
     rootNode.unmount()
+    const providers = Array.from(rootInjectableFactory.providers)
+    rootInjectableFactory.reset().addProviders(...providers)
   })
 
   it('should define epics + reducer with @Effect', () => {
