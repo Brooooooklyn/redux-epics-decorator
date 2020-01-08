@@ -1,4 +1,4 @@
-import { Injectable, Provider, rootInjectableFactory } from '@asuka/di'
+import { Injectable, Provider, rootInjector, Type } from '@asuka/di'
 
 import {
   symbolNamespace,
@@ -21,8 +21,8 @@ export interface ModuleConfig {
   providers?: Provider[]
 }
 
-export const Module = (moduleConfig: string | ModuleConfig) => (
-  target: any,
+export const Module = (moduleConfig: string | ModuleConfig) => <T = any>(
+  target: Type<T>,
 ) => {
   Reflect.defineMetadata(
     symbolNamespace,
@@ -40,15 +40,16 @@ export const Module = (moduleConfig: string | ModuleConfig) => (
     if (!Array.isArray(moduleConfig.providers)) {
       throw new TypeError('expect type of providers to be array')
     }
-    return Injectable({ providers: moduleConfig.providers })(target)
+    rootInjector.addProviders(moduleConfig.providers)
+    return Injectable()(target)
   }
   return Injectable()(target)
 }
 
 export const getReducer = (ins: any) => {
-  return rootInjectableFactory.getInstance<any>(ins).reducer
+  return rootInjector.getInstance<any>(ins).reducer
 }
 
 export const getEpic = (ins: any) => {
-  return rootInjectableFactory.getInstance<any>(ins).epic
+  return rootInjector.getInstance<any>(ins).epic
 }

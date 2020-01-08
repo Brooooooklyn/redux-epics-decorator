@@ -1,4 +1,3 @@
-import { rootInjectableFactory } from '@asuka/di'
 import React from 'react'
 import * as enzyme from 'enzyme'
 import { expect } from 'chai'
@@ -32,7 +31,6 @@ describe('DefineAction specs', () => {
   const propsSpy = {} as any
 
   beforeEach(() => {
-    rootInjectableFactory.resolveProviders()
     rootNode = enzyme.mount(
       <Provider store={setupStore()}>
         <Module1Container {...propsSpy} />,
@@ -46,8 +44,6 @@ describe('DefineAction specs', () => {
     if (subscription) {
       subscription.unsubscribe()
     }
-    const providers = Array.from(rootInjectableFactory.providers)
-    rootInjectableFactory.reset().addProviders(...providers)
   })
 
   it('should define as Observable', () => {

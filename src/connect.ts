@@ -5,7 +5,7 @@ import {
   MapDispatchToPropsFunction,
 } from 'react-redux'
 import { bindActionCreators, Dispatch } from 'redux'
-import { rootInjectableFactory } from '@asuka/di'
+import { rootInjector } from '@asuka/di'
 
 import { Constructorof, EffectModule } from './EffectModule'
 import { ModuleDispatchProps } from './interface'
@@ -29,7 +29,7 @@ export const connect = <Module extends EffectModule<any>>(
     options?: any,
   ) {
     const mapDispatchToPropsFn = (dispatch: Dispatch, ownProps: OwnProps) => {
-      const { allDispatch } = rootInjectableFactory.getInstance(effectModule)
+      const { allDispatch } = rootInjector.getInstance(effectModule)
       return {
         ...bindActionCreators(allDispatch, dispatch),
         ...(!mapDispatchToProps

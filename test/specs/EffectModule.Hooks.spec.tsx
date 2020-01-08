@@ -11,7 +11,6 @@ import { msgDelay } from '../fixtures/service'
 import { HooksModule1Container, HooksModule2Container } from '../fixtures/hooks'
 import { Module1Container } from '../fixtures/module1'
 import { Module2Container } from '../fixtures/module2'
-import { rootInjectableFactory } from '@asuka/di'
 
 chai.use(SinonChai)
 
@@ -34,14 +33,8 @@ describe('EffectModule Hooks specs', () => {
 
     beforeEach(() => {
       const Container = containers.pop()!
-      rootInjectableFactory.resolveProviders()
       store = setupStore()
       testRenderer = getTestRenderer(store, Container)
-    })
-
-    afterEach(() => {
-      const providers = Array.from(rootInjectableFactory.providers)
-      rootInjectableFactory.reset().addProviders(...providers)
     })
 
     containers.forEach((Container) => {

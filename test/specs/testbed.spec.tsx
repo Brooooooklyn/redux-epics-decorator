@@ -1,4 +1,3 @@
-import { rootInjectableFactory } from '@asuka/di'
 import { expect } from 'chai'
 import { Store } from 'redux'
 import * as Sinon from 'sinon'
@@ -69,7 +68,6 @@ describe('TestBed spec', () => {
   let testbed: TestBed
   const props = {} as any
   beforeEach(() => {
-    rootInjectableFactory.resolveProviders()
     testbed = TestBedFactory.configureTestingModule({
       providers: [
         {
@@ -94,8 +92,6 @@ describe('TestBed spec', () => {
 
   afterEach(() => {
     rootNode.unmount()
-    const providers = Array.from(rootInjectableFactory.providers)
-    rootInjectableFactory.reset().addProviders(...providers)
   })
 
   it('should configure empty TestBed', () => {

@@ -1,4 +1,3 @@
-import { rootInjectableFactory } from '@asuka/di'
 import React from 'react'
 import * as enzyme from 'enzyme'
 import { expect } from 'chai'
@@ -26,7 +25,6 @@ describe('Reducer specs', () => {
   const propsSpy = {} as any
 
   beforeEach(() => {
-    rootInjectableFactory.resolveProviders()
     rootNode = enzyme.mount(
       <Provider store={store}>
         <Module1Container {...propsSpy} />
@@ -37,8 +35,6 @@ describe('Reducer specs', () => {
 
   afterEach(() => {
     rootNode.unmount()
-    const providers = Array.from(rootInjectableFactory.providers)
-    rootInjectableFactory.reset().addProviders(...providers)
   })
 
   it('should handler directly called action', () => {
