@@ -80,7 +80,7 @@
     "karma-webpack": "^4.0.2",
     "lint-staged": "^10.2.2",
     "lodash": "^4.17.15",
-    "madge": "^3.8.0",
+    "madge": "^3.9.0",
     "mocha": "^7.1.2",
     "prettier": "^2.0.5",
     "react": "^16.13.1",
