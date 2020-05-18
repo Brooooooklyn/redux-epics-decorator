@@ -59,7 +59,7 @@
     "@types/react-test-renderer": "^16.9.1",
     "@types/redux-actions": "^2.6.1",
     "@types/shelljs": "^0.8.8",
-    "@types/sinon": "^9.0.0",
+    "@types/sinon": "^9.0.1",
     "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
     "codecov": "^3.7.0",
