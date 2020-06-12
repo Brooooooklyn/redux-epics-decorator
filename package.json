@@ -78,7 +78,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-sinon": "^1.0.5",
     "karma-webpack": "^4.0.2",
-    "lint-staged": "^10.2.9",
+    "lint-staged": "^10.2.10",
     "lodash": "^4.17.15",
     "madge": "^3.9.1",
     "mocha": "^8.0.1",
