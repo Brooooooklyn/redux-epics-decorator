@@ -79,7 +79,7 @@
     "karma-sinon": "^1.0.5",
     "karma-webpack": "^4.0.2",
     "lint-staged": "^10.2.11",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "madge": "^3.9.2",
     "mocha": "^8.1.1",
     "prettier": "^2.0.5",
