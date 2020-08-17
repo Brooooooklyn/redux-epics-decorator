@@ -52,7 +52,7 @@
     "@types/chai": "^4.2.12",
     "@types/enzyme": "^3.10.4",
     "@types/lodash": "^4.14.159",
-    "@types/mocha": "^8.0.2",
+    "@types/mocha": "^8.0.3",
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.8",
