@@ -6584,10 +6584,10 @@ symbol-observable@^1.2.0:
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
   integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==
 
-symbol-observable@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-2.0.0.tgz#08d9e7d0f4298bf25c917907aeea39fa131065ec"
-  integrity sha512-E56rCtH6Of77kyoXEv+lwHqRNGLoEsxoEuvyAZflOUkg9BJ2y/qXfdhEBqAtUngCSZZyDkuGaF4FsmO5paGaqA==
+symbol-observable@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-2.0.1.tgz#ce66c36a04ed0f3056e7293184749a6fdd7063ea"
+  integrity sha512-QrfHrrEUMadQCgMijc3YpfA4ncwgqGv58Xgvdu3JZVQB7iY7cAkiqobZEZbaA863jof8AdpR01CPnZ5UWeqZBQ==
 
 tapable@^1.0.0, tapable@^1.1.3:
   version "1.1.3"
