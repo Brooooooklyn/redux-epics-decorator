@@ -50,7 +50,7 @@
   "devDependencies": {
     "@asuka/di": "^0.3.4",
     "@types/chai": "^4.2.12",
-    "@types/enzyme": "^3.10.4",
+    "@types/enzyme": "^3.10.6",
     "@types/lodash": "^4.14.161",
     "@types/mocha": "^8.0.3",
     "@types/react-dom": "^16.9.8",
