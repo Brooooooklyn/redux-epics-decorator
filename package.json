@@ -95,7 +95,7 @@
     "shelljs": "^0.8.4",
     "sinon": "^9.1.0",
     "sinon-chai": "^3.5.0",
-    "symbol-observable": "^2.0.2",
+    "symbol-observable": "^2.0.3",
     "ts-loader": "^8.0.4",
     "ts-node": "^9.0.0",
     "tslint": "^5.20.1",
