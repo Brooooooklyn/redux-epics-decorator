@@ -51,7 +51,7 @@
     "@asuka/di": "^0.3.4",
     "@types/chai": "^4.2.14",
     "@types/enzyme": "^3.10.8",
-    "@types/lodash": "^4.14.163",
+    "@types/lodash": "^4.14.164",
     "@types/mocha": "^8.0.3",
     "@types/react-dom": "^16.9.9",
     "@types/react-redux": "^7.1.9",
