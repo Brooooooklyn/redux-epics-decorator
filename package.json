@@ -56,7 +56,7 @@
     "@types/react-dom": "^16.9.9",
     "@types/react-redux": "^7.1.11",
     "@types/react-router": "^5.1.8",
-    "@types/react-test-renderer": "^16.9.3",
+    "@types/react-test-renderer": "^17.0.0",
     "@types/redux-actions": "^2.6.1",
     "@types/shelljs": "^0.8.8",
     "@types/sinon": "^9.0.8",
