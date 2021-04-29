@@ -42,7 +42,7 @@
     "@asuka/di": "^0.3.4",
     "react": "^16.14.0",
     "react-redux": "^7.2.4",
-    "redux": "^4.0.5",
+    "redux": "^4.1.0",
     "redux-actions": "^2.6.5",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.3"
@@ -88,7 +88,7 @@
     "react-redux": "^7.2.4",
     "react-router": "^5.2.0",
     "react-test-renderer": "^16.14.0",
-    "redux": "^4.0.5",
+    "redux": "^4.1.0",
     "redux-actions": "^2.6.5",
     "redux-observable": "1.2.0",
     "rxjs": "^6.6.3",
