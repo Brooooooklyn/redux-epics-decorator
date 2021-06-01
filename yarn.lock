@@ -4061,10 +4061,10 @@ karma-webpack@^4.0.2:
     source-map "^0.7.3"
     webpack-dev-middleware "^3.7.0"
 
-karma@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/karma/-/karma-6.1.0.tgz#8d9f61252a3f8e935f8456c8df3fa796ca132339"
-  integrity sha512-QmRZ6HdKe6mHd89Az6yb85URRyDbXmn2IBo3lic7cwkkLjDWpjrMJxPAKlwNa5dFM1iHdT+kjtNJM0J5YAH90A==
+karma@^6.3.3:
+  version "6.3.3"
+  resolved "https://registry.yarnpkg.com/karma/-/karma-6.3.3.tgz#bd04c7c533f8de99b3c3e85e191d0a6ae2621ad1"
+  integrity sha512-JRAujkKWaOtO2LmyPH7K2XXRhrxuFAn9loIL9+iiah6vjz+ZLkqdKsySV9clRITGhj10t9baIfbCl6CJ5hu9gQ==
   dependencies:
     body-parser "^1.19.0"
     braces "^3.0.2"
