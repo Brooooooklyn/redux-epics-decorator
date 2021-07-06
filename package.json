@@ -68,7 +68,7 @@
     "enzyme-adapter-react-16": "^1.15.6",
     "history": "^4.10.1",
     "html-webpack-plugin": "^4.5.1",
-    "husky": "^7.0.0",
+    "husky": "^7.0.1",
     "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^6.3.4",
     "karma-chai": "^0.1.0",
